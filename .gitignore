@@ -1,2 +1,5 @@
 # exclude media files
 /media
+
+# exclude .img files
+*.img

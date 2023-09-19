@@ -55,13 +55,15 @@ class Player:
 		self.playing = False
 		print(f"Pause {self.sink}")
 		#self.audio_process.send_signal(subprocess.signal.SIGSTOP)
-		subprocess.Popen(["pactl", "suspend-sink", self.sink, "1"])
+		pause = subprocess.Popen(["pactl", "suspend-sink", self.sink, "1"])
+		pause.wait()
 
 	def resume(self):
 		self.playing = True
 		print(f"Resume {self.sink}")
 		#self.audio_process.send_signal(subprocess.signal.SIGCONT)
-		subprocess.Popen(["pactl", "suspend-sink", self.sink, "0"])
+		resume = subprocess.Popen(["pactl", "suspend-sink", self.sink, "0"])
+		resume.wait()
 
 	def stop(self):
 		try:
@@ -142,5 +144,6 @@ if __name__ == "__main__":
 	bluetooth.play()
 	jack.load(voice_playlist)
 	jack.play()
+	print(voice_playlist)
 	# main loop function
 	main()

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # start audio player
+python /home/a.occelli/sm_demo/bt_device.py
 sleep 2
-pulseaudio --start
 python /home/a.occelli/sm_demo/master.py
 

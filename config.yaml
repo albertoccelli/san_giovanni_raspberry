@@ -1,0 +1,9 @@
+# bluetooth device name (can also be a part of the actual name, e. g. "Pixel" also works for "Pixel Buds", "Pixel Buds A series", "Pixel phone" and so on) 
+device_name: "Pixel"
+
+# player settings
+start_track: 1
+
+# distance sensor
+distance_sensor_enabled: False
+treshold: 250 
