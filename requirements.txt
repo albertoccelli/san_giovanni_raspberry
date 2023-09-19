@@ -12,6 +12,7 @@ Pillow==8.1.2
 psutil==5.9.5
 python-apt==2.2.1
 python-prctl==1.7
+pyudev==0.24.1
 PyYAML==6.0.1
 requests==2.25.1
 RPi.GPIO==0.7.0
