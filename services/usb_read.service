@@ -1,0 +1,8 @@
+[Unit]
+Description=Waits for USB drive to be inserted, then start update
+
+[Service]
+ExecStart=/home/a.occelli/sm_demo/auto_usb_update.py
+
+[Install]
+WantedBy=default.target
