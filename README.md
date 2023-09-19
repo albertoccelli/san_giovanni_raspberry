@@ -31,7 +31,14 @@ Make sure, during the install, to enable the ssh, in order to communicate with t
    ```
    sudo -E systemctl edit --full bluetooth
    ```
-   - In the bluetooth service file, change the line ```ExecStart=/usr/libexec/bluetooth/bluetoothd``` to ```ExecStart=/usr/libexec/bluetooth/bluetoothd --noplugin=sap```
+   - In the bluetooth service file, change the line
+     ```
+     ExecStart=/usr/libexec/bluetooth/bluetoothd
+     ```
+     to
+     ```
+     ExecStart=/usr/libexec/bluetooth/bluetoothd --noplugin=sap
+     ```
    - Reload the daemon and restart the bluetooth service:
    ```
    sudo systemctl daemon-reload
