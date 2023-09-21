@@ -9,6 +9,7 @@ jack_sink = getSinks()[0]
 m_path = "/media/usb-drive"
 t_path = "/home/a.occelli/sm_demo"
 
+
 def stop_player():
 	# stop player.service
 	stopplayer = subprocess.Popen(["systemctl", "--user", "stop", "player.service"])
@@ -28,6 +29,17 @@ def start_player():
 	restart_player.wait()
 
 
+def start_bt():
+	# start bt_scan.service
+	start_bt = subprocess.Popen(["systemctl", "--user", "start", "bt_scan.service"])
+	start_bt.wait()
+
+
+def stop_bt():
+	stop_bt = subprocess.Popen(["systemctl", "--user", "stop", "bt_scan.service"])
+	stop_bt.wait()
+
+
 def get_usb_path():
 	path = None
 	disk = subprocess.check_output(["lsblk", "-p"]).decode("utf-8")
@@ -44,6 +56,7 @@ def get_usb_path():
 				path_found = True
 				path = d[0].split("─")[-1]
 	return path
+
 
 def wait_for_usb():
 	path = ""
@@ -91,6 +104,7 @@ def usb_in_callback(event):
 
 def update(source, target):
 	stop_player()
+	stop_bt()
 	# check if there is the source folder
 	check = subprocess.Popen(["ls", "-a", f"{source}/sm_copy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
 							 text=True)
@@ -104,10 +118,9 @@ def update(source, target):
 		return
 	check = stdout.split("\n")
 	print(check)
-	time.sleep(1)
+	time.sleep(0.5)
 	# check if usb drive is allowed to update
 	if controlfile in check:
-		# create backup in the root folder and usb
 		audio_prompt("/home/a.occelli/sm_demo/prompts/wait_update.wav")
 		# copy config file
 		print("Copying configuration files")
@@ -117,9 +130,12 @@ def update(source, target):
 		print("Copying neck audio file")
 		neck_files = subprocess.check_output(["ls", f"{source}/sm_copy/"])
 		print(neck_files)
-		command = f"cp -r {source}/sm_copy/media/neck/*.wav {target}/media/neck/"
+		command = f"rsync -av --delete {source}/sm_copy/media/neck {target}/media/"
 		os.system(command)
-
+		# run script runme.sh inside the folder
+		print("Running bash script")
+		os.system(f"{source}/sm_copy/runme.sh")
+		print("Done")
 		# end update
 		print("Copy successful")
 		audio_prompt("/home/a.occelli/sm_demo/prompts/update_complete.wav")
@@ -129,6 +145,7 @@ def update(source, target):
 		print("Not allowed to copy from this usb")
 	time.sleep(1)
 	start_player()
+	start_bt()
 	return
 
 
@@ -141,6 +158,7 @@ if __name__ == "__main__":
 		mount_usb(drive, m_path)
 		update(m_path, t_path)
 
+	start_bt()
 	context = pyudev.Context()
 
 	monitor = pyudev.Monitor.from_netlink(context)

@@ -31,6 +31,7 @@ class Device:
         self.connected = False
         self.sink = None
         self.ready_to_play = False
+        print("Retrieving mac address...")
         self.get_mac_address()
         self.get_info()
         if not self.trusted:
@@ -38,10 +39,10 @@ class Device:
         if not self.paired:
             self.pair()
         if not self.connected:
+            print("Connecting...")
             self.connect()
         else:
-            if self.check_connected:
-                print("Device already connected")
+            print("Device already connected")
 
     def get_mac_address(self):
         ntry = 1
@@ -91,7 +92,6 @@ class Device:
         if self.mac_address:
             info_output = subprocess.run(["bluetoothctl", "info", self.mac_address], capture_output=True, text=True)
             info = info_output.stdout.split("\n")
-            self.get_sink()
             for i in info:
                 if "Paired" in i:
                     if "yes" in i.lower():
@@ -108,6 +108,7 @@ class Device:
                         self.connected = True
                     else:
                         self.connected = False
+            self.get_sink()
 
     def connect(self):
         attempts = 0
@@ -124,7 +125,7 @@ class Device:
                     else:
                         print("Failed to connect. Please try putting the device into pairing mode")
                 elif "success" in outcome.lower():
-                    # audio_prompt("prompts/connected.wav")
+                    audio_prompt("prompts/connected.wav")
                     self.get_sink()
                     return
                 attempts += 1
@@ -150,7 +151,6 @@ class Device:
             if len(sinks) == 2:
                 self.ready_to_play = True
         except Exception as e:
-            print(f"Error: {e}")
             self.ready_to_play = False
             pass
 
@@ -173,9 +173,7 @@ if __name__ == "__main__":
         while not device.ready_to_play:
             device.get_info()
             time.sleep(1)
-
         print("Ready to play!")
-        audio_prompt("/home/a.occelli/sm_demo/prompts/connected.wav")
 
 
     # first time try the connection
@@ -198,9 +196,10 @@ if __name__ == "__main__":
                     print(neckband.connected)
                     if not neckband.connected:
                         break
-            print("Trying reconnection")
-            neckband = Device(device_name)
-            initialize(neckband)
+            else:
+                print("Trying reconnection")
+                neckband = Device(device_name)
+                initialize(neckband)
         else:
             if cur_status != p_status:
                 print("Reconnected")

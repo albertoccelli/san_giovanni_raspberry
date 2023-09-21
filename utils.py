@@ -10,10 +10,10 @@ def set_spkr_volume_max():
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
                    "/org/bluez/hci0/dev_78_5E_A2_F9_A5_9A", "org.bluez.MediaControl1.VolumeUp"]
         for i in range(30):
-            lower_volume = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = lower_volume.communicate()
-            lower_volume.wait()
-            print(stdout)
+            raise_volume = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = raise_volume.communicate()
+            raise_volume.wait()
+           # print(stdout)
             time.sleep(0.05)
     except Exception as e:
         print(e)
