@@ -1,5 +1,5 @@
 # exclude media files
-/media
+/media/neck
 
 # exclude .img files
 *.img
