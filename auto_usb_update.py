@@ -134,16 +134,17 @@ def update(source, target):
 	return
 
 
-context = pyudev.Context()
+if __name__ == "__main__":
+	context = pyudev.Context()
 
-monitor = pyudev.Monitor.from_netlink(context)
-monitor.filter_by(subsystem='usb')
+	monitor = pyudev.Monitor.from_netlink(context)
+	monitor.filter_by(subsystem='usb')
 
-observer = pyudev.MonitorObserver(monitor, callback=usb_in_callback)
-observer.start()
+	observer = pyudev.MonitorObserver(monitor, callback=usb_in_callback)
+	observer.start()
 
-try:
-	observer.join()
-except KeyboardInterrupt:
-	observer.stop()
-	observer.join()
+	try:
+		observer.join()
+	except KeyboardInterrupt:
+		observer.stop()
+		observer.join()
