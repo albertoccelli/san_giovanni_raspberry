@@ -17,5 +17,6 @@ if [ $answer == "y" ] ; then
 	sudo reboot now
 elif [ $answer == "n" ] ; then
 	echo "Starting service $TO_INSTALL"
+	systemctl --user daemon-reload
 	systemctl --user start $TO_INSTALL
 fi

@@ -19,7 +19,7 @@ if __name__ == "__main__":
 	from utils import getSinks
 	import os
 	from player import Player
-	from utils import load_config
+	from utils import load_config, set_spkr_volume_max
 
 	config_file = "/home/a.occelli/sm_demo/config.yaml"
 
@@ -47,6 +47,11 @@ if __name__ == "__main__":
 		if len(audio_sinks) == 2:
 			break
 		time.sleep(2)
+
+	# Set volume of neckband to max
+	print("Setting neckband to max")
+	set_spkr_volume_max()
+	print("Done")
 
 	bluetooth = Player(audio_sinks[1])
 	bluetooth.load(bg_playlist)
