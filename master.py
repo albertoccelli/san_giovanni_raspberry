@@ -96,7 +96,9 @@ if __name__ == "__main__":
 	GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
 	GPIO.add_event_detect(DT_PIN, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
 	d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")
-	if d_sensor_enabled:
+	print(f"Sensor status: {d_sensor_enabled}")
+	if d_sensor_enabled == True:
+		print("Sensor started")
 		d_sensor = DistanceSensor(TRIG_PIN, ECHO_PIN, on_posedge_callback = distance_pause, on_negedge_callback = distance_resume)
 		d_sensor.treshold = load_config(config_file).get("treshold")
 		d_sensor.start_measuring()

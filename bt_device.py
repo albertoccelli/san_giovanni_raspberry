@@ -23,6 +23,7 @@ from utils import audio_prompt
 
 class Device:
 
+
 	def __init__(self, name):
 		self.name = name
 		self.mac_address = None
@@ -31,6 +32,16 @@ class Device:
 		self.connected = False
 		self.sink = None
 		self.ready_to_play = False
+		self.get_mac_address()
+		self.get_info()
+		if not self.trusted: self.trust()
+		if not self.paired: self.pair()
+		if not self.connected:
+			self.connect()
+		else:
+			if self.check_connected:
+				print("Device already connected")
+
 
 	def get_mac_address(self):
 		ntry = 1
@@ -77,13 +88,17 @@ class Device:
 		if self.mac_address:
 			info_output = subprocess.run(["bluetoothctl", "info", self.mac_address], capture_output = True, text = True)
 			info = info_output.stdout.split("\n")
+			self.get_sink()
 			for i in info:
 				if "Paired" in i:
 					if "yes" in i.lower(): self.paired = True
+					else: self.paired = False
 				if "Trusted" in i:
 					if "yes" in i.lower(): self.trusted = True
+					else: self.trusted = False
 				if "Connected" in i:
 					if "yes" in i.lower(): self.connected = True
+					else: self.connected = False
 
 	def connect(self):
 		attempts = 0
@@ -113,12 +128,14 @@ class Device:
 			outcome = pair.stdout
 			print(outcome)
 
+
 	def trust(self):
 		if self.mac_address:
 			print("Trusting...")
 			trust = subprocess.run(["bluetoothctl", "trust", self.mac_address], capture_output = True, text = True)
 			outcome = trust.stdout
 			print(outcome)
+
 
 	def get_sink(self):
 		sinks = getSinks()
@@ -128,11 +145,13 @@ class Device:
 				self.ready_to_play = True
 		except Exception as e:
 			self.ready_to_play = False
-			print("Device not ready to play yet")
+			pass
+
 
 	def check_connected(self):
 		self.get_info()
 		return self.connected
+
 
 if __name__ == "__main__":
 	from utils import start_player, stop_player
@@ -144,24 +163,38 @@ if __name__ == "__main__":
 	config = load_config(config_file)
 	device_name = config.get("device_name")
 
+	def initialize(device):
+		# after the connection, check if the device can listen to music
+		while device.ready_to_play == False:
+			device.get_info()
+			time.sleep(1)
+
+		print("Ready to play!")
+		audio_prompt("/home/a.occelli/sm_demo/prompts/connected.wav")
 
 	# first time try the connection
 	neckband = Device(device_name)
-	neckband.get_mac_address()
-	neckband.get_info()
-	if not neckband.trusted: neckband.trust()
-	if not neckband.paired: neckband.pair
-	if not neckband.connected:
-		neckband.connect()
-	else:
-		if Device.check_connected:
-			print("Device already connected")
+	initialize(neckband)
 
-
-	# after the connection, check if the device can listen to music
-	while neckband.ready_to_play == False:
-		neckband.get_sink()
+	# start to check if the connection is interrupted, every second
+	p_status = neckband.ready_to_play
+	while True:
+		neckband.get_info()
+		cur_status = neckband.ready_to_play
+		print(cur_status)
+		if not cur_status:
+			if cur_status != p_status:
+				print("Lost connection with the device")
+				# wait until the connection status is updated
+				while True:
+					neckband.get_info()
+					print(neckband.connected)
+					if not neckband.connected: break
+			print("Trying reconnection")
+			neckband = Device(device_name)
+			initialize(neckband)
+		else:
+			if cur_status != p_status:
+				print("Reconnected")
+		p_status = cur_status
 		time.sleep(1)
-
-	print("Ready to play!")
-	audio_prompt("/home/a.occelli/sm_demo/prompts/connected.wav")

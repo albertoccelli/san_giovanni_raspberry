@@ -95,11 +95,17 @@ def update(source, target):
 		# create backup in the root folder and usb
 		audio_prompt("/home/a.occelli/sm_demo/prompts/wait_update.wav")
 		# copy config file
+		print("Copying configuration files")
 		copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
 		os.system(copy_config)
-		# copy all contents in sm_copy folder
-		#command = f"cp -r {source}/sm_copy/* {target}/usb"
-		#os.system(command)
+		# copy audio files for the neckband
+		print("Copying neck audio file")
+		neck_files = subprocess.check_output(["ls", f"{source}/sm_copy/"])
+		print(neck_files)
+		command = f"cp -r {source}/sm_copy/media/neck/*.wav {target}/media/neck/"
+		os.system(command)
+
+		# end update
 		print("Copy successful")
 		audio_prompt("/home/a.occelli/sm_demo/prompts/update_complete.wav")
 		start_player()
