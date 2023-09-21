@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 TO_INSTALL=$1
