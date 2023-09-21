@@ -2,7 +2,7 @@ import pyudev
 import time
 import subprocess
 import os
-from get_sinks import getSinks
+from utils import getSinks
 
 controlfile = ".update_smdemo.txt"
 jack_sink = getSinks()[0]
