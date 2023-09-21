@@ -6,7 +6,8 @@ from utils import getSinks
 
 controlfile = ".update_smdemo.txt"
 jack_sink = getSinks()[0]
-
+m_path = "/media/usb-drive"
+t_path = "/home/a.occelli/sm_demo"
 
 def stop_player():
 	# stop player.service
@@ -82,12 +83,9 @@ def usb_in_callback(event):
 		path = wait_for_usb()
 		print(path)
 		s_path = path
-		m_path = "/media/usb-drive"
-		t_path = "/home/a.occelli/sm_demo"
 		# mount the usb into the s_path folder
 		mount_usb(s_path, m_path)
 		update(m_path, t_path)
-		stop_player()
 		return
 
 
@@ -135,6 +133,14 @@ def update(source, target):
 
 
 if __name__ == "__main__":
+
+	# verify if there's a connected usb drive at boot
+	drive = get_usb_path()
+	if drive:
+		print("Drive detected")
+		mount_usb(drive, m_path)
+		update(m_path, t_path)
+
 	context = pyudev.Context()
 
 	monitor = pyudev.Monitor.from_netlink(context)
