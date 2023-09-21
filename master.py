@@ -16,7 +16,7 @@ GPIO.setup(DT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(CLK_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 if __name__ == "__main__":
-	from get_sinks import getSinks
+	from utils import getSinks
 	import os
 	from player import Player
 	from utils import load_config

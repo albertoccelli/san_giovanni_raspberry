@@ -104,7 +104,7 @@ def main():
 
 if __name__ == "__main__":
 
-	from get_sinks import getSinks
+	from utils import getSinks
 	import os
 
 	# read audio files from folder
