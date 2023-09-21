@@ -28,6 +28,23 @@ def start_player():
 
 
 def get_usb_path():
+	path = None
+	disk = subprocess.check_output(["lsblk", "-p"]).decode("utf-8")
+	disk = disk.split("\n")
+	for d in disk:
+		d = d.split(" ")
+		while True:
+			try:
+				d.remove("")
+			except ValueError:
+				break
+		if len(d) > 1 and d[2] == "1":  # check if removable
+			if "part" in d[5]:  # check if it's a partition
+				path_found = True
+				path = d[0].split("─")[-1]
+	return path
+
+def wait_for_usb():
 	path = ""
 	path_found = False
 	while not path_found:
@@ -62,7 +79,7 @@ def usb_in_callback(event):
 	if event.device_node is not None and event.action == "add":
 		print(f"USB detected:")
 		# get path of the usb
-		path = get_usb_path()
+		path = wait_for_usb()
 		print(path)
 		s_path = path
 		m_path = "/media/usb-drive"
