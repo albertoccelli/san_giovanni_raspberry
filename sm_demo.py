@@ -48,16 +48,16 @@ if __name__ == "__main__":
 	# initiate players
 	# make sure that the bt device is ready to play:
 	while True:
-		print_datetime("SM Demo: \tBT device not found. Please wait...")
+		print_datetime("SM Demo:\tBT device not found. Please wait...")
 		audio_sinks = getSinks()
 		if len(audio_sinks) == 2:
 			break
 		time.sleep(1)
 
 	# Set volume of neckband to max
-	print_datetime("SM Demo: \tsetting neckband to max")
+	print_datetime("SM Demo:\tsetting neckband to max")
 	set_spkr_volume_max()
-	print_datetime("SM Demo: \tBT volume set to max")
+	print_datetime("SM Demo:\tBT volume set to max")
 
 	bluetooth = Player(audio_sinks[1])
 	bluetooth.load(bg_playlist)
@@ -79,35 +79,35 @@ if __name__ == "__main__":
 				jack.resume()
 
 	def btn_1_pressed(channel):
-		print_datetime("SM Demo: \tbutton 1 pressed")
+		print_datetime("SM Demo:\tbutton 1 pressed")
 		toggle_play_pause()
 
 	def rotation_1_callback(channel):
 		if GPIO.input(DT_PIN) == GPIO.input(CLK_PIN):
-			print_datetime("SM Demo: \trotary encoder clockwise")
+			print_datetime("SM Demo:\trotary encoder clockwise")
 			bluetooth.next_track()
 			jack.next_track()
 		else:
-			print_datetime("SM Demo: \trotary encoder counterclockwise")
+			print_datetime("SM Demo:\trotary encoder counterclockwise")
 			bluetooth.prev_track()
 			jack.prev_track()
 
 	def distance_pause():
-		print_datetime("SM Demo: \tUser too far away: pause")
+		print_datetime("SM Demo:\tUser too far away: pause")
 		bluetooth.pause()
 		jack.pause()
 
 	def distance_resume():
-		print_datetime("SM Demo: \tUser detected: resume")
+		print_datetime("SM Demo:\tUser detected: resume")
 		bluetooth.resume()
 		jack.resume()
 
 	# define sensors/button detect functions
 	GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
 	GPIO.add_event_detect(DT_PIN, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
-	print_datetime(f"SM Demo: \tDistance sensor status={d_sensor_enabled}")
+	print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
 	if d_sensor_enabled == True:
-		print_datetime("SM Demo: \tSensor started")
+		print_datetime("SM Demo:\tSensor started")
 		d_sensor = DistanceSensor(TRIG_PIN, ECHO_PIN, on_posedge_callback = distance_pause, on_negedge_callback = distance_resume)
 		d_sensor.treshold = load_config(config_file).get("treshold")
 		d_sensor.start_measuring()
@@ -119,7 +119,7 @@ if __name__ == "__main__":
 				# check if bluetooth device is available
 				print_datetime(getSinks())
 				if len(getSinks())<2:
-					print_datetime("SM Demo: \tFatal! lost connection")
+					print_datetime("SM Demo:\tFatal: lost connection")
 					subprocess.Popen(["pactl", "suspend-sink", "0"])
 					bluetooth.stop()
 					jack.stop()
