@@ -4,6 +4,7 @@ import time
 import threading
 import signal
 import RPi.GPIO as GPIO
+from utils import print_datetime
 
 
 button_pin = 27
@@ -13,7 +14,7 @@ GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 class Player:
 
 	def __init__(self, sink):
-		print(f"Loading player - {sink}")
+		print_datetime(f"Loading player - {sink}")
 		self.sink = sink
 		self.audio_process = None
 		self.current_index = 0
@@ -35,15 +36,15 @@ class Player:
 			filename = self.current_track
 		while self.playing:
 			try:
-				print(f"Playing {filename} on {self.sink}")
+				print_datetime(f"Playing {filename} on {self.sink}")
 				self.audio_process=subprocess.Popen(["paplay", f"--device={self.sink}", filename], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
 				stdout, stderr = self.audio_process.communicate()
 				if stderr:
-					print(f"Error reproducing audio: {stderr}")
+					print_datetime(f"Error reproducing audio: {stderr}")
 					break
 				self.audio_process.wait()
 			except Exception as e:
-				print(f"Error riproducing audio: {e}")
+				print_datetime(f"Error riproducing audio: {e}")
 				break
 
 	def play(self):
@@ -53,14 +54,14 @@ class Player:
 
 	def pause(self):
 		self.playing = False
-		print(f"Pause {self.sink}")
+		print_datetime(f"Pause {self.sink}")
 		#self.audio_process.send_signal(subprocess.signal.SIGSTOP)
 		pause = subprocess.Popen(["pactl", "suspend-sink", self.sink, "1"])
 		pause.wait()
 
 	def resume(self):
 		self.playing = True
-		print(f"Resume {self.sink}")
+		print_datetime(f"Resume {self.sink}")
 		#self.audio_process.send_signal(subprocess.signal.SIGCONT)
 		resume = subprocess.Popen(["pactl", "suspend-sink", self.sink, "0"])
 		resume.wait()
@@ -71,10 +72,10 @@ class Player:
 			self.stopped = True
 			self.audio_process.terminate()
 			self.audio_thread.join()
-			print(f"Stop {self.sink}")
+			print_datetime(f"Stop {self.sink}")
 		except Exception as e:
 			if "nonetype" in str(e).lower():
-				print("No audio to stop")
+				print_datetime("No audio to stop")
 
 	def next_track(self):
 		self.stop()
@@ -82,7 +83,7 @@ class Player:
 		if self.current_index >= len(self.playlist):
 			self.current_index = 0
 		self.current_track = self.playlist[self.current_index]
-		print(f"{self.sink}: Next track -> {self.current_track}")
+		print_datetime(f"{self.sink}: Next track -> {self.current_track}")
 		self.play()
 
 	def prev_track(self):
@@ -91,7 +92,7 @@ class Player:
 		if self.current_index < 0:
 			self.current_index = len(self.playlist)-1
 		self.current_track = self.playlist[self.current_index]
-		print(f"{self.sink}: Previous track <- {self.current_track}")
+		print_datetime(f"{self.sink}: Previous track <- {self.current_track}")
 		self.play()
 
 def main():
@@ -112,7 +113,7 @@ if __name__ == "__main__":
 	voice_path = f"{script_dir}/media/front/"
 	bg_path = f"{script_dir}/media/neck/"
 	voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
-	print(voice_playlist)
+	print_datetime(voice_playlist)
 	bg_playlist = [f"{bg_path}{f}" for f in os.listdir(bg_path) if os.path.isfile(os.path.join(bg_path, f))]
 
 	# get sink information
@@ -144,6 +145,6 @@ if __name__ == "__main__":
 	bluetooth.play()
 	jack.load(voice_playlist)
 	jack.play()
-	print(voice_playlist)
+	print_datetime(voice_playlist)
 	# main loop function
 	main()

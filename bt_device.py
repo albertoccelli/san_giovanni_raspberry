@@ -17,7 +17,7 @@
 
 import subprocess
 import time
-from utils import getSinks
+from utils import getSinks, print_datetime
 from utils import audio_prompt
 
 
@@ -40,7 +40,7 @@ class Device:
         if not self.connected:
             self.connect()
         else:
-            print("Device already connected")
+            print_datetime("Device already connected")
 
     def get_mac_address(self):
         ntry = 1
@@ -57,7 +57,7 @@ class Device:
         # if the macaddres has not been found, then there's the need for a scan
         if self.mac_address is not None:
             return self.mac_address
-        print("Please turn on the bluetooth device and put it in advertising mode")
+        print_datetime("Please turn on the bluetooth device and put it in advertising mode")
         audio_prompt("prompts/turnon.wav")
         while ntry <= maxtry:
             bt_scan = subprocess.Popen(["bluetoothctl", "--timeout", str(timeout), "scan", "on"],
@@ -74,15 +74,15 @@ class Device:
                 device_list = stdout.split("\n")
                 for i in range(len(device_list)):
                     if self.name in device_list[i]:
-                        print(f"Found: {device_list[i]}")
+                        print_datetime(f"Found: {device_list[i]}")
                         audio_prompt("prompts/found.wav")
                         self.mac_address = device_list[i].split(" ")[1]
                         self.name = " ".join(device_list[i].split(" ")[2:])
                         break
-                print("Device not found. Trying again...")
+                print_datetime("Device not found. Trying again...")
             if self.mac_address is not None:
                 return self.mac_address
-        print("Couldn't find the device. Please turn it on, place into pairing mode and try again")
+        print_datetime("Couldn't find the device. Please turn it on, place into pairing mode and try again")
         return
 
     def get_info(self):
@@ -114,13 +114,13 @@ class Device:
                 print("Trying to connect...")
                 connect = subprocess.run(["bluetoothctl", "connect", self.mac_address], capture_output=True, text=True)
                 outcome = connect.stdout
-                print(outcome)
+                print_datetime(outcome)
                 if "failed" in outcome.lower():
                     if attempts <= 5:
-                        print("Failed to connect: please check that the device is turned on, then try again")
+                        print_datetime("Failed to connect: please check that the device is turned on, then try again")
                         audio_prompt("prompts/error1.wav")
                     else:
-                        print("Failed to connect. Please try putting the device into pairing mode")
+                        print_datetime("Failed to connect. Please try putting the device into pairing mode")
                 elif "success" in outcome.lower():
                     audio_prompt("prompts/connected.wav")
                     self.get_sink()
@@ -129,17 +129,17 @@ class Device:
 
     def pair(self):
         if self.mac_address:
-            print("Pairing...")
+            print_datetime("Pairing...")
             pair = subprocess.run(["bluetoothctl", "pair", self.mac_address], capture_output=True, text=True)
             outcome = pair.stdout
-            print(outcome)
+            print_datetime(outcome)
 
     def trust(self):
         if self.mac_address:
-            print("Trusting...")
+            print_datetime("Trusting...")
             trust = subprocess.run(["bluetoothctl", "trust", self.mac_address], capture_output=True, text=True)
             outcome = trust.stdout
-            print(outcome)
+            print_datetime(outcome)
 
     def get_sink(self):
         sinks = getSinks()
@@ -158,7 +158,7 @@ class Device:
 
 if __name__ == "__main__":
     from utils import start_player, stop_player
-    from utils import audio_prompt, load_config
+    from utils import audio_prompt, load_config, print_datetime
 
     config_file = "/home/a.occelli/sm_demo/config.yaml"
     config = load_config(config_file)
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         while not device.ready_to_play:
             device.get_info()
             time.sleep(1)
-        print("Ready to play!")
+        print_datetime("Ready to play!")
 
 
     # initialize the neckband connection. Closes the program once it's ready to play
