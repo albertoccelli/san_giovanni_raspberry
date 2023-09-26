@@ -51,11 +51,11 @@ if __name__ == "__main__":
     # initiate players
     # make sure that the bt device is ready to play:
     while True:
-        print_datetime("SM Demo:\tBT device not found. Please wait...")
         audio_sinks = get_sinks()
         if len(audio_sinks) == 2:
+            print_datetime("SM Demo:\tBT device not found. Please wait...")
             break
-        time.sleep(1)
+        time.sleep(0.5)
 
     # Set volume of neckband to max
     print_datetime("SM Demo:\tsetting neckband to max")
