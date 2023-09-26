@@ -1,10 +1,8 @@
 #!/bin/bash
 
 TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
-# get into logs directory
-cd /home/a.occelli/sm_demo/logs
 
-files=$(ls -t)
+files=$(ls /home/a.occelli/sm_demo/logs -t)
 echo $files
 num_to_keep=10
 num_files=$(ls | wc -l)
