@@ -64,7 +64,6 @@ def check_player():
     else:
         print("Error")
 
-
 def get_sinks():
     command = "pactl list sinks"
 
@@ -90,7 +89,7 @@ def get_volumes():
     for line in output_lines:
         if "Volume" in line:
             if "Base" not in line:
-                print(line.split("%"))
+                print(line.split("Volume:")[-1].split(","))
     return volumes
 
 def get_paths():
