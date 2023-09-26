@@ -125,12 +125,15 @@ if __name__ == "__main__":
     # the main function
     def main():
         try:
+            print_datetime("SM_Demo:\tDemo started")
             while True:
                 if len(getSinks()) < 2:
                     print_datetime("SM Demo:\tFatal: lost connection")
                     subprocess.Popen(["pactl", "suspend-sink", "0"])
                     bluetooth.stop()
                     jack.stop()
+                    subprocess.Popen(["killall", "paplay"])
+                    print_datetime("SM_Demo:\tDemo interrupted")
                     return
                 time.sleep(1)
 
