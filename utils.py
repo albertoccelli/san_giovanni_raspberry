@@ -80,6 +80,18 @@ def get_sinks():
             paths.append(line.split(":")[-1].replace('"', '').replace(' ', ''))
     return names
 
+def get_volumes():
+    command = "pactl list sinks"
+
+    output = subprocess.check_output(command, shell=True, text=True)
+    output_lines = output.splitlines()
+
+    volumes = []
+    for line in output_lines:
+        if "Volume" in line:
+            if "Base" not in line:
+                print(line.split("%"))
+    return volumes
 
 def get_paths():
     command = "pactl list sinks"

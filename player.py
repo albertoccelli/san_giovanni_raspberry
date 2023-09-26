@@ -144,6 +144,7 @@ if __name__ == "__main__":
             bluetooth.resume()
 
 
+
     GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=bt_next, bouncetime=200)
     # GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=bt_toggle_pause, bouncetime=200)
 

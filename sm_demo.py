@@ -111,8 +111,11 @@ if __name__ == "__main__":
         jack.resume()
 
 
+
     # define sensors/button detect functions
+    # button
     GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
+    # rotary encoder
     GPIO.add_event_detect(dt_pin, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
     if d_sensor_enabled:
