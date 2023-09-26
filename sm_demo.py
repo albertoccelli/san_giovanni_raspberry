@@ -157,7 +157,8 @@ if __name__ == "__main__":
 
         except KeyboardInterrupt:
             subprocess.Popen(["pactl", "suspend-sink", "0"])
-            subprocess.Popen(["killall", "paplay"])
+            killall = subprocess.Popen(["killall", "paplay"])
+            killall.wait()
             GPIO.cleanup()
 
 
