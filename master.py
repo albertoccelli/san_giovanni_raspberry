@@ -21,6 +21,7 @@ if __name__ == "__main__":
 	from player import Player
 	from utils import load_config, set_spkr_volume_max
 
+	# configuration file
 	config_file = "/home/a.occelli/sm_demo/config.yaml"
 
 	# read audio files from folder
@@ -46,7 +47,7 @@ if __name__ == "__main__":
 		audio_sinks = getSinks()
 		if len(audio_sinks) == 2:
 			break
-		time.sleep(2)
+		time.sleep(1)
 
 	# Set volume of neckband to max
 	print("Setting neckband to max")
@@ -107,13 +108,31 @@ if __name__ == "__main__":
 		d_sensor = DistanceSensor(TRIG_PIN, ECHO_PIN, on_posedge_callback = distance_pause, on_negedge_callback = distance_resume)
 		d_sensor.treshold = load_config(config_file).get("treshold")
 		d_sensor.start_measuring()
+
 	# the main function
 	def main():
 		try:
 			while True:
+				# check if bluetooth device is available
+				print(getSinks())
+				if len(getSinks())<2:
+					print("Fatal: lost connection")
+					subprocess.Popen(["pactl", "suspend-sink", "0"])
+					bluetooth.stop()
+					jack.stop()
+					# try reconnection
+					reconnect = subprocess.Popen(["python", "bt_device.py"])
+					reconnect.wait()
+					while len(getSinks())<2:
+						time.sleep(1)
+						pass
+					jack.play()
+					bluetooth.play()
 				time.sleep(1)
+
 		except KeyboardInterrupt:
 			subprocess.Popen(["pactl", "suspend-sink", "0"])
 			subprocess.Popen(["killall", "paplay"])
 			GPIO.cleanup()
+
 	main()
