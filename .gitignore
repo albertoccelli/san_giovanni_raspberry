@@ -6,3 +6,6 @@
 
 # exclude log files
 logs/*
+
+# exclude swp files
+*.swp
