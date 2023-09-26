@@ -79,7 +79,7 @@ def get_sinks():
             paths.append(line.split(":")[-1].replace('"', '').replace(' ', ''))
     return names
 
-def get_volumes(type = "abs"):
+def get_volumes(type = "perc"):
     command = "pactl list sinks"
 
     output = subprocess.check_output(command, shell=True, text=True)
@@ -90,8 +90,15 @@ def get_volumes(type = "abs"):
         if "Volume" in line:
             if "Base" not in line:
                 vols = line.split("Volume:")[-1].split(",")
+                stereo = []
                 for i in range(len(vols)):
-                    print(vols[i].split(":")[-1].split(" / "))
+                    if type == "abs":
+                        stereo.append(vols[i].split(":")[-1].split(" / ")[0].replace(" ", ""))
+                    elif type == "perc":
+                        stereo.append(vols[i].split(":")[-1].split(" / ")[1].replace(" ", ""))
+                    elif type == "db":
+                        stereo.append(vols[i].split(":")[-1].split(" / ")[2].replace(" ", ""))
+                volumes.append(stereo)
     return volumes
 
 def get_paths():
