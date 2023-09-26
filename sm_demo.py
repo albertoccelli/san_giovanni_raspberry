@@ -126,8 +126,6 @@ if __name__ == "__main__":
     def main():
         try:
             while True:
-                # check if bluetooth device is available
-                print_datetime(getSinks())
                 if len(getSinks()) < 2:
                     print_datetime("SM Demo:\tFatal: lost connection")
                     subprocess.Popen(["pactl", "suspend-sink", "0"])
