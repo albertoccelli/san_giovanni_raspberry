@@ -101,10 +101,10 @@ if __name__ == "__main__":
     def rotation_2_callback(channel):
         if GPIO.input(dt_pin) == GPIO.input(clk_pin):
             print_datetime("SM Demo:\trotary encoder clockwise")
-            bluetooth.raise_volume()
+            bluetooth.raise_volume(step=2, kind="perc")
         else:
             print_datetime("SM Demo:\trotary encoder counterclockwise")
-            bluetooth.lower_volume()
+            bluetooth.lower_volume(step=2, kind="perc")
 
 
     def distance_pause():
@@ -122,9 +122,9 @@ if __name__ == "__main__":
 
     # define sensors/button detect functions
     # button
-    GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
+    GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=150)
     # rotary encoder
-    GPIO.add_event_detect(dt_pin, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
+    GPIO.add_event_detect(dt_pin, GPIO.BOTH, callback=rotation_2_callback, bouncetime=150)
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
     if d_sensor_enabled:
         print_datetime("SM Demo:\tSensor started")
