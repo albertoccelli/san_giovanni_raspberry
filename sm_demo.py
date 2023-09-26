@@ -23,6 +23,8 @@ if __name__ == "__main__":
 
 	# configuration file
 	config_file = "/home/a.occelli/sm_demo/config.yaml"
+	d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")	# load distance sensor configuration
+	button_pin = load_config(config_file).get("button_pin")				# pause/play button 
 
 	# read audio files from folder
 	script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -101,7 +103,6 @@ if __name__ == "__main__":
 	# define sensors/button detect functions
 	GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
 	GPIO.add_event_detect(DT_PIN, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
-	d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")
 	print(f"Sensor status: {d_sensor_enabled}")
 	if d_sensor_enabled == True:
 		print("Sensor started")
