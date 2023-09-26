@@ -98,6 +98,14 @@ if __name__ == "__main__":
             bluetooth.prev_track()
             jack.prev_track()
 
+    def rotation_2_callback(channel):
+        if GPIO.input(dt_pin) == GPIO.input(clk_pin):
+            print_datetime("SM Demo:\trotary encoder clockwise")
+            bluetooth.raise_volume()
+        else:
+            print_datetime("SM Demo:\trotary encoder counterclockwise")
+            bluetooth.lower_volume()
+
 
     def distance_pause():
         print_datetime("SM Demo:\tUser too far away: pause")
