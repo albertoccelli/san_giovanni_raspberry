@@ -17,8 +17,7 @@
 
 import subprocess
 import time
-from utils import getSinks, print_datetime
-from utils import audio_prompt
+from utils import getSinks, print_datetime, audio_prompt
 
 
 class Device:
@@ -158,7 +157,7 @@ class Device:
 
 if __name__ == "__main__":
     from utils import start_player, stop_player
-    from utils import audio_prompt, load_config, print_datetime
+    from utils import audio_prompt, load_config
 
     config_file = "/home/a.occelli/sm_demo/config.yaml"
     config = load_config(config_file)
