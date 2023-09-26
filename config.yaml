@@ -7,3 +7,12 @@ start_track: 1
 # distance sensor
 distance_sensor_enabled: False
 treshold: 250 
+ECHO_PIN: 24
+TRIG_PIN: 23
+
+# pause button
+button_pin: 27
+
+# rotary encoder
+DT_PIN: 17
+CLK_PIN: 18
