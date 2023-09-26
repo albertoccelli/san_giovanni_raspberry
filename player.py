@@ -22,6 +22,11 @@ class Player:
         self.playing = False
         self.stopped = True
 
+    def set_volume(self, vol_level):
+        set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        set_vol.wait()
+
     def load(self, playlist):
         self.playlist = playlist
         self.current_track = self.playlist[self.current_index]
@@ -142,7 +147,6 @@ if __name__ == "__main__":
             bluetooth.pause()
         else:
             bluetooth.resume()
-
 
 
     GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=bt_next, bouncetime=200)
