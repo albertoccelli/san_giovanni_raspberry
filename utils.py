@@ -64,6 +64,7 @@ def check_player():
     else:
         print("Error")
 
+
 def get_sinks():
     command = "pactl list sinks"
 
@@ -79,7 +80,8 @@ def get_sinks():
             paths.append(line.split(":")[-1].replace('"', '').replace(' ', ''))
     return names
 
-def get_volumes(type = "perc"):
+
+def get_volumes(style="perc"):
     command = "pactl list sinks"
 
     output = subprocess.check_output(command, shell=True, text=True)
@@ -92,14 +94,15 @@ def get_volumes(type = "perc"):
                 vols = line.split("Volume:")[-1].split(",")
                 stereo = []
                 for i in range(len(vols)):
-                    if type == "abs":
+                    if style == "abs":
                         stereo.append(vols[i].split(":")[-1].split(" / ")[0].replace(" ", ""))
-                    elif type == "perc":
+                    elif style == "perc":
                         stereo.append(vols[i].split(":")[-1].split(" / ")[1].replace(" ", ""))
-                    elif type == "db":
+                    elif style == "db":
                         stereo.append(vols[i].split(":")[-1].split(" / ")[2].replace(" ", ""))
                 volumes.append(stereo)
     return volumes
+
 
 def get_paths():
     command = "pactl list sinks"
