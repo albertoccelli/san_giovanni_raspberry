@@ -22,7 +22,11 @@ class Player:
         self.playing = False
         self.stopped = True
 
-    def set_volume(self, vol_level):
+    def set_volume(self, vol_level, kind = "perc"):
+        if kind == "perc":
+            vol_level = f"{vol_level}%"
+        elif kind == "db"
+            vol_level = f"{vol_level}db"
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
