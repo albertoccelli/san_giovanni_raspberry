@@ -1,6 +1,11 @@
 import subprocess
 import yaml
 import time
+from datetime import datetime
+
+
+def print_datetime(argument):
+	print(f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\t{argument}")
 
 
 def set_spkr_volume_max():
