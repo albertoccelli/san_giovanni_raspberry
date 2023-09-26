@@ -11,7 +11,6 @@ def print_datetime(argument):
 def set_spkr_volume_max():
     try:
         p = getPaths()[1]
-        print(p)
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
                    "/org/bluez/hci0/dev_78_5E_A2_F9_A5_9A", "org.bluez.MediaControl1.VolumeUp"]
         for i in range(30):
