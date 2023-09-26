@@ -25,10 +25,13 @@ if __name__ == "__main__":
     config_file = "/home/a.occelli/sm_demo/config.yaml"
     d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
     button_pin = load_config(config_file).get("button_pin")  # pause/play button
-    dt_pin = load_config(config_file).get("dt_pin")  # pause/play button
-    clk_pin = load_config(config_file).get("clk_pin")  # pause/play button
-    echo_pin = load_config(config_file).get("echo_pin")  # pause/play button
-    trig_pin = load_config(config_file).get("trig_pin")  # pause/play button
+    dt_pin = load_config(config_file).get("dt_pin")  # rotary encoder DT pin
+    clk_pin = load_config(config_file).get("clk_pin")  # rotary encoder CLK pin
+    echo_pin = load_config(config_file).get("echo_pin")  # sensor echo pin
+    trig_pin = load_config(config_file).get("trig_pin")  # sensor trigger pin
+    start_track = load_config(config_file).get("start_track")  # start track
+    vol_step = load_config(config_file).get("volume_steps")  # volume steps
+    bt_volume = load_config(config_file).get("bt_volume")  # starting volume
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,14 +65,19 @@ if __name__ == "__main__":
     set_spkr_volume_max()
     print_datetime("SM Demo:\tBT volume set to max")
 
+    # initializing bluetooth player
     bluetooth = Player(audio_sinks[1])
     bluetooth.load(bg_playlist)
+    bluetooth.current_index = start_track
+    bluetooth.set_volume(bt_volume)
     bluetooth.play()
+    # initializing jack player
     jack = Player(audio_sinks[0])
     jack.load(voice_playlist)
+    jack.current_index = start_track
     jack.play()
 
-
+    # defining control functions
     def toggle_play_pause():
         if bluetooth.playing:
             bluetooth.pause()
@@ -101,10 +109,10 @@ if __name__ == "__main__":
     def rotation_2_callback(channel):
         if GPIO.input(dt_pin) == GPIO.input(clk_pin):
             print_datetime("SM Demo:\trotary encoder clockwise")
-            bluetooth.raise_volume(step=2, kind="perc")
+            bluetooth.raise_volume(step=vol_step, kind="perc")
         else:
             print_datetime("SM Demo:\trotary encoder counterclockwise")
-            bluetooth.lower_volume(step=2, kind="perc")
+            bluetooth.lower_volume(step=vol_step, kind="perc")
 
 
     def distance_pause():
@@ -117,7 +125,6 @@ if __name__ == "__main__":
         print_datetime("SM Demo:\tUser detected: resume")
         bluetooth.resume()
         jack.resume()
-
 
 
     # define sensors/button detect functions

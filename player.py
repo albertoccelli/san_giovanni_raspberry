@@ -27,6 +27,7 @@ class Player:
             vol_level = f"{vol_level}%"
         elif kind == "db":
             vol_level = f"{vol_level}db"
+        print_datetime(f"{self.sink}: \tSetting volume to {vol_level}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
@@ -37,6 +38,7 @@ class Player:
             step = f"+{step}%"
         elif kind == "db":
             step = f"+{step}db"
+        print_datetime(f"{self.sink}: \tRaising volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
@@ -47,6 +49,7 @@ class Player:
             step = f"-{step}%"
         elif kind == "db":
             step = f"-{step}db"
+        print_datetime(f"{self.sink}: \tLowering volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
