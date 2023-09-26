@@ -14,7 +14,7 @@ GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 class Player:
 
 	def __init__(self, sink):
-		print_datetime(f"Loading player - {sink}")
+		print_datetime(f"{sink}: \tLoading player")
 		self.sink = sink
 		self.audio_process = None
 		self.current_index = 0
@@ -36,7 +36,7 @@ class Player:
 			filename = self.current_track
 		while self.playing:
 			try:
-				print_datetime(f"Playing {filename} on {self.sink}")
+				print_datetime(f"{self.sink}: \tPlaying {filename}")
 				self.audio_process=subprocess.Popen(["paplay", f"--device={self.sink}", filename], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
 				stdout, stderr = self.audio_process.communicate()
 				if stderr:
@@ -44,7 +44,7 @@ class Player:
 					break
 				self.audio_process.wait()
 			except Exception as e:
-				print_datetime(f"Error riproducing audio: {e}")
+				print_datetime(f"{self.sink}: \tError riproducing audio: {e}")
 				break
 
 	def play(self):
@@ -54,14 +54,14 @@ class Player:
 
 	def pause(self):
 		self.playing = False
-		print_datetime(f"Pause {self.sink}")
+		print_datetime(f"{self.sink}: \tPause")
 		#self.audio_process.send_signal(subprocess.signal.SIGSTOP)
 		pause = subprocess.Popen(["pactl", "suspend-sink", self.sink, "1"])
 		pause.wait()
 
 	def resume(self):
 		self.playing = True
-		print_datetime(f"Resume {self.sink}")
+		print_datetime(f"{self.sink}: \tResume")
 		#self.audio_process.send_signal(subprocess.signal.SIGCONT)
 		resume = subprocess.Popen(["pactl", "suspend-sink", self.sink, "0"])
 		resume.wait()
@@ -72,10 +72,10 @@ class Player:
 			self.stopped = True
 			self.audio_process.terminate()
 			self.audio_thread.join()
-			print_datetime(f"Stop {self.sink}")
+			print_datetime(f"{self.sink}: \tStop")
 		except Exception as e:
 			if "nonetype" in str(e).lower():
-				print_datetime("No audio to stop")
+				print_datetime("{self.sink}: \tNo audio to stop")
 
 	def next_track(self):
 		self.stop()
