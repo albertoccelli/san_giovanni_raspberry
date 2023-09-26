@@ -5,19 +5,17 @@ from datetime import datetime
 
 
 def print_datetime(argument):
-	print(f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\t{argument}")
+    print(f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\t{argument}")
 
 
 def set_spkr_volume_max():
     try:
-        p = getPaths()[1]
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
                    "/org/bluez/hci0/dev_78_5E_A2_F9_A5_9A", "org.bluez.MediaControl1.VolumeUp"]
         for i in range(30):
             raise_volume = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = raise_volume.communicate()
             raise_volume.wait()
-           # print(stdout)
+            # print(stdout)
             time.sleep(0.05)
     except Exception as e:
         print(e)
@@ -67,38 +65,36 @@ def check_player():
         print("Error")
 
 
-def getSinks():
+def get_sinks():
     command = "pactl list sinks"
 
-    output = subprocess.check_output(command, shell=True, text = True)
+    output = subprocess.check_output(command, shell=True, text=True)
     output_lines = output.splitlines()
 
-    sink = 0
     names = []
     paths = []
-    for l in output_lines:
-        if "Name" in l:
-            names.append(l.split(":")[-1].replace(" ",""))
-        if "bluez.path" in l:
-            paths.append(l.split(":")[-1].replace('"', '').replace(' ', ''))
-    return(names)
+    for line in output_lines:
+        if "Name" in line:
+            names.append(line.split(":")[-1].replace(" ", ""))
+        if "bluez.path" in line:
+            paths.append(line.split(":")[-1].replace('"', '').replace(' ', ''))
+    return names
 
 
-def getPaths():
-        command = "pactl list sinks"
+def get_paths():
+    command = "pactl list sinks"
 
-        output = subprocess.check_output(command, shell=True, text = True)
-        output_lines = output.splitlines()
+    output = subprocess.check_output(command, shell=True, text=True)
+    output_lines = output.splitlines()
 
-        sink = 0
-        names = []
-        paths = []
-        for l in output_lines:
-                if "Name" in l:
-                        names.append(l.split(":")[-1].replace(" ",""))
-                if ".path" in l:
-                        paths.append(l.split("=")[-1].replace('"', '').replace(' ', ''))
-        return(paths)
+    names = []
+    paths = []
+    for line in output_lines:
+        if "Name" in line:
+            names.append(line.split(":")[-1].replace(" ", ""))
+        if ".path" in line:
+            paths.append(line.split("=")[-1].replace('"', '').replace(' ', ''))
+    return paths
 
 
-jack_sink = getSinks()[0]
+jack_sink = get_sinks()[0]

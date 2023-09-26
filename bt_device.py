@@ -17,7 +17,7 @@
 
 import subprocess
 import time
-from utils import getSinks, print_datetime
+from utils import get_sinks, print_datetime
 
 
 class Device:
@@ -141,12 +141,13 @@ class Device:
             print_datetime(outcome)
 
     def get_sink(self):
-        sinks = getSinks()
+        sinks = get_sinks()
         try:
             self.sink = sinks[1]
             if len(sinks) == 2:
                 self.ready_to_play = True
-        except Exception:
+        except Exception as e:
+            print(e)
             self.ready_to_play = False
             pass
 
@@ -174,4 +175,3 @@ if __name__ == "__main__":
     # initialize the neckband connection. Closes the program once it's ready to play
     neckband = Device(device_name)
     initialize(neckband)
-

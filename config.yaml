@@ -6,7 +6,7 @@ start_track: 1
 
 # distance sensor
 distance_sensor_enabled: False
-treshold: 250 
+threshold: 250
 echo_pin: 24
 trig_pin: 23
 

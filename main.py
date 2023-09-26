@@ -1,5 +1,4 @@
 import subprocess
-from utils import start_player, stop_player
 
 while True:
     try:
