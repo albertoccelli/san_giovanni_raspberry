@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from datetime import datetime
 import subprocess
 from sensor import DistanceSensor
 import threading
@@ -37,24 +38,26 @@ if __name__ == "__main__":
 	# make sure that the paplay service is not suspended
 	subprocess.Popen(["pactl", "suspend-sink", "0"])
 
-	print("Front playlist:")
-	print(voice_playlist)
+	print("SM Demo: Front playlist:")
+	for t in voice_playlist:
+		print(f"\t{t}")
 	print("Neck playlist: ")
-	print(bg_playlist)
+	for t in bg_playlist:
+		print(f"\t{t}")
 
 	# initiate players
 	# make sure that the bt device is ready to play:
 	while True:
-		print("Please wait...")
+		print("Neckband not found. please wait...")
 		audio_sinks = getSinks()
 		if len(audio_sinks) == 2:
 			break
 		time.sleep(1)
 
 	# Set volume of neckband to max
-	print("Setting neckband to max")
+	print("SM Demo: setting neckband to max")
 	set_spkr_volume_max()
-	print("Done")
+	print("SM Demo: neckband volume set to max")
 
 	bluetooth = Player(audio_sinks[1])
 	bluetooth.load(bg_playlist)
@@ -65,7 +68,6 @@ if __name__ == "__main__":
 
 	def toggle_play_pause():
 		if bluetooth.playing:
-			print("Paused")
 			bluetooth.pause()
 			jack.pause()
 		else:
@@ -73,7 +75,6 @@ if __name__ == "__main__":
 				bluetooth.play()
 				jack.play()
 			else:
-				print("Resume")
 				bluetooth.resume()
 				jack.resume()
 
@@ -82,30 +83,28 @@ if __name__ == "__main__":
 
 	def rotation_1_callback(channel):
 		if GPIO.input(DT_PIN) == GPIO.input(CLK_PIN):
-			print("Next Track")
 			bluetooth.next_track()
 			jack.next_track()
 		else:
-			print("Previous Track")
 			bluetooth.prev_track()
 			jack.prev_track()
 
 	def distance_pause():
-		print("User too far away: pause")
+		print("SM Demo: user too far away - pause")
 		bluetooth.pause()
 		jack.pause()
 
 	def distance_resume():
-		print("User detected: resume")
+		print("SM Demo: User detected - resume")
 		bluetooth.resume()
 		jack.resume()
 
 	# define sensors/button detect functions
 	GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
 	GPIO.add_event_detect(DT_PIN, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
-	print(f"Sensor status: {d_sensor_enabled}")
+	print(f"SM Demo: sensor status={d_sensor_enabled}")
 	if d_sensor_enabled == True:
-		print("Sensor started")
+		print("SM Demo: sensor started")
 		d_sensor = DistanceSensor(TRIG_PIN, ECHO_PIN, on_posedge_callback = distance_pause, on_negedge_callback = distance_resume)
 		d_sensor.treshold = load_config(config_file).get("treshold")
 		d_sensor.start_measuring()
@@ -115,9 +114,9 @@ if __name__ == "__main__":
 		try:
 			while True:
 				# check if bluetooth device is available
-				print(getSinks())
+				print(f"{datetime.now()}\t{getSinks()}")
 				if len(getSinks())<2:
-					print("Fatal: lost connection")
+					print("SM Demo: Fatal!! Lost connection with neckband")
 					subprocess.Popen(["pactl", "suspend-sink", "0"])
 					bluetooth.stop()
 					jack.stop()
