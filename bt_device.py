@@ -17,7 +17,7 @@
 
 import subprocess
 import time
-from utils import getSinks, print_datetime, audio_prompt
+from utils import getSinks, print_datetime
 
 
 class Device:
@@ -146,7 +146,7 @@ class Device:
             self.sink = sinks[1]
             if len(sinks) == 2:
                 self.ready_to_play = True
-        except Exception as e:
+        except Exception:
             self.ready_to_play = False
             pass
 
@@ -156,7 +156,6 @@ class Device:
 
 
 if __name__ == "__main__":
-    from utils import start_player, stop_player
     from utils import audio_prompt, load_config
 
     config_file = "/home/a.occelli/sm_demo/config.yaml"
