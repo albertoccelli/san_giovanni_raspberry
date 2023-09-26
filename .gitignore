@@ -3,3 +3,6 @@
 
 # exclude .img files
 *.img
+
+# exclude log files
+log/
