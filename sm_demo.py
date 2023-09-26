@@ -83,30 +83,30 @@ if __name__ == "__main__":
 
 	def rotation_1_callback(channel):
 		if GPIO.input(dt_pin) == GPIO.input(clk_pin):
-			print("Next Track")
+			print_datetime("Next Track")
 			bluetooth.next_track()
 			jack.next_track()
 		else:
-			print("Previous Track")
+			print_datetime("Previous Track")
 			bluetooth.prev_track()
 			jack.prev_track()
 
 	def distance_pause():
-		print("User too far away: pause")
+		print_datetime("User too far away: pause")
 		bluetooth.pause()
 		jack.pause()
 
 	def distance_resume():
-		print("User detected: resume")
+		print_datetime("User detected: resume")
 		bluetooth.resume()
 		jack.resume()
 
 	# define sensors/button detect functions
 	GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=btn_1_pressed, bouncetime=200)
 	GPIO.add_event_detect(dt_pin, GPIO.BOTH, callback=rotation_1_callback, bouncetime=200)
-	print(f"Sensor status: {d_sensor_enabled}")
+	print_datetime(f"Sensor status: {d_sensor_enabled}")
 	if d_sensor_enabled == True:
-		print("Sensor started")
+		print_datetime("Sensor started")
 		d_sensor = DistanceSensor(trig_pin, echo_pin, on_posedge_callback = distance_pause, on_negedge_callback = distance_resume)
 		d_sensor.treshold = load_config(config_file).get("treshold")
 		d_sensor.start_measuring()
@@ -116,9 +116,9 @@ if __name__ == "__main__":
 		try:
 			while True:
 				# check if bluetooth device is available
-				print(getSinks())
+				print_datetime(getSinks())
 				if len(getSinks())<2:
-					print("Fatal: lost connection")
+					print_datetime("Fatal: lost connection")
 					subprocess.Popen(["pactl", "suspend-sink", "0"])
 					bluetooth.stop()
 					jack.stop()
