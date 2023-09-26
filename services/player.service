@@ -2,7 +2,7 @@
 Description=The main player service. Reproduces music via jack and bluetooth simultaneously.
 
 [Service]
-ExecStart=/usr/bin/python3 /home/a.occelli/sm_demo/main.sh
+ExecStart=/home/a.occelli/sm_demo/main.sh
 
 [Install]
 WantedBy=default.target
