@@ -120,14 +120,7 @@ if __name__ == "__main__":
 					subprocess.Popen(["pactl", "suspend-sink", "0"])
 					bluetooth.stop()
 					jack.stop()
-					# try reconnection
-					reconnect = subprocess.Popen(["python", "bt_device.py"])
-					reconnect.wait()
-					while len(getSinks())<2:
-						time.sleep(1)
-						pass
-					jack.play()
-					bluetooth.play()
+					return
 				time.sleep(1)
 
 		except KeyboardInterrupt:
