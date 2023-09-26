@@ -91,6 +91,7 @@ def get_volumes(type = "abs"):
             if "Base" not in line:
                 vols = line.split("Volume:")[-1].split(",")
                 for i in range(len(vols)):
+                    print(vols[i].split(":")[-1].split(" / "))
     return volumes
 
 def get_paths():
