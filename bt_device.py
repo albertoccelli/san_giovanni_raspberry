@@ -31,7 +31,6 @@ class Device:
         self.connected = False
         self.sink = None
         self.ready_to_play = False
-        print("Retrieving mac address...")
         self.get_mac_address()
         self.get_info()
         if not self.trusted:
@@ -39,7 +38,6 @@ class Device:
         if not self.paired:
             self.pair()
         if not self.connected:
-            print("Connecting...")
             self.connect()
         else:
             print("Device already connected")
@@ -54,7 +52,6 @@ class Device:
         device_list.remove("")
         for i in range(len(device_list)):
             if self.name in device_list[i]:
-                print("Found!")
                 self.mac_address = device_list[i].split(" ")[1]
                 self.name = " ".join(device_list[i].split(" ")[2:])
         # if the macaddres has not been found, then there's the need for a scan
@@ -114,7 +111,7 @@ class Device:
         attempts = 0
         if self.mac_address:
             while True:
-                print("Connecting...")
+                print("Trying to connect...")
                 connect = subprocess.run(["bluetoothctl", "connect", self.mac_address], capture_output=True, text=True)
                 outcome = connect.stdout
                 print(outcome)
@@ -176,33 +173,7 @@ if __name__ == "__main__":
         print("Ready to play!")
 
 
-    # first time try the connection
+    # initialize the neckband connection. Closes the program once it's ready to play
     neckband = Device(device_name)
     initialize(neckband)
 
-    # start to check if the connection is interrupted, every second
-    p_status = neckband.ready_to_play
-    while True:
-        neckband.get_info()
-        cur_status = neckband.ready_to_play
-        print(cur_status)
-        if not cur_status:
-            if cur_status != p_status:
-                print("Lost connection with the device")
-                stop_player()
-                # wait until the connection status is updated
-                while True:
-                    neckband.get_info()
-                    print(neckband.connected)
-                    if not neckband.connected:
-                        break
-            else:
-                print("Trying reconnection")
-                neckband = Device(device_name)
-                initialize(neckband)
-        else:
-            if cur_status != p_status:
-                print("Reconnected")
-                start_player()
-        p_status = cur_status
-        time.sleep(1)
