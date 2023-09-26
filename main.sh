@@ -2,9 +2,24 @@
 
 TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
-files=$(ls /home/a.occelli/sm_demo/logs -t)
+log_dir="/home/a.occelli/sm_demo/logs"
+
+# verify that the logs folder exists
+if [ ! -d "$log_dir" ]; then
+    echo "Creating logs directory"
+    mkdir -p "$log_dir"
+    if [ $? -eq 0 ]; then
+        echo "Logs directory successfully created."
+    else
+        echo "Error during creation of folder"
+    fi
+fi
+
+cd $log_dir
+
+files=$(ls -t)
 echo $files
-num_to_keep=10
+num_to_keep=100
 num_files=$(ls | wc -l)
 echo $num_files
 num_to_remove=$((num_files - num_to_keep))
