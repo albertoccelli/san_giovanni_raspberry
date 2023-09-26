@@ -125,7 +125,7 @@ if __name__ == "__main__":
     # the main function
     def main():
         try:
-            print_datetime("SM_Demo:\tDemo started")
+            print_datetime("SM_Demo:\tDemo started...")
             while True:
                 if len(getSinks()) < 2:
                     print_datetime("SM Demo:\tFatal: lost connection")
