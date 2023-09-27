@@ -4,12 +4,9 @@ user_name=$USER
 curwd=$PWD
 
 # Install sm_demo script package
-# Update package list
+# Update package list and system
 echo "Upgrading the system..."
-sudo apt-get update
-
-# Upgrade the system
-sudo apt-get upgrade
+sudo apt-get update -y && sudo apt-get upgrade -y
 echo "Done"
 
 # Add user
@@ -27,7 +24,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart bluetooth
 
 # Install PulseAudion for Bluetooth
-sudo apt install --no-install-recommends pulseaudio-module-bluetooth
+sudo apt install --no-install-recommends pulseaudio-module-bluetooth -y
 
 # Enable PulseAudio for current user
 systemctl --user enable pulseaudio
@@ -35,5 +32,6 @@ systemctl --user start pulseaudio
 
 # Install dependencies for Python
 echo "Installing Python dependencies..."
+sudo apt-get install python3-pip -y
 pip install -r $PWD/requirements.txt
 echo "Done!"
