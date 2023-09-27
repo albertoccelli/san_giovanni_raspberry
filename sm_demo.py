@@ -23,8 +23,9 @@ if __name__ == "__main__":
     from player import Player
     from utils import load_config, set_spkr_volume_max
 
+    curwd = "~/sm_demo"
     # configuration file
-    config_file = "/home/a.occelli/sm_demo/config.yaml"
+    config_file = f"/{curwd}/config.yaml"
     d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
     button_pin = load_config(config_file).get("button_pin")  # pause/play button
     dt_pin = load_config(config_file).get("dt_pin")  # rotary encoder DT pin

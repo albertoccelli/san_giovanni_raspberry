@@ -4,10 +4,11 @@ import subprocess
 import os
 from utils import get_sinks
 
+curwd = "~/sm_demo"
 controlfile = ".update_smdemo.txt"
 jack_sink = get_sinks()[0]
 m_path = "/media/usb-drive"
-t_path = "/home/a.occelli/sm_demo"
+t_path = curwd
 
 
 def stop_player():
@@ -112,7 +113,7 @@ def update(source, target):
         # Case of error
         print("ERROR:")
         print(stderr)
-        audio_prompt("/home/a.occelli/sm_demo/prompts/usb_error.wav")
+        audio_prompt(f"{curwd}/prompts/usb_error.wav")
         start_player()
         return
     check = stdout.split("\n")
@@ -120,7 +121,7 @@ def update(source, target):
     time.sleep(0.5)
     # check if usb drive is allowed to update
     if controlfile in check:
-        audio_prompt("/home/a.occelli/sm_demo/prompts/wait_update.wav")
+        audio_prompt(f"{curwd}/prompts/wait_update.wav")
         # copy config file
         print("Copying configuration files")
         copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
@@ -137,10 +138,10 @@ def update(source, target):
         print("Done")
         # end update
         print("Copy successful")
-        audio_prompt("/home/a.occelli/sm_demo/prompts/update_complete.wav")
+        audio_prompt(f"{curwd}/prompts/update_complete.wav")
         start_player()
     else:
-        audio_prompt("/home/a.occelli/sm_demo/prompts/usb_error.wav")
+        audio_prompt(f"{curwd}/prompts/usb_error.wav")
         print("Not allowed to copy from this usb")
     time.sleep(1)
     start_player()
