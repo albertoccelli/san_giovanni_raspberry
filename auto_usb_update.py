@@ -4,6 +4,7 @@ import subprocess
 import os
 from utils import get_sinks
 
+curwd = "/home/a.occelli/sm_demo"
 controlfile = ".update_smdemo.txt"
 jack_sink = get_sinks()[0]
 m_path = "/media/usb-drive"
