@@ -1,8 +1,10 @@
 #!/bin/bash
 
+cwd=$(dirname "$(readlink -f "$0")")
+
 TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
-log_dir="/home/a.occelli/sm_demo/logs"
+log_dir=$cwd"/logs"
 
 # verify that the logs folder exists
 if [ ! -d "$log_dir" ]; then
