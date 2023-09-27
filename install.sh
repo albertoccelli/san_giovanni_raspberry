@@ -1,6 +1,7 @@
 #!/bin/bash
 
 user_name=$USER
+curwd=$PWD
 
 # Install sm_demo script package
 # Update package list
@@ -24,3 +25,6 @@ sudo apt install --no-install-recommends pulseaudio-module-bluetooth
 # Enable PulseAudio for current user
 systemctl --user enable pulseaudio
 systemctl --user start pulseaudio
+
+# Install dependencies for Python
+pip install -r $PWD/requirements.txt
