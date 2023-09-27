@@ -41,8 +41,7 @@ def stop_player():
 def audio_prompt(filename):
     # play prompt
     subprocess.Popen(["pactl", "suspend-sink", "0"])
-    play_prompt = subprocess.Popen(["paplay", f"--device={jack_sink}", filename])
-    play_prompt.wait()
+    play_prompt = subprocess.check_output(["paplay", f"--device={jack_sink}", filename])
 
 
 def start_player():
