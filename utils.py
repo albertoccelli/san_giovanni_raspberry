@@ -3,6 +3,7 @@ import yaml
 import time
 from datetime import datetime
 
+curwd = "~/sm_demo"
 
 def print_datetime(argument):
     print(f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\t{argument}")
