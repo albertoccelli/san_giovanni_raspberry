@@ -23,7 +23,7 @@ if __name__ == "__main__":
     from player import Player
     from utils import load_config, set_spkr_volume_max
 
-    curwd = "~/sm_demo"
+    curwd = "/home/a.occelli/sm_demo"
     # configuration file
     config_file = f"/{curwd}/config.yaml"
     d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
@@ -56,11 +56,16 @@ if __name__ == "__main__":
 
     # initiate players
     # make sure that the bt device is ready to play:
+    timeout = 5
+    start = time.time()
     while True:
         audio_sinks = get_sinks()
         if len(audio_sinks) == 2:
-            print_datetime("SM Demo:\tBT device not found. Please wait...")
             break
+        print_datetime("SM Demo:\tBT device not found. Please wait...")
+        if (time.time()-start) >= timeout:
+            print_datetime("SM Demo:\tTimeout!")
+            quit()
         time.sleep(0.5)
 
     # Set volume of neckband to max

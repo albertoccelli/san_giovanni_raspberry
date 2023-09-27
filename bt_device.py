@@ -104,7 +104,6 @@ class Device:
                         self.connected = True
                     else:
                         self.connected = False
-            self.get_sink()
 
     def connect(self):
         attempts = 0
@@ -147,8 +146,10 @@ class Device:
             if len(sinks) == 2:
                 self.ready_to_play = True
         except Exception as e:
-            print(e)
+            print(f"Error getting sinks: {e}")
             self.ready_to_play = False
+            if not self.check_connected():
+                self.connect()
             pass
 
     def check_connected(self):
@@ -159,7 +160,7 @@ class Device:
 if __name__ == "__main__":
     from utils import audio_prompt, load_config
 
-    curwd = "~/sm_demo"
+    curwd = "/home/a.occelli/sm_demo"
     config_file = f"{curwd}/config.yaml"
     config = load_config(config_file)
     device_name = config.get("device_name")
@@ -169,6 +170,7 @@ if __name__ == "__main__":
         # after the connection, check if the device can listen to music
         while not device.ready_to_play:
             device.get_info()
+            device.get_sink()
             time.sleep(1)
         print_datetime("Ready to play!")
 
