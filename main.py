@@ -9,5 +9,5 @@ while True:
         demo = subprocess.Popen(["python", "/home/a.occelli/sm_demo/sm_demo.py"])
         demo.wait()
     except KeyboardInterrupt:
-	subprocess.Popen(["killall", "paplay"])
+        subprocess.Popen(["killall", "paplay"])
         break
