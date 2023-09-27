@@ -1,10 +1,8 @@
 #!/bin/bash
 
-cwd=$(dirname "$(readlink -f "$0")")
-
 TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
-log_dir=$cwd"/logs"
+log_dir=$SM_DIR"/logs"
 
 # verify that the logs folder exists
 if [ ! -d "$log_dir" ]; then
@@ -35,4 +33,4 @@ else
 fi
 
 echo Logging into logs/log_$TIMESTAMP.txt
-python /home/a.occelli/sm_demo/main.py >> log_$TIMESTAMP.txt 2>&1
+python $SM_DIR/main.py >> log_$TIMESTAMP.txt 2>&1

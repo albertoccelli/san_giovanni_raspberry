@@ -1,7 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 user_name=$USER
-curwd=$PWD
+SCRIPT_PATH=$(realpath ${BASH_SOURCE[0]})
+echo $SCRIPT_PATH
+SM_DIR=$(dirname $SCRIPT_PATH)
+echo "Install directory: "$SM_DIR
 
 # Install sm_demo script package
 # Update package list and system
@@ -11,6 +14,9 @@ echo "Done"
 
 # Add user
 sudo adduser $USER bluetooth
+
+# Create shell variable
+export SM_DIR=$SM_DIR
 
 # Copy modified bluetooth service into systemd
 echo "Copying modified bluetooth service into system..."
