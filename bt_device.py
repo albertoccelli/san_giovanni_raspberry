@@ -126,11 +126,23 @@ class Device:
                 attempts += 1
 
     def pair(self):
+        attempts = 0
         if self.mac_address:
             print_datetime("Pairing...")
             pair = subprocess.run(["bluetoothctl", "pair", self.mac_address], capture_output=True, text=True)
             outcome = pair.stdout
             print_datetime(outcome)
+            if "failed" in outcome.lower():
+                if attempts <= 5:
+                    print_datetime("Failed to pair: please check that the device is turned on, then try again")
+                    audio_prompt("prompts/error1.wav")
+                else:
+                    print_datetime("Failed to pair. Please try putting the device into pairing mode")
+            elif "success" in outcome.lower():
+                audio_prompt("prompts/connected.wav")
+                self.get_sink()
+                return
+            attempts += 1
 
     def trust(self):
         if self.mac_address:
