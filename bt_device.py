@@ -17,7 +17,7 @@
 
 import subprocess
 import time
-from utils import get_sinks, print_datetime
+from utils import get_sinks, print_datetime, curwd
 
 
 class Device:
@@ -172,7 +172,6 @@ class Device:
 if __name__ == "__main__":
     from utils import audio_prompt, load_config
 
-    curwd = "/home/a.occelli/sm_demo"
     config_file = f"{curwd}/config.yaml"
     config = load_config(config_file)
     device_name = config.get("device_name")

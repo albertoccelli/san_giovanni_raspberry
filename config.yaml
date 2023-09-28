@@ -15,6 +15,6 @@ trig_pin: 23
 # pause button
 button_pin: 27
 
-# rotary encoder
+# bluetooth volume rotary encoder
 dt_pin: 17
 clk_pin: 18

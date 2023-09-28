@@ -2,8 +2,9 @@ import subprocess
 import yaml
 import time
 from datetime import datetime
+import os
 
-curwd = "~/sm_demo"
+curwd = os.environ["SM_DIR"]
 
 def print_datetime(argument):
     print(f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\t{argument}")
@@ -41,7 +42,8 @@ def stop_player():
 def audio_prompt(filename):
     # play prompt
     subprocess.Popen(["pactl", "suspend-sink", "0"])
-    play_prompt = subprocess.check_output(["paplay", f"--device={jack_sink}", filename])
+    play_prompt = subprocess.Popen(["paplay", f"--device={jack_sink}", filename])
+    play_prompt.wait()
 
 
 def start_player():

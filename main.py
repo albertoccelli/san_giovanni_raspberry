@@ -1,8 +1,7 @@
 import subprocess
-import os
+from utils import curwd
 
-path = os.environ["SM_DIR"]
-print(path)
+print(curwd)
 
 while True:
     try:

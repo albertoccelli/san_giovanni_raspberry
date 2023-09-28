@@ -21,9 +21,8 @@ if __name__ == "__main__":
     from utils import get_sinks
     import os
     from player import Player
-    from utils import load_config, set_spkr_volume_max
+    from utils import load_config, set_spkr_volume_max, curwd
 
-    curwd = "/home/a.occelli/sm_demo"
     # configuration file
     config_file = f"/{curwd}/config.yaml"
     d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration

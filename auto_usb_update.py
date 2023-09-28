@@ -2,9 +2,8 @@ import pyudev
 import time
 import subprocess
 import os
-from utils import get_sinks
+from utils import get_sinks, curwd
 
-curwd = "/home/a.occelli/sm_demo"
 controlfile = ".update_smdemo.txt"
 jack_sink = get_sinks()[0]
 m_path = "/media/usb-drive"
@@ -13,8 +12,8 @@ t_path = curwd
 
 def stop_player():
     # stop player.service
-    stopplayer = subprocess.Popen(["systemctl", "--user", "stop", "player.service"])
-    stopplayer.wait()
+    stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "player.service"])
+    stop_pl.wait()
     return
 
 
