@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# verify that program has not been installed yet
+if env | grep -q "^SM_DIR="; then
+    echo "SM Demo program already installed: $SM_DIR"
+else
 user_name=$USER
 SCRIPT_PATH=$(realpath ${BASH_SOURCE[0]})
 echo $SCRIPT_PATH
@@ -18,6 +22,8 @@ sudo adduser $USER bluetooth
 # Create shell variable
 echo "Adding SM_DIR env variable into ./bashrc"
 export SM_DIR=$SM_DIR
+echo "export SM_DIR=$SM_DIR" >> $HOME/.bashrc
+echo "Done"
 
 # Copy modified bluetooth service into systemd
 echo "Copying modified bluetooth service into system..."
@@ -42,3 +48,4 @@ echo "Installing Python dependencies..."
 sudo apt-get install python3-pip -y
 pip install -r $PWD/requirements.txt
 echo "Done!"
+fi
