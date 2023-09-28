@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 user_name=$USER
 SCRIPT_PATH=$(realpath ${BASH_SOURCE[0]})
@@ -16,6 +16,7 @@ echo "Done"
 sudo adduser $USER bluetooth
 
 # Create shell variable
+echo "Adding SM_DIR env variable into ./bashrc"
 export SM_DIR=$SM_DIR
 
 # Copy modified bluetooth service into systemd
