@@ -28,6 +28,7 @@ Automaticaly connect to specified bluetooth device and start play music
    wget https://github.com/albertoccelli/sm_demo/archive/master.zip
    unzip sm_demoX.X.zip sm_demo
    ```
+3. Move into the SM Demo folder and install the program with 
    
 ### Manual install steps
 #### Prepare the Raspberry Pi
