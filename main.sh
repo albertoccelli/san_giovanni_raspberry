@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# check if scripts are installed
+if env | grep -q "^SM_DIR="; then
+
 TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
 log_dir=$SM_DIR"/logs"
@@ -8,6 +11,7 @@ log_dir=$SM_DIR"/logs"
 if [ ! -d "$log_dir" ]; then
     echo "Creating logs directory"
     mkdir -p "$log_dir"
+    # shellcheck disable=SC2181
     if [ $? -eq 0 ]; then
         echo "Logs directory successfully created."
     else
@@ -15,13 +19,11 @@ if [ ! -d "$log_dir" ]; then
     fi
 fi
 
-cd $log_dir
+cd "$log_dir" || exit
 
 files=$(ls -t)
-echo $files
 num_to_keep=100
 num_files=$(ls | wc -l)
-echo $num_files
 num_to_remove=$((num_files - num_to_keep))
 
 if [ $num_to_remove -gt 0 ]; then
@@ -34,3 +36,7 @@ fi
 
 echo Logging into logs/log_$TIMESTAMP.txt
 python $SM_DIR/main.py >> log_$TIMESTAMP.txt 2>&1
+
+else
+  echo "Error: SM Demo not installed. Run source install.sh to install it"
+fi
