@@ -28,8 +28,10 @@ Automaticaly connect to specified bluetooth device and start play music
    wget https://github.com/albertoccelli/sm_demo/archive/master.zip
    unzip sm_demoX.X.zip sm_demo
    ```
-3. Move into the SM Demo folder and install the program with 
-   
+3. Move into the SM Demo folder and install the program with the command:
+   ```
+   source install.sh
+   ```
 ### Manual install steps
 #### Prepare the Raspberry Pi
 1. Install the [Rasberry PI OS Lite](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2023-05-03/2023-05-03-raspios-bullseye-armhf-lite.img.xz) version (the developing was performed over the version 11-Bullseye).
