@@ -1,10 +1,29 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Utility functions for SM Demo software
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
+
 import subprocess
 import yaml
 import time
-from datetime import datetime
 import os
+from datetime import datetime
 
 curwd = os.environ["SM_DIR"]
+
 
 def print_datetime(argument):
     print(f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\t{argument}")

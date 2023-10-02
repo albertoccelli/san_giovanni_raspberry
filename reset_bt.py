@@ -1,3 +1,21 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Removes any BT binding
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
+
 import subprocess
 
 devices = subprocess.Popen(["bluetoothctl", "devices"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

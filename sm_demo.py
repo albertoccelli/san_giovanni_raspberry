@@ -1,8 +1,26 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-import RPi.GPIO as GPIO
+"""
+SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls are done by external
+sensors and buttons/rotary encoders
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
+
 import time
 import subprocess
+import RPi.GPIO as GPIO
+
 from sensor import DistanceSensor
 from utils import print_datetime
 

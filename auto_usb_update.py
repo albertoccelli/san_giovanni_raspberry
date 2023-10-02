@@ -1,8 +1,29 @@
-import pyudev
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Automatically checks for new usb drives to perform the update of the SM Demo Software
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
+
 import time
 import subprocess
 import os
+
+import pyudev
+
 from utils import get_sinks, curwd
+
 
 controlfile = ".update_smdemo.txt"
 jack_sink = get_sinks()[0]

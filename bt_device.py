@@ -1,22 +1,24 @@
-#  bt_device.py
-#  version: 0.1.2
-#  author: Alberto Occelli
-#
-#  Usage: python bt_device.pu <Device name>
-#
-#  Description: automatically connects bluetooth speaker.
-#    Using bluetoothctl, looks for the device with the specified name.
-#    Prompts audio messages to guide user along the pairing and connection process
-#
-#    If the device is not among the bluetooth.service device list, prompt message to turn on device and
-#    put in into advertisement mode. Then try connection
-#    If the device is among the bluetooth.service list, try to connect. If it fails, prompt message to turn
-#    on the device
-#
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
+"""
+Automatically checks for new usb drives to perform the update of the SM Demo Software
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
 
 import subprocess
 import time
+
 from utils import get_sinks, print_datetime, curwd
 
 
