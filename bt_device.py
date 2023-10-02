@@ -1,23 +1,29 @@
-#  bt_device.py
-#  version: 0.1.2
-#  author: Alberto Occelli
-#
-#  Usage: python bt_device.pu <Device name>
-#
-#  Description: automatically connects bluetooth speaker.
-#    Using bluetoothctl, looks for the device with the specified name.
-#    Prompts audio messages to guide user along the pairing and connection process
-#
-#    If the device is not among the bluetooth.service device list, prompt message to turn on device and
-#    put in into advertisement mode. Then try connection
-#    If the device is among the bluetooth.service list, try to connect. If it fails, prompt message to turn
-#    on the device
-#
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
+"""
+Automatically checks for new usb drives to perform the update of the SM Demo Software
+
+Changelog:
+- 1.0.1 - Fixed missing audio prompt
+- 1.0.0 - file created
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.1"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
 
 import subprocess
 import time
-from utils import get_sinks, print_datetime
+
+from utils import get_sinks, print_datetime, curwd
 
 
 class Device:
@@ -119,6 +125,7 @@ class Device:
                         audio_prompt("prompts/error1.wav")
                     else:
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
+                        audio_prompt("prompts/turnon.wav")
                 elif "success" in outcome.lower():
                     audio_prompt("prompts/connected.wav")
                     self.get_sink()
@@ -126,11 +133,23 @@ class Device:
                 attempts += 1
 
     def pair(self):
+        attempts = 0
         if self.mac_address:
             print_datetime("Pairing...")
             pair = subprocess.run(["bluetoothctl", "pair", self.mac_address], capture_output=True, text=True)
             outcome = pair.stdout
             print_datetime(outcome)
+            if "failed" in outcome.lower():
+                if attempts <= 5:
+                    print_datetime("Failed to pair: please check that the device is turned on, then try again")
+                    audio_prompt("prompts/error1.wav")
+                else:
+                    print_datetime("Failed to pair. Please try putting the device into pairing mode")
+            elif "success" in outcome.lower():
+                audio_prompt("prompts/connected.wav")
+                self.get_sink()
+                return
+            attempts += 1
 
     def trust(self):
         if self.mac_address:
@@ -160,7 +179,6 @@ class Device:
 if __name__ == "__main__":
     from utils import audio_prompt, load_config
 
-    curwd = "/home/a.occelli/sm_demo"
     config_file = f"{curwd}/config.yaml"
     config = load_config(config_file)
     device_name = config.get("device_name")

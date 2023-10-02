@@ -1,36 +1,43 @@
 #!/bin/bash
 
-TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
+# check if scripts are installed
+if env | grep -q "^SM_DIR="; then
 
-log_dir="/home/a.occelli/sm_demo/logs"
+  TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
-# verify that the logs folder exists
-if [ ! -d "$log_dir" ]; then
-    echo "Creating logs directory"
-    mkdir -p "$log_dir"
-    if [ $? -eq 0 ]; then
-        echo "Logs directory successfully created."
-    else
-        echo "Error during creation of folder"
-    fi
-fi
+  log_dir=$SM_DIR"/logs"
 
-cd $log_dir
+  # verify that the logs folder exists
+  if [ ! -d "$log_dir" ]; then
+      echo "Creating logs directory"
+      mkdir -p "$log_dir"
+      # shellcheck disable=SC2181
+      if [ $? -eq 0 ]; then
+          echo "Logs directory successfully created."
+      else
+          echo "Error during creation of folder"
+      fi
+  fi
 
-files=$(ls -t)
-echo $files
-num_to_keep=100
-num_files=$(ls | wc -l)
-echo $num_files
-num_to_remove=$((num_files - num_to_keep))
+  cd "$log_dir" || exit
 
-if [ $num_to_remove -gt 0 ]; then
-  files_to_remove=$(echo "$files" | tail -n $num_to_remove)
-  rm $files_to_remove
-  echo "$num_to_remove files removed."
+  files=$(ls -t)
+  num_to_keep=100
+  num_files=$(ls | wc -l)
+  num_to_remove=$((num_files - num_to_keep))
+
+  if [ $num_to_remove -gt 0 ]; then
+    files_to_remove=$(echo "$files" | tail -n $num_to_remove)
+    rm $files_to_remove
+    echo "$num_to_remove files removed."
+  else
+    echo "No log file to remove."
+  fi
+
+  echo Logging into logs/log_$TIMESTAMP.txt
+  cd ..
+  python $SM_DIR/main.py >> logs/log_$TIMESTAMP.txt 2>&1
+
 else
-  echo "No log file to remove."
+  echo "Error: SM Demo not installed. Run source install.sh to install it"
 fi
-
-echo Logging into logs/log_$TIMESTAMP.txt
-python /home/a.occelli/sm_demo/main.py >> log_$TIMESTAMP.txt 2>&1

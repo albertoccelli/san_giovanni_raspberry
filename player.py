@@ -1,7 +1,26 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Player class for Raspberry Pi3. Can setup audio sink and play/pause/stop the reproducing of WAV files
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
+
 import subprocess
 import time
 import threading
 import RPi.GPIO as GPIO
+
 from utils import print_datetime
 
 button_pin = 27
