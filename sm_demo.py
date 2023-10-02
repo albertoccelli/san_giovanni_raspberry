@@ -5,6 +5,10 @@
 SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls are done by external
 sensors and buttons/rotary encoders
 
+Changelogs:
+1.1.0 - playlist automatically sorts alphabetically the tracks; index in YAML file starts with 1
+1.0.0 - first release
+
 Requirements: Raspberry Pi 3
 """
 
@@ -12,7 +16,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -49,7 +53,7 @@ if __name__ == "__main__":
     clk_pin = load_config(config_file).get("clk_pin")  # rotary encoder CLK pin
     echo_pin = load_config(config_file).get("echo_pin")  # sensor echo pin
     trig_pin = load_config(config_file).get("trig_pin")  # sensor trigger pin
-    start_track = load_config(config_file).get("start_track")  # start track
+    start_track = load_config(config_file).get("start_track") - 1  # start track
     vol_step = load_config(config_file).get("volume_steps")  # volume steps
     bt_volume = load_config(config_file).get("bt_volume")  # starting volume
 
@@ -58,7 +62,9 @@ if __name__ == "__main__":
     voice_path = f"{script_dir}/media/front/"
     bg_path = f"{script_dir}/media/neck/"
     voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
+    voice_playlist.sort()
     bg_playlist = [f"{bg_path}{f}" for f in os.listdir(bg_path) if os.path.isfile(os.path.join(bg_path, f))]
+    bg_playlist.sort()
     voice_playlist = bg_playlist
 
     # make sure that the paplay service is not suspended
