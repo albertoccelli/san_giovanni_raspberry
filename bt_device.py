@@ -4,6 +4,10 @@
 """
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
+Changelog:
+- 1.0.1 - Fixed missing audio prompt
+- 1.0.0 - file created
+
 Requirements: Raspberry Pi 3
 """
 
@@ -11,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -121,6 +125,7 @@ class Device:
                         audio_prompt("prompts/error1.wav")
                     else:
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
+                        audio_prompt("prompts/turnon.wav")
                 elif "success" in outcome.lower():
                     audio_prompt("prompts/connected.wav")
                     self.get_sink()
