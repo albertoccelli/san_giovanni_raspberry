@@ -35,7 +35,8 @@ if env | grep -q "^SM_DIR="; then
   fi
 
   echo Logging into logs/log_$TIMESTAMP.txt
-  python $SM_DIR/main.py >> log_$TIMESTAMP.txt 2>&1
+  cd ..
+  python $SM_DIR/main.py >> logs/log_$TIMESTAMP.txt 2>&1
 
 else
   echo "Error: SM Demo not installed. Run source install.sh to install it"
