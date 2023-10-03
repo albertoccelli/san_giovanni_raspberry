@@ -1,5 +1,8 @@
-# exclude media files
-/media/neck
+# exclude audio files
+/media/neck/*.wav
+/media/front/ita/*.wav
+/media/front/fra/*.wav
+/media/front/eng/*.wav
 
 # exclude .img files
 *.img
