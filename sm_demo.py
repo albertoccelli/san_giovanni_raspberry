@@ -71,7 +71,6 @@ if __name__ == "__main__":
     voice_playlist.sort()
     bg_playlist = [f"{bg_path}{f}" for f in os.listdir(bg_path) if os.path.isfile(os.path.join(bg_path, f))]
     bg_playlist.sort()
-    voice_playlist = bg_playlist
 
     # make sure that the paplay service is not suspended
     subprocess.Popen(["pactl", "suspend-sink", "0"])
