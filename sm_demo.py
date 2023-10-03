@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.2.0 - multilanguage support added
 1.1.0 - playlist automatically sorts alphabetically the tracks; index in YAML file starts with 1
 1.0.0 - first release
 
@@ -16,7 +17,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -56,10 +57,15 @@ if __name__ == "__main__":
     start_track = load_config(config_file).get("start_track") - 1  # start track
     vol_step = load_config(config_file).get("volume_steps")  # volume steps
     bt_volume = load_config(config_file).get("bt_volume")  # starting volume
+    lang = load_config(config_file).get("lang")  # language
+
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    voice_path = f"{script_dir}/media/front/"
+    if lang:
+        voice_path = f"{script_dir}/media/front/{lang}/"
+    else:
+        voice_path = f"{script_dir}/media/front/"
     bg_path = f"{script_dir}/media/neck/"
     voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
     voice_playlist.sort()

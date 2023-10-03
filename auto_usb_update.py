@@ -4,6 +4,10 @@
 """
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
+Changelog:
+- 1.1.0: added functionality to automatically convert mp3 to wav when importing
+- 1.0.0: file created
+
 Requirements: Raspberry Pi 3
 """
 
@@ -11,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"

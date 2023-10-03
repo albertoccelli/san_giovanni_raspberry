@@ -5,7 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
-- 1.0.1 - Fixed missing audio prompt
+- 1.Raspberry - Fixed missing audio prompt
 - 1.0.0 - file created
 
 Requirements: Raspberry Pi 3
@@ -15,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.1"
+__version__ = "1.Raspberry"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
