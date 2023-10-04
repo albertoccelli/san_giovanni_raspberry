@@ -49,6 +49,7 @@ def convert_media():
                 mp3_file = os.path.join(root, filename)
                 mp3_files.append(mp3_file)
                 convert_mp3_to_wav(mp3_file)
+                os.remove(mp3_file)
 
 
 def print_datetime(argument):
