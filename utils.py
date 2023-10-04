@@ -36,8 +36,8 @@ def convert_mp3_to_wav(source):
         # os.system(f"mpg123 -w {wav_file} {source}")
 
 
-def convert_folder(folder, sub_folders=True):
-
+def convert_media():
+    print(f"{curwd}/media")
     pass
 
 
