@@ -4,6 +4,10 @@
 """
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
+Changelog
+- 1.1.0 - added mp3 conversion to wav after update
+- 1.0.0 - file created
+
 Requirements: Raspberry Pi 3
 """
 
@@ -11,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -22,7 +26,7 @@ import os
 
 import pyudev
 
-from utils import get_sinks, curwd
+from utils import get_sinks, curwd, convert_media
 
 
 controlfile = ".update_smdemo.txt"
@@ -48,17 +52,6 @@ def start_player():
     # restart player.service
     restart_player = subprocess.Popen(["systemctl", "--user", "start", "player.service"])
     restart_player.wait()
-
-
-def start_bt():
-    # start bt_scan.service
-    start_ble = subprocess.Popen(["systemctl", "--user", "start", "bt_scan.service"])
-    start_ble.wait()
-
-
-def stop_bt():
-    stop_ble = subprocess.Popen(["systemctl", "--user", "stop", "bt_scan.service"])
-    stop_ble.wait()
 
 
 def get_usb_path():
@@ -124,7 +117,6 @@ def usb_in_callback(event):
 
 def update(source, target):
     stop_player()
-    stop_bt()
     # check if there is the source folder
     check = subprocess.Popen(["ls", "-a", f"{source}/sm_copy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              text=True)
@@ -136,28 +128,31 @@ def update(source, target):
         audio_prompt(f"{curwd}/prompts/usb_error.wav")
         start_player()
         return
+    print("SM UPDATE folder found!")
     check = stdout.split("\n")
     print(check)
-    time.sleep(0.5)
+    time.sleep(0.1)
     # check if usb drive is allowed to update
     if controlfile in check:
         audio_prompt(f"{curwd}/prompts/wait_update.wav")
-        # copy config file
-        print("Copying configuration files")
+        # 1. copy config file
+        print("1/4 Copying configuration files")
         copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
         os.system(copy_config)
-        # copy audio files for the neckband
-        print("Copying neck audio file")
-        neck_files = subprocess.check_output(["ls", f"{source}/sm_copy/"])
-        print(neck_files)
-        command = f"rsync -av --delete {source}/sm_copy/media/neck {target}/media/"
-        os.system(command)
-        # run script runme.sh inside the folder
-        print("Running bash script")
+        # 2. copy all files in media folder
+        print("2/4 Copying audio files in media folder")
+        os.system("cp -r {source}/sm_copy/media {target}/")
+        print("Done!")
+        # 3. convert mp3 into wav
+        print("3/4 Converting mp3 files into wav")
+        convert_media()
+        print("Done!")
+        # 4. run script runme.sh inside the folder
+        print("4/4 Running bash script")
         os.system(f"{source}/sm_copy/runme.sh")
-        print("Done")
+        print("Done!")
         # end update
-        print("Copy successful")
+        print("Update successful")
         audio_prompt(f"{curwd}/prompts/update_complete.wav")
         start_player()
     else:
@@ -165,7 +160,6 @@ def update(source, target):
         print("Not allowed to copy from this usb")
     time.sleep(1)
     start_player()
-    start_bt()
     return
 
 
@@ -178,7 +172,6 @@ if __name__ == "__main__":
         mount_usb(drive, m_path)
         update(m_path, t_path)
 
-    start_bt()
     context = pyudev.Context()
 
     monitor = pyudev.Monitor.from_netlink(context)
