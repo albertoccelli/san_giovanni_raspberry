@@ -32,8 +32,8 @@ curwd = os.environ["SM_DIR"]
 def convert_mp3_to_wav(source):
     if ".mp3" in source:
         wav_file = f"{source.split('.mp3')[0]}.wav"
-        print(f"mpg123 -w {wav_file} {source}")
-        # os.system(f"mpg123 -w {wav_file} {source}")
+        print(f"Converting {source} into {wav_file}")
+        os.system(f"mpg123 -w {wav_file} {source}")
 
 
 def convert_media():
@@ -45,8 +45,7 @@ def convert_media():
         for filename in files:
             if filename.endswith(".mp3"):
                 mp3_file = os.path.join(root, filename)
-                print(mp3_file)
-    pass
+                convert_mp3_to_wav(mp3_file)
 
 
 def print_datetime(argument):
