@@ -4,6 +4,10 @@
 """
 Utility functions for SM Demo software
 
+Changelog:
+1.1.0 - added functions to convert mp3 to wav
+1.0.0 - file created
+
 Requirements: Raspberry Pi 3
 """
 
@@ -23,6 +27,18 @@ import os
 from datetime import datetime
 
 curwd = os.environ["SM_DIR"]
+
+
+def convert_mp3_to_wav(source):
+    if ".mp3" in source:
+        wav_file = f"{source.split('.mp3')[0]}.wav"
+        print(f"mpg123 -w {wav_file} {source}")
+        # os.system(f"mpg123 -w {wav_file} {source}")
+
+
+def convert_folder(folder, sub_folders=True):
+
+    pass
 
 
 def print_datetime(argument):
