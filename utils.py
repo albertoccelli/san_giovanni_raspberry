@@ -38,9 +38,10 @@ def convert_mp3_to_wav(source):
 
 def convert_media():
     media_dir = f"{curwd}/media"
+    print(media_dir)
     # get all mp3 files into directory
+    print("Mp3 files found:")
     for root, _, files in os.walk(media_dir):
-        print("Mp3 files found:")
         for filename in files:
             if filename.endswith(".mp3"):
                 mp3_file = os.path.join(root, filename)
