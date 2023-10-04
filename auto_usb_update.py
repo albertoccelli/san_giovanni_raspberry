@@ -94,8 +94,12 @@ def wait_for_usb():
 def mount_usb(usb_path, mount_path):
     print(f"Mounting usb on {mount_path}")
     # create mount point
-    create_mp = subprocess.Popen(["sudo", "mkdir", mount_path])
-    create_mp.wait()
+    create_mp = subprocess.Popen(["sudo", "mkdir", mount_path], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    stdout, stderr = create_mp.communicate()
+    if stdout:
+        print(f"Output: {stdout.decode('utf-8')}")
+    if stderr:
+        print("Mount folder already exists: skipping creation")
     # mount usb drive
     mount = subprocess.Popen(["sudo", "mount", usb_path, mount_path])
     mount.wait()
@@ -141,7 +145,7 @@ def update(source, target):
         os.system(copy_config)
         # 2. copy all files in media folder
         print("2/4 Copying audio files in media folder")
-        os.system("cp -r {source}/sm_copy/media {target}/")
+        os.system(f"cp -r {source}/sm_copy/media {target}/")
         print("Done!")
         # 3. convert mp3 into wav
         print("3/4 Converting mp3 files into wav")
