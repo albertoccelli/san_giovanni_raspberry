@@ -4,9 +4,9 @@
 """
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
-Changelog
-- 1.1.0 - added mp3 conversion to wav after update
-- 1.0.0 - file created
+Changelog:
+- 1.1.0: added functionality to automatically convert mp3 to wav when importing
+- 1.0.0: file created
 
 Requirements: Raspberry Pi 3
 """
