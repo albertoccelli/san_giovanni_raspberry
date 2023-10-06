@@ -34,5 +34,3 @@ while True:
     except KeyboardInterrupt:
         subprocess.Popen(["killall", "paplay"])
         break
-
-
