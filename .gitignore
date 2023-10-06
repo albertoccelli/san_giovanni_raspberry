@@ -1,4 +1,3 @@
-# exclude audio files
 /media/neck/*.wav
 /media/front/ita/*.wav
 /media/front/fra/*.wav

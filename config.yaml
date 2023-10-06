@@ -7,7 +7,7 @@ device_name: "NS7"
 # player settings
 start_track: 1
 volume_steps: 5
-bt_volume: 50
+bt_volume: 20
 
 # distance sensor
 distance_sensor_enabled: False
