@@ -6,8 +6,10 @@ device_name: "NS7"
 
 # player settings
 start_track: 1
-volume_steps: 5
+volume_steps_um: "db" # unit of measure of volume steps: perc|db
+volume_steps: 2
 bt_volume: 20
+fr_volume: 50
 
 # distance sensor
 distance_sensor_enabled: False
@@ -15,9 +17,21 @@ threshold: 250
 echo_pin: 24
 trig_pin: 23
 
-# pause button
-button_pin: 27
-
+### Encoders
 # bluetooth volume rotary encoder
-dt_pin: 17
-clk_pin: 18
+bg_vol_button: 4
+bg_vol_dt_pin: 17
+bg_vol_clk_pin: 18
+# bluetooth track rotary encoder
+bg_tr_button: 23
+bg_tr_dt_pin: 24
+bg_tr_clk_pin: 25
+# Front volume encoder
+fr_vol_button: 5
+fr_vol_dt_pin: 6
+fr_vol_clk_pin: 12
+# Front track encoder
+fr_tr_button: 19
+fr_tr_dt_pin: 20
+fr_tr_clk_pin: 21
+
