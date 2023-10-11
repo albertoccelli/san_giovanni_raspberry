@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can setup audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.1.2 - fixed not unmuting when adjusting volume
 1.1.1 - verbose mute function
 1.1.0 - added mute function and toggle play/pause
 1.0.0 - first release
@@ -81,6 +82,8 @@ class Player:
             self.mute()
 
     def raise_volume(self, step=10, kind="perc"):
+        if self.muted:
+            self.unmute()
         if kind == "perc":
             step = f"+{step}%"
         elif kind == "db":
@@ -92,6 +95,8 @@ class Player:
         return
 
     def lower_volume(self, step=10, kind="perc"):
+        if self.muted:
+            self.unmute()
         if kind == "perc":
             step = f"-{step}%"
         elif kind == "db":
