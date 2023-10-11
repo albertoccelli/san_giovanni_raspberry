@@ -48,6 +48,7 @@ if __name__ == "__main__":
     from utils import load_config, set_spkr_volume_max, curwd
     from config import *
 
+    '''
     # configuration file
     config_file = f"/{curwd}/config.yaml"
     d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
@@ -79,6 +80,7 @@ if __name__ == "__main__":
     vol_step = load_config(config_file).get("volume_steps")  # volume steps
     bt_volume = load_config(config_file).get("bt_volume")  # starting volume
     lang = load_config(config_file).get("lang")  # language
+    '''
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -169,7 +171,7 @@ if __name__ == "__main__":
             print_datetime("SM Demo:\tbackground volume rotary encoder clockwise")
             bluetooth.raise_volume(step=vol_step, kind="perc")
         else:
-            print_datetime("SM Demo:\tbacground volume rotary encoder counterclockwise")
+            print_datetime("SM Demo:\tbackground volume rotary encoder counterclockwise")
             bluetooth.lower_volume(step=vol_step, kind="perc")
 
     # Front track encoder
