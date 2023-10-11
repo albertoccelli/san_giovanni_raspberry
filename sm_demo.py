@@ -201,12 +201,12 @@ if __name__ == "__main__":
     # define sensors/button detect functions
     GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=150)
     GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
+    GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(fr_tr_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=150)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
+    GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_tr_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
     if d_sensor_enabled:
