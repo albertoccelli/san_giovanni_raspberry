@@ -75,9 +75,9 @@ class Player:
         return
 
     def toggle_mute(self):
-        if self.mute:
+        if self.muted:
             self.unmute()
-        elif not self.mute:
+        elif not self.muted:
             self.mute()
 
     def raise_volume(self, step=10, kind="perc"):
