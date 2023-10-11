@@ -19,6 +19,7 @@ __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
 
+import RPi.GPIO as GPIO
 from utils import load_config, curwd
 
 # configuration file
@@ -52,3 +53,18 @@ start_track = load_config(config_file).get("start_track") - 1  # start track
 vol_step = load_config(config_file).get("volume_steps")  # volume steps
 bt_volume = load_config(config_file).get("bt_volume")  # starting volume
 lang = load_config(config_file).get("lang")  # language
+
+# Setup GPIOs as inputs
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(bg_vol_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(bg_vol_dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(bg_vol_clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(bg_tr_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(bg_tr_dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(bg_tr_clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(fr_vol_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(fr_vol_dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(fr_vol_clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(fr_vol_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(fr_tr_dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(fr_tr_clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
