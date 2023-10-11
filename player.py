@@ -48,10 +48,10 @@ class Player:
         self.stopped = True
         self.muted = False
 
-    def set_volume(self, vol_level, kind="perc"):
-        if kind == "perc":
+    def set_volume(self, vol_level, um="perc"):
+        if um == "perc":
             vol_level = f"{vol_level}%"
-        elif kind == "db":
+        elif um == "db":
             vol_level = f"{vol_level}db"
         print_datetime(f"{self.sink}: \tSetting volume to {vol_level}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
@@ -81,12 +81,12 @@ class Player:
         elif not self.muted:
             self.mute()
 
-    def raise_volume(self, step=10, kind="perc"):
+    def raise_volume(self, step=10, um="perc"):
         if self.muted:
             self.unmute()
-        if kind == "perc":
+        if um == "perc":
             step = f"+{step}%"
-        elif kind == "db":
+        elif um == "db":
             step = f"+{step}db"
         print_datetime(f"{self.sink}: \tRaising volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
@@ -94,12 +94,12 @@ class Player:
         set_vol.wait()
         return
 
-    def lower_volume(self, step=10, kind="perc"):
+    def lower_volume(self, step=10, um="perc"):
         if self.muted:
             self.unmute()
-        if kind == "perc":
+        if um == "perc":
             step = f"-{step}%"
-        elif kind == "db":
+        elif um == "db":
             step = f"-{step}db"
         print_datetime(f"{self.sink}: \tLowering volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
