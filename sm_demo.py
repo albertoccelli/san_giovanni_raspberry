@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.4.1 - customizable front start time
 1.4.0 - unit of measure added from config file
 1.3.0 - added support for multiple encoders
 1.2.0 - multilanguage support added
@@ -19,7 +20,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.3.0"
+__version__ = "1.4.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -100,6 +101,7 @@ if __name__ == "__main__":
     jack = Player(audio_sinks[0])
     jack.load(voice_playlist)
     jack.current_index = start_track
+    jack.set_volume(fr_volume)
     jack.play()
 
     # Front volume encoder
