@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can setup audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.1.1 - verbose mute function
 1.1.0 - added mute function and toggle play/pause
 1.0.0 - first release
 
@@ -58,6 +59,7 @@ class Player:
         return
 
     def mute(self):
+        print_datetime(f"{self.sink}: \tmute")
         mute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "1"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.muted = True
@@ -65,6 +67,7 @@ class Player:
         return
 
     def unmute(self):
+        print_datetime(f"{self.sink}: \tunmute")
         unmute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "0"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.muted = False
