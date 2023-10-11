@@ -4,6 +4,10 @@
 """
 Player class for Raspberry Pi3. Can setup audio sink and play/pause/stop the reproducing of WAV files
 
+Changelogs:
+1.1.0 - added mute function and toggle play/pause
+1.0.0 - first release
+
 Requirements: Raspberry Pi 3
 """
 
@@ -11,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = ("1.1.0")
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -40,6 +44,7 @@ class Player:
         self.current_track = None
         self.playing = False
         self.stopped = True
+        self.mute = False
 
     def set_volume(self, vol_level, kind="perc"):
         if kind == "perc":
@@ -51,6 +56,26 @@ class Player:
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
         return
+
+    def mute(self):
+        mute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "1"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        self.mute = True
+        mute.wait()
+        return
+
+    def unmute(self):
+        unmute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "0"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        self.mute = False
+        unmute.wait()
+        return
+
+    def toggle_mute(self):
+        if self.mute:
+            self.unmute()
+        elif not self.mute:
+            self.mute()
 
     def raise_volume(self, step=10, kind="perc"):
         if kind == "perc":
@@ -117,6 +142,15 @@ class Player:
         # self.audio_process.send_signal(subprocess.signal.SIGCONT)
         resume = subprocess.Popen(["pactl", "suspend-sink", self.sink, "0"])
         resume.wait()
+
+    def toggle_play_pause(self):
+        if self.playing:
+            self.pause()
+        else:
+            if self.stopped:
+                self.play()
+            else:
+                self.resume()
 
     def stop(self):
         try:
