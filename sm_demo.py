@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.4.0 - unit of measure added from config file
 1.3.0 - added support for multiple encoders
 1.2.0 - multilanguage support added
 1.1.0 - playlist automatically sorts alphabetically the tracks; index in YAML file starts with 1
@@ -47,40 +48,6 @@ if __name__ == "__main__":
     from player import Player
     from utils import load_config, set_spkr_volume_max, curwd
     from config import *
-
-    '''
-    # configuration file
-    config_file = f"/{curwd}/config.yaml"
-    d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
-
-    # Buttons and encoders
-    # Background volume encoder
-    bg_vol_button = load_config(config_file).get("bg_vol_button")  # pause/play button
-    bg_vol_dt_pin = load_config(config_file).get("bg_vol_dt_pin")  # rotary encoder DT pin
-    bg_vol_clk_pin = load_config(config_file).get("bg_vol_clk_pin")  # rotary encoder CLK pin
-    # Background track encoder
-    bg_tr_button = load_config(config_file).get("bg_tr_button")  # pause/play button
-    bg_tr_dt_pin = load_config(config_file).get("bg_tr_dt_pin")  # rotary encoder DT pin
-    bg_tr_clk_pin = load_config(config_file).get("bg_tr_clk_pin")  # rotary encoder CLK pin
-    # Front volume encoder
-    fr_vol_button = load_config(config_file).get("fr_vol_button")  # pause/play button
-    fr_vol_dt_pin = load_config(config_file).get("fr_vol_dt_pin")  # rotary encoder DT pin
-    fr_vol_clk_pin = load_config(config_file).get("fr_vol_clk_pin")  # rotary encoder CLK pin
-    # Front track encoder
-    fr_tr_button = load_config(config_file).get("fr_tr_button")  # pause/play button
-    fr_tr_dt_pin = load_config(config_file).get("fr_tr_dt_pin")  # rotary encoder DT pin
-    fr_tr_clk_pin = load_config(config_file).get("fr_tr_clk_pin")  # rotary encoder CLK pin
-
-    # Sensor
-    echo_pin = load_config(config_file).get("echo_pin")  # sensor echo pin
-    trig_pin = load_config(config_file).get("trig_pin")  # sensor trigger pin
-
-    # Player settings
-    start_track = load_config(config_file).get("start_track") - 1  # start track
-    vol_step = load_config(config_file).get("volume_steps")  # volume steps
-    bt_volume = load_config(config_file).get("bt_volume")  # starting volume
-    lang = load_config(config_file).get("lang")  # language
-    '''
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -143,10 +110,10 @@ if __name__ == "__main__":
     def fr_vol_rotation(channel):
         if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
             print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
-            jack.raise_volume(step=vol_step, kind="perc")
+            jack.raise_volume(step=vol_step, um=vol_step_um)
         else:
             print_datetime("SM Demo:\tfront volume rotary encoder counterclockwise")
-            jack.lower_volume(step=vol_step, kind="perc")
+            jack.lower_volume(step=vol_step, um=vol_step_um)
 
     # Front track encoder
     def fr_tr_button_pressed(channel):
@@ -169,10 +136,10 @@ if __name__ == "__main__":
     def bg_vol_rotation(channel):
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
             print_datetime("SM Demo:\tbackground volume rotary encoder clockwise")
-            bluetooth.raise_volume(step=vol_step, kind="perc")
+            bluetooth.raise_volume(step=vol_step, um=vol_step_um)
         else:
             print_datetime("SM Demo:\tbackground volume rotary encoder counterclockwise")
-            bluetooth.lower_volume(step=vol_step, kind="perc")
+            bluetooth.lower_volume(step=vol_step, um=vol_step_um)
 
     # Front track encoder
     def bg_tr_button_pressed(channel):
