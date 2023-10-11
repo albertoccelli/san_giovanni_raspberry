@@ -21,13 +21,13 @@ bg_vol_button: 4
 bg_vol_dt_pin: 17
 bg_vol_clk_pin: 18
 # bluetooth track rotary encoder
-bg_tr_button: 27
-bg_tr_dt_pin: 22
-bg_tr_clk_pin: 23
+bg_tr_button: 23
+bg_tr_dt_pin: 24
+bg_tr_clk_pin: 25
 # Front volume encoder
-fr_vol_button: 24
-fr_vol_dt_pin: 25
-fr_vol_clk_pin: 5
+fr_vol_button: 5
+fr_vol_dt_pin: 6
+fr_vol_clk_pin: 12
 # Front track encoder
 fr_tr_button: 19
 fr_tr_dt_pin: 20
