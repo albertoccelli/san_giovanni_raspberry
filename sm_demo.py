@@ -133,14 +133,13 @@ if __name__ == "__main__":
     jack.current_index = start_track
     jack.play()
 
-
     # Front volume encoder
     def fr_vol_button_pressed(channel):
         print_datetime("SM Demo:\tfront volume button pressed")
         jack.toggle_mute()
 
     def fr_vol_rotation(channel):
-        if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
+        if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
             print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
             jack.raise_volume(step=vol_step, kind="perc")
         else:
@@ -153,7 +152,7 @@ if __name__ == "__main__":
         jack.toggle_play_pause()
 
     def fr_tr_rotation(channel):
-        if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
+        if GPIO.input(fr_tr_dt_pin) == GPIO.input(fr_tr_clk_pin):
             print_datetime("SM Demo:\tfront track rotary encoder clockwise")
             jack.next_track()
         else:
@@ -179,7 +178,7 @@ if __name__ == "__main__":
         bluetooth.toggle_play_pause()
 
     def bg_tr_rotation(channel):
-        if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
+        if GPIO.input(bg_tr_dt_pin) == GPIO.input(bg_tr_clk_pin):
             print_datetime("SM Demo:\tbackground track rotary encoder clockwise")
             bluetooth.next_track()
         else:
@@ -200,8 +199,15 @@ if __name__ == "__main__":
 
 
     # define sensors/button detect functions
-    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=150)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
+
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
     if d_sensor_enabled:
         print_datetime("SM Demo:\tSensor started")
