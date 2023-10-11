@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Player class for Raspberry Pi3. Can setup audio sink and play/pause/stop the reproducing of WAV files
+Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
 1.1.2 - fixed not unmuting when adjusting volume
@@ -17,7 +17,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = ("1.1.0")
+__version__ = "1.1.2"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -62,7 +62,7 @@ class Player:
     def mute(self):
         print_datetime(f"{self.sink}: \tmute")
         mute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "1"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.muted = True
         mute.wait()
         return
@@ -70,7 +70,7 @@ class Player:
     def unmute(self):
         print_datetime(f"{self.sink}: \tunmute")
         unmute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "0"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.muted = False
         unmute.wait()
         return
