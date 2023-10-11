@@ -6,8 +6,10 @@ device_name: "NS7"
 
 # player settings
 start_track: 1
+volume_steps_um: "perc" # unit of measure of volume steps: perc|db
 volume_steps: 5
 bt_volume: 20
+fr_volume
 
 # distance sensor
 distance_sensor_enabled: False
