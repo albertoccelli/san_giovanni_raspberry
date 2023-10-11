@@ -5,6 +5,7 @@
 Configuration script for SM Demo. Configures the GPIOs
 
 Changelogs:
+1.1.0 - volume unit of measure added
 1.0.0 - first release
 
 Requirements: Raspberry Pi 3
@@ -14,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -50,8 +51,10 @@ trig_pin = load_config(config_file).get("trig_pin")  # sensor trigger pin
 
 # Player settings
 start_track = load_config(config_file).get("start_track") - 1  # start track
+vol_step_um = load_config(config_file).get("volume_steps_um")  # unit of measure for volume steps
 vol_step = load_config(config_file).get("volume_steps")  # volume steps
 bt_volume = load_config(config_file).get("bt_volume")  # starting volume
+fr_volume = load_config(config_file).get("fr_volume")  # starting volume
 lang = load_config(config_file).get("lang")  # language
 
 # Setup GPIOs as inputs
