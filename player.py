@@ -44,7 +44,7 @@ class Player:
         self.current_track = None
         self.playing = False
         self.stopped = True
-        self.mute = False
+        self.muted = False
 
     def set_volume(self, vol_level, kind="perc"):
         if kind == "perc":
@@ -60,14 +60,14 @@ class Player:
     def mute(self):
         mute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "1"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        self.mute = True
+        self.muted = True
         mute.wait()
         return
 
     def unmute(self):
         unmute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "0"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        self.mute = False
+        self.muted = False
         unmute.wait()
         return
 
