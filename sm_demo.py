@@ -80,7 +80,6 @@ if __name__ == "__main__":
     bt_volume = load_config(config_file).get("bt_volume")  # starting volume
     lang = load_config(config_file).get("lang")  # language
 
-
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
     if lang:
@@ -134,24 +133,11 @@ if __name__ == "__main__":
     jack.current_index = start_track
     jack.play()
 
-    # defining control functions
-    def toggle_play_pause():
-        if bluetooth.playing:
-            bluetooth.pause()
-            jack.pause()
-        else:
-            if bluetooth.stopped:
-                bluetooth.play()
-                jack.play()
-            else:
-                bluetooth.resume()
-                jack.resume()
-
 
     # Front volume encoder
     def fr_vol_button_pressed(channel):
         print_datetime("SM Demo:\tfront volume button pressed")
-        toggle_play_pause()
+        jack.toggle_mute()
 
     def fr_vol_rotation(channel):
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
@@ -163,8 +149,8 @@ if __name__ == "__main__":
 
     # Front track encoder
     def fr_tr_button_pressed(channel):
-        print_datetime("SM Demo:\tfront tracl button pressed")
-        toggle_play_pause()
+        print_datetime("SM Demo:\tfront track button pressed")
+        jack.toggle_play_pause()
 
     def fr_tr_rotation(channel):
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
@@ -177,7 +163,7 @@ if __name__ == "__main__":
     # Background (neckband) volume encoder
     def bg_vol_button_pressed(channel):
         print_datetime("SM Demo:\tbackground volume button pressed")
-        toggle_play_pause()
+        bluetooth.toggle_mute()
 
     def bg_vol_rotation(channel):
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
@@ -190,7 +176,7 @@ if __name__ == "__main__":
     # Front track encoder
     def bg_tr_button_pressed(channel):
         print_datetime("SM Demo:\tbackground track button pressed")
-        toggle_play_pause()
+        bluetooth.toggle_play_pause()
 
     def bg_tr_rotation(channel):
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
@@ -214,9 +200,7 @@ if __name__ == "__main__":
 
 
     # define sensors/button detect functions
-    # button
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=150)
-    # rotary encoder
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
     if d_sensor_enabled:
