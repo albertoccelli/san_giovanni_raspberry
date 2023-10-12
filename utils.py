@@ -5,6 +5,7 @@
 Utility functions for SM Demo software
 
 Changelog:
+1.2.0 - added function to get volume
 1.1.0 - added functions to convert mp3 to wav
 1.0.0 - file created
 
@@ -15,7 +16,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.0"
+__version__ = "1.2.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -131,12 +132,15 @@ def get_sinks():
 
 def get_volumes(style="perc"):
     command = "pactl list sinks"
+    sink = ""
 
     output = subprocess.check_output(command, shell=True, text=True)
     output_lines = output.splitlines()
 
-    volumes = []
+    volumes = {}
     for line in output_lines:
+        if "Name" in line:
+            sink = line.split(":")[-1].replace(" ", "")
         if "Volume" in line:
             if "Base" not in line:
                 vols = line.split("Volume:")[-1].split(",")
@@ -148,8 +152,12 @@ def get_volumes(style="perc"):
                         stereo.append(vols[i].split(":")[-1].split(" / ")[1].replace(" ", ""))
                     elif style == "db":
                         stereo.append(vols[i].split(":")[-1].split(" / ")[2].replace(" ", ""))
-                volumes.append(stereo)
+                volumes[sink] = stereo
     return volumes
+
+
+def get_volume(sink, style="perc"):
+    return get_volumes(style)[sink]
 
 
 def get_paths():
