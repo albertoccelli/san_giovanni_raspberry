@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.4.2 - threading for setting the bt to max volume
 1.4.1 - customizable front start time
 1.4.0 - unit of measure added from config file
 1.3.0 - added support for multiple encoders
@@ -36,6 +37,7 @@ if __name__ == "__main__":
     from utils import get_sinks
     import os
     from player import Player
+    import threading
     from utils import load_config, set_spkr_volume_max, curwd
     from config import *
 
@@ -76,9 +78,8 @@ if __name__ == "__main__":
         time.sleep(0.5)
 
     # Set volume of neckband to max
-    print_datetime("SM Demo:\tsetting neckband to max")
-    set_spkr_volume_max()
-    print_datetime("SM Demo:\tBT volume set to max")
+    set_max_thread = threading.Thread(target=set_spkr_volume_max)
+    set_max_thread.start()
 
     # initializing bluetooth player
     bluetooth = Player(audio_sinks[1])
