@@ -149,9 +149,9 @@ def get_volumes(style="perc"):
                     if style == "abs":
                         stereo.append(vols[i].split(":")[-1].split(" / ")[0].replace(" ", ""))
                     elif style == "perc":
-                        stereo.append(vols[i].split(":")[-1].split(" / ")[1].replace(" ", ""))
+                        stereo.append(float(vols[i].split(":")[-1].split(" / ")[1].replace(" ", "").replace("%", "")))
                     elif style == "db":
-                        stereo.append(vols[i].split(":")[-1].split(" / ")[2].replace(" ", ""))
+                        stereo.append(float(vols[i].split(":")[-1].split(" / ")[2].replace(" ", "").replace("dB", "")))
                 volumes[sink] = stereo
     return volumes
 
