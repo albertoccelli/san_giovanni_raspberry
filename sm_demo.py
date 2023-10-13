@@ -7,7 +7,7 @@ sensors and buttons/rotary encoders
 
 Changelogs:
 1.4.2 - threading for setting the bt to max volume
-1.4.1 - customizable front start time
+1.4.1 - customizable front start volume
 1.4.0 - unit of measure added from config file
 1.3.0 - added support for multiple encoders
 1.2.0 - multilanguage support added
