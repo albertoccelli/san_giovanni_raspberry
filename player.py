@@ -93,12 +93,12 @@ class Player:
         if self.muted:
             self.unmute()
         if um == "perc":
-            if self.volume(um) >= 100:
+            if self.volume[um] >= 100:
                 print_datetime(f"{self.sink}:\tMax volume reached")
                 return
             step = f"+{step}%"
         elif um == "db":
-            if self.volume(um) >= 0:
+            if self.volume[um] >= 0:
                 print_datetime(f"{self.sink}:\tMax volume reached")
                 return
             step = f"+{step}db"
@@ -113,12 +113,12 @@ class Player:
         if self.muted:
             self.unmute()
         if um == "perc":
-            if self.volume(um) <= 0:
+            if self.volume[um] <= 0:
                 print_datetime(f"{self.sink}:\tMin volume reached")
                 return
             step = f"-{step}%"
         elif um == "db":
-            if self.volume(um) <= -290:
+            if self.volume[um] <= -290:
                 print_datetime(f"{self.sink}:\tMin volume reached")
                 return
             step = f"-{step}db"
