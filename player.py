@@ -5,7 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
-1.2.0 - volume not raising/lowering over max/min
+1.2.0 - set player's boundaries
 1.1.2 - fixed not unmuting when adjusting volume
 1.1.1 - verbose mute function
 1.1.0 - added mute function and toggle play/pause
@@ -41,14 +41,19 @@ class Player:
         print_datetime(f"{sink}: \tLoading player")
         self.audio_thread = None
         self.sink = sink
-        self.volume = {}
         self.audio_process = None
         self.current_index = 0
+        self.volume = []
         self.playlist = None
         self.current_track = None
         self.playing = False
         self.stopped = True
         self.muted = False
+        self.get_vol()
+
+    def get_vol(self):
+        self.volume = get_volume(self.sink)
+        return
 
     def set_volume(self, vol_level, um="perc"):
         if um == "perc":
@@ -59,12 +64,7 @@ class Player:
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        return
-
-    def get_vol(self):
-        units = ["perc", "db"]
-        for u in units:
-            self.volume[u] = get_volume(self.sink, u)
+        self.get_vol
         return
 
     def mute(self):
@@ -93,40 +93,26 @@ class Player:
         if self.muted:
             self.unmute()
         if um == "perc":
-            if self.volume[um] >= 100:
-                print_datetime(f"{self.sink}:\tMax volume reached")
-                return
             step = f"+{step}%"
         elif um == "db":
-            if self.volume[um] >= 0:
-                print_datetime(f"{self.sink}:\tMax volume reached")
-                return
             step = f"+{step}db"
-        print_datetime(f"{self.sink}:\tRaising volume by {step}")
+        print_datetime(f"{self.sink}: \tRaising volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        self.get_vol()
         return
 
     def lower_volume(self, step=10, um="perc"):
         if self.muted:
             self.unmute()
         if um == "perc":
-            if self.volume[um] <= 0:
-                print_datetime(f"{self.sink}:\tMin volume reached")
-                return
             step = f"-{step}%"
         elif um == "db":
-            if self.volume[um] <= -290:
-                print_datetime(f"{self.sink}:\tMin volume reached")
-                return
             step = f"-{step}db"
-        print_datetime(f"{self.sink}:\tLowering volume by {step}")
+        print_datetime(f"{self.sink}: \tLowering volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        self.get_vol()
         return
 
     def load(self, playlist):

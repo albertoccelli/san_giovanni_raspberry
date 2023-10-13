@@ -32,17 +32,6 @@ import RPi.GPIO as GPIO
 from sensor import DistanceSensor
 from utils import print_datetime
 
-bg_vol_button = 27
-bg_vol_dt_pin = 17
-bg_vol_clk_pin = 18
-echo_pin = 24
-trig_pin = 23
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(bg_vol_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(bg_vol_dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(bg_vol_clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
 if __name__ == "__main__":
     from utils import get_sinks
     import os
@@ -170,13 +159,13 @@ if __name__ == "__main__":
 
 
     # define sensors/button detect functions
-    GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=150)
-    GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(fr_tr_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_tr_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")

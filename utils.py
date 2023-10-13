@@ -147,12 +147,13 @@ def get_volumes(style="perc"):
                 stereo = []
                 for i in range(len(vols)):
                     if style == "abs":
-                        stereo.append(vols[i].split(":")[-1].split(" / ")[0].replace(" ", ""))
+                        stereo.append(float(vols[i].split(":")[-1].split(" / ")[0].replace(" ", "")))
                     elif style == "perc":
                         stereo.append(float(vols[i].split(":")[-1].split(" / ")[1].replace(" ", "").replace("%", "")))
                     elif style == "db":
                         stereo.append(float(vols[i].split(":")[-1].split(" / ")[2].replace(" ", "").replace("dB", "")))
-                volumes[sink] = stereo
+                value = sum(stereo)/len(stereo)
+                volumes[sink] = value
     return volumes
 
 
