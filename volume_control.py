@@ -54,7 +54,6 @@ def fr_vol_rotation(channel):
             step = f"-{vol_step}%"
         elif vol_step_um == "db":
             step = f"-{vol_step}db"
-        print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
         print_datetime(f"{rpi_sink}: \tLowering volume by {step}")
         set_vol = subprocess.Popen(["pactl", "volume", rpi_sink, step],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
