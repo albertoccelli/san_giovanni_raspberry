@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Boundaries for front volume (cannot set over 100% and under 0%)
 - Prompt when firstly trying to connect
 - Function to get mute status of sink
 - Threading for bt volume regulation (saved 2s from boot)
