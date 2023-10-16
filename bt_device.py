@@ -5,7 +5,10 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
-- 1.Raspberry - Fixed missing audio prompt
+- 1.1.0 - added first attempt prompt
+- 1.0.3 - Sped up connection
+- 1.0.2 - Removed audio prompt at bt connection
+- 1.0.1 - Fixed missing audio prompt
 - 1.0.0 - file created
 
 Requirements: Raspberry Pi 3
@@ -15,7 +18,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.Raspberry"
+__version__ = "1.1.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -62,8 +65,9 @@ class Device:
         # if the macaddres has not been found, then there's the need for a scan
         if self.mac_address is not None:
             return self.mac_address
+        # prompt to turn on the neckband and put into adv, since the MAC is not among the list
         print_datetime("Please turn on the bluetooth device and put it in advertising mode")
-        audio_prompt("prompts/turnon.wav")
+        audio_prompt("prompts/turnon_adv.wav")
         while ntry <= maxtry:
             bt_scan = subprocess.Popen(["bluetoothctl", "--timeout", str(timeout), "scan", "on"],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -113,6 +117,7 @@ class Device:
 
     def connect(self):
         attempts = 0
+        audio_prompt("prompts/attempt.wav")
         if self.mac_address:
             while True:
                 print("Trying to connect...")
@@ -122,12 +127,12 @@ class Device:
                 if "failed" in outcome.lower():
                     if attempts <= 5:
                         print_datetime("Failed to connect: please check that the device is turned on, then try again")
-                        audio_prompt("prompts/error1.wav")
+                        audio_prompt("prompts/turnon.wav")
                     else:
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
-                        audio_prompt("prompts/turnon.wav")
+                        audio_prompt("prompts/error1.wav")
                 elif "success" in outcome.lower():
-                    audio_prompt("prompts/connected.wav")
+                    # audio_prompt("prompts/connected.wav")
                     self.get_sink()
                     return
                 attempts += 1
@@ -142,9 +147,10 @@ class Device:
             if "failed" in outcome.lower():
                 if attempts <= 5:
                     print_datetime("Failed to pair: please check that the device is turned on, then try again")
-                    audio_prompt("prompts/error1.wav")
+                    audio_prompt("prompts/turnon.wav")
                 else:
                     print_datetime("Failed to pair. Please try putting the device into pairing mode")
+                    audio_prompt("prompts/error1.wav")
             elif "success" in outcome.lower():
                 audio_prompt("prompts/connected.wav")
                 self.get_sink()
@@ -189,7 +195,7 @@ if __name__ == "__main__":
         while not device.ready_to_play:
             device.get_info()
             device.get_sink()
-            time.sleep(1)
+            time.sleep(0.1)
         print_datetime("Ready to play!")
 
 

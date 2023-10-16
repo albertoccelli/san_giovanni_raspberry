@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.2.0 - set player's boundaries
 1.1.2 - fixed not unmuting when adjusting volume
 1.1.1 - verbose mute function
 1.1.0 - added mute function and toggle play/pause
@@ -17,7 +18,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.1.2"
+__version__ = "1.2.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -27,7 +28,7 @@ import time
 import threading
 import RPi.GPIO as GPIO
 
-from utils import print_datetime
+from utils import print_datetime, get_volume
 
 button_pin = 27
 GPIO.setmode(GPIO.BCM)
@@ -42,11 +43,17 @@ class Player:
         self.sink = sink
         self.audio_process = None
         self.current_index = 0
+        self.volume = []
         self.playlist = None
         self.current_track = None
         self.playing = False
         self.stopped = True
         self.muted = False
+        self.get_vol()
+
+    def get_vol(self):
+        self.volume = get_volume(self.sink)
+        return
 
     def set_volume(self, vol_level, um="perc"):
         if um == "perc":
@@ -57,6 +64,7 @@ class Player:
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+        self.get_vol
         return
 
     def mute(self):
@@ -188,7 +196,6 @@ class Player:
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Previous track <- {self.current_track}")
         self.play()
-
 
 def main():
     try:

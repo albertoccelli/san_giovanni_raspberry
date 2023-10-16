@@ -6,7 +6,9 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
-1.4.1 - customizable front start time
+1.5.0 - front volume is handled by separate routine
+1.4.2 - threading for setting the bt to max volume
+1.4.1 - customizable front start volume
 1.4.0 - unit of measure added from config file
 1.3.0 - added support for multiple encoders
 1.2.0 - multilanguage support added
@@ -20,7 +22,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.4.1"
+__version__ = "1.5.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -32,21 +34,11 @@ import RPi.GPIO as GPIO
 from sensor import DistanceSensor
 from utils import print_datetime
 
-bg_vol_button = 27
-bg_vol_dt_pin = 17
-bg_vol_clk_pin = 18
-echo_pin = 24
-trig_pin = 23
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(bg_vol_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(bg_vol_dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(bg_vol_clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
 if __name__ == "__main__":
     from utils import get_sinks
     import os
     from player import Player
+    import threading
     from utils import load_config, set_spkr_volume_max, curwd
     from config import *
 
@@ -81,15 +73,14 @@ if __name__ == "__main__":
         if len(audio_sinks) == 2:
             break
         print_datetime("SM Demo:\tBT device not found. Please wait...")
-        if (time.time()-start) >= timeout:
+        if (time.time() - start) >= timeout:
             print_datetime("SM Demo:\tTimeout!")
             quit()
         time.sleep(0.5)
 
     # Set volume of neckband to max
-    print_datetime("SM Demo:\tsetting neckband to max")
-    set_spkr_volume_max()
-    print_datetime("SM Demo:\tBT volume set to max")
+    set_max_thread = threading.Thread(target=set_spkr_volume_max)
+    set_max_thread.start()
 
     # initializing bluetooth player
     bluetooth = Player(audio_sinks[1])
@@ -104,23 +95,11 @@ if __name__ == "__main__":
     jack.set_volume(fr_volume)
     jack.play()
 
-    # Front volume encoder
-    def fr_vol_button_pressed(channel):
-        print_datetime("SM Demo:\tfront volume button pressed")
-        jack.toggle_mute()
-
-    def fr_vol_rotation(channel):
-        if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
-            print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
-            jack.raise_volume(step=vol_step, um=vol_step_um)
-        else:
-            print_datetime("SM Demo:\tfront volume rotary encoder counterclockwise")
-            jack.lower_volume(step=vol_step, um=vol_step_um)
-
     # Front track encoder
     def fr_tr_button_pressed(channel):
         print_datetime("SM Demo:\tfront track button pressed")
         jack.toggle_play_pause()
+
 
     def fr_tr_rotation(channel):
         if GPIO.input(fr_tr_dt_pin) == GPIO.input(fr_tr_clk_pin):
@@ -170,13 +149,12 @@ if __name__ == "__main__":
 
 
     # define sensors/button detect functions
-    GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=150)
-    GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=150)
-    GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=150)
+    # front volume control is handled by separate routine
+    GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(fr_tr_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=150)
+    GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_tr_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
@@ -207,6 +185,5 @@ if __name__ == "__main__":
             killall = subprocess.Popen(["killall", "paplay"])
             killall.wait()
             GPIO.cleanup()
-
 
     main()

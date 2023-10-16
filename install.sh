@@ -47,4 +47,12 @@ else
   sudo apt-get install python3-pip -y
   pip install -r "$PWD"/requirements.txt
   echo "Done!"
+
+  # Installing services
+  # Main player
+  ./services/service_install.sh player.service
+
+  # Usb read service
+  ./services/service_install.sh usb_read.service
+
 fi

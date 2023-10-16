@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # check if scripts are installed
-if env | grep -q "^SM_DIR="; then
+echo "Env variable: $SM_DIR"
+if env | grep "SM_DIR="; then
 
   TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
