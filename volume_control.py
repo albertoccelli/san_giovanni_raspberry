@@ -76,10 +76,10 @@ if __name__ == "__main__":
 
     def main():
         try:
-            cur_vol = get_volume(rpi_sink, "db")
-            print(cur_vol)
             print_datetime("SM_Demo:\tVolume control enabled")
             while True:
+                cur_vol = get_volume(rpi_sink, "db")
+                print(cur_vol)
                 time.sleep(1)
 
         except KeyboardInterrupt:
