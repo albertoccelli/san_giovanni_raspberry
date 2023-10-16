@@ -6,6 +6,7 @@ Volume control: creates a routine to change the global volume of the raspberry w
 This is intended to be a parallel routine with the sm demo
 
 Changelogs:
+1.1.0 - automatically sets volume at start
 1.0.0 - first release
 
 Requirements: Raspberry Pi 3
@@ -78,6 +79,11 @@ if __name__ == "__main__":
 
 
     def main():
+        # Set volume at desired level (from config)
+        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, fr_volume],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        set_vol.wait()
         try:
             print_datetime("SM_Demo:\tVolume control enabled")
             while True:
