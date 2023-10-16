@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Function to get mute status of sink
 - Threading for bt volume regulation (saved 2s from boot)
 - Get volume for player class 
 - Welcome prompt

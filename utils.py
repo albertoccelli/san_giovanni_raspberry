@@ -143,7 +143,13 @@ def get_mute():
         if "Name" in line:
             sink = line.split(":")[-1].replace(" ", "")
         if "Mute" in line:
-            mute = line.split("Mute: ")[-1]
+            m = line.split("Mute: ")[-1]
+            if m == "no":
+                mute = False
+            elif m == "yes":
+                mute = True
+            else:
+                mute = None
             muted[sink] = mute
             print(mute)
     return muted
