@@ -6,6 +6,7 @@ Volume control: creates a routine to change the global volume of the raspberry w
 This is intended to be a parallel routine with the sm demo
 
 Changelogs:
+1.2.0 - Locks volume at minimum/maximum
 1.1.0 - automatically sets volume at start
 1.0.0 - first release
 
@@ -31,6 +32,7 @@ from utils import get_sinks, print_datetime, get_volume, get_mute
 rpi_sink = get_sinks()[0]
 rpi_mute = False
 
+cur_vol = 0
 
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
@@ -45,7 +47,10 @@ def fr_vol_button_pressed(channel):
 
 
 def fr_vol_rotation(channel):
+    global cur_vol
     if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
+        if cur_vol == 100:
+            print("Maximum volume reached!")
         print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
         if vol_step_um == "perc":
             step = f"+{vol_step}%"
@@ -67,9 +72,8 @@ def fr_vol_rotation(channel):
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
 
-    cur_vol = get_volume(rpi_sink, "db")
+    cur_vol = get_volume(rpi_sink, "perc")
     print(cur_vol)
-    step = ""
 
 
 if __name__ == "__main__":
