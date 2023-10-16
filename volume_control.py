@@ -44,6 +44,8 @@ def fr_vol_button_pressed(channel):
 
 
 def fr_vol_rotation(channel):
+    cur_vol = get_volume(rpi_sink, "db")
+    print(cur_vol)
     step = ""
     if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
         print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
@@ -78,8 +80,6 @@ if __name__ == "__main__":
         try:
             print_datetime("SM_Demo:\tVolume control enabled")
             while True:
-                cur_vol = get_volume(rpi_sink, "db")
-                print(cur_vol)
                 time.sleep(1)
 
         except KeyboardInterrupt:
