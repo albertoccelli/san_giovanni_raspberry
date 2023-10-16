@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.1.0 - added first attempt prompt
 - 1.0.3 - Sped up connection
 - 1.0.2 - Removed audio prompt at bt connection
 - 1.0.1 - Fixed missing audio prompt
@@ -17,7 +18,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.0.3"
+__version__ = "1.1.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -116,6 +117,7 @@ class Device:
 
     def connect(self):
         attempts = 0
+        audio_prompt("prompts/attempt.wav")
         if self.mac_address:
             while True:
                 print("Trying to connect...")
