@@ -3,6 +3,7 @@ Description=Waits for USB drive to be inserted, then start update
 
 [Service]
 ExecStart=/usr/bin/python3 /path/to/auto_usb_update.py
+Environment=SM_DIR=/path/to/
 
 [Install]
 WantedBy=default.target
