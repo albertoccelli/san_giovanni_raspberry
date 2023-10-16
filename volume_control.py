@@ -74,3 +74,5 @@ def main():
 
     except KeyboardInterrupt:
         GPIO.cleanup()
+
+main()
