@@ -44,7 +44,7 @@ def fr_vol_rotation(channel):
         elif vol_step_um == "db":
             step = f"+{vol_step}db"
         print_datetime(f"{rpi_sink}: \tRaising volume by {step}")
-        set_vol = subprocess.Popen(["pactl", "volume", rpi_sink, step],
+        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         set_vol.wait()
@@ -55,7 +55,7 @@ def fr_vol_rotation(channel):
         elif vol_step_um == "db":
             step = f"-{vol_step}db"
         print_datetime(f"{rpi_sink}: \tLowering volume by {step}")
-        set_vol = subprocess.Popen(["pactl", "volume", rpi_sink, step],
+        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
 
