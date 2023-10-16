@@ -80,7 +80,11 @@ if __name__ == "__main__":
 
     def main():
         # Set volume at desired level (from config)
-        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, str(fr_volume)],
+        if vol_step_um == "perc":
+            vol = f"{fr_volume}%"
+        elif vol_step_um == "db":
+            vol = f"{fr_volume}db"
+        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, vol],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         set_vol.wait()
