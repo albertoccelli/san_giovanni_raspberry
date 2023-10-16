@@ -73,7 +73,7 @@ if __name__ == "__main__":
         if len(audio_sinks) == 2:
             break
         print_datetime("SM Demo:\tBT device not found. Please wait...")
-        if (time.time()-start) >= timeout:
+        if (time.time() - start) >= timeout:
             print_datetime("SM Demo:\tTimeout!")
             quit()
         time.sleep(0.5)
@@ -95,11 +95,11 @@ if __name__ == "__main__":
     jack.set_volume(fr_volume)
     jack.play()
 
-
     # Front track encoder
     def fr_tr_button_pressed(channel):
         print_datetime("SM Demo:\tfront track button pressed")
         jack.toggle_play_pause()
+
 
     def fr_tr_rotation(channel):
         if GPIO.input(fr_tr_dt_pin) == GPIO.input(fr_tr_clk_pin):
@@ -185,6 +185,5 @@ if __name__ == "__main__":
             killall = subprocess.Popen(["killall", "paplay"])
             killall.wait()
             GPIO.cleanup()
-
 
     main()

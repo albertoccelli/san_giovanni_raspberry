@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Audio prompt at bluetooth connection
 - Raspberry volume control from SM_DEMO routine
 
+### Fixed
+
+- Services not correctly installing with script
+
 ## [1.3.0] - 2023-10-11
 
 ### Added
