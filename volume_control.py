@@ -34,6 +34,7 @@ rpi_mute = False
 
 cur_vol = 0
 
+
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
     mute_status = get_mute()
@@ -48,6 +49,7 @@ def fr_vol_button_pressed(channel):
 
 def fr_vol_rotation(channel):
     global cur_vol
+    step = 0
     if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
         print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
         if cur_vol == 100:
@@ -86,6 +88,7 @@ if __name__ == "__main__":
 
     def main():
         # Set volume at desired level (from config)
+        vol = 0
         if vol_step_um == "perc":
             vol = f"{fr_volume}%"
         elif vol_step_um == "db":
