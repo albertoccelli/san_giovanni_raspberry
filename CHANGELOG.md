@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Audio prompt at bluetooth connection
+- Raspberry volume control from SM_DEMO routine
 
 ## [1.3.0] - 2023-10-11
 

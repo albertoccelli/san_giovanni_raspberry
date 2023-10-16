@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.5.0 - front volume is handled by separate routine
 1.4.2 - threading for setting the bt to max volume
 1.4.1 - customizable front start volume
 1.4.0 - unit of measure added from config file
@@ -94,18 +95,6 @@ if __name__ == "__main__":
     jack.set_volume(fr_volume)
     jack.play()
 
-    # Front volume encoder
-    def fr_vol_button_pressed(channel):
-        print_datetime("SM Demo:\tfront volume button pressed")
-        jack.toggle_mute()
-
-    def fr_vol_rotation(channel):
-        if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
-            print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
-            jack.raise_volume(step=vol_step, um=vol_step_um)
-        else:
-            print_datetime("SM Demo:\tfront volume rotary encoder counterclockwise")
-            jack.lower_volume(step=vol_step, um=vol_step_um)
 
     # Front track encoder
     def fr_tr_button_pressed(channel):
@@ -160,8 +149,7 @@ if __name__ == "__main__":
 
 
     # define sensors/button detect functions
-    GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=200)
-    GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=150)
+    # front volume control is handled by separate routine
     GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(fr_tr_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
