@@ -49,30 +49,32 @@ def fr_vol_button_pressed(channel):
 def fr_vol_rotation(channel):
     global cur_vol
     if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
-        if cur_vol == 100:
-            print("Maximum volume reached!")
         print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
-        if vol_step_um == "perc":
-            step = f"+{vol_step}%"
-        elif vol_step_um == "db":
-            step = f"+{vol_step}db"
-        print_datetime(f"{rpi_sink}: \tRaising volume by {step}")
-        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-        set_vol.wait()
+        if cur_vol == 100:
+            print_datetime("SM Demo:\tfront max volume reached")
+        else:
+            if vol_step_um == "perc":
+                step = f"+{vol_step}%"
+            elif vol_step_um == "db":
+                step = f"+{vol_step}db"
+            print_datetime(f"{rpi_sink}: \tRaising volume by {step}")
+            set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            set_vol.wait()
     else:
         print_datetime("SM Demo:\tfront volume rotary encoder counterclockwise")
-        if vol_step_um == "perc":
-            step = f"-{vol_step}%"
-        elif vol_step_um == "db":
-            step = f"-{vol_step}db"
-        print_datetime(f"{rpi_sink}: \tLowering volume by {step}")
-        set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        set_vol.wait()
-
-    cur_vol = get_volume(rpi_sink, "perc")
+        if cur_vol == 0:
+            print_datetime("SM Demo:\tfront minimum volume reached")
+        else:
+            if vol_step_um == "perc":
+                step = f"-{vol_step}%"
+            elif vol_step_um == "db":
+                step = f"-{vol_step}db"
+            print_datetime(f"{rpi_sink}: \tLowering volume by {step}")
+            set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            set_vol.wait()
+    cur_vol = round(get_volume(rpi_sink, "perc"))
     print(cur_vol)
 
 
