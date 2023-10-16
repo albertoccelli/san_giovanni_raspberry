@@ -7,7 +7,7 @@ device_name: "NS7"
 # player settings
 start_track: 1
 volume_steps_um: "db" # unit of measure of volume steps: perc|db
-volume_steps: 2
+volume_steps: 3
 bt_volume: 20
 fr_volume: 50
 
