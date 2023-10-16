@@ -2,7 +2,8 @@
 Description=The main player service. Reproduces music via jack and bluetooth simultaneously.
 
 [Service]
-ExecStart=/home/a.occelli/sm_demo/main.sh
+ExecStart=/path/to/main.sh
+Environment=SM_DIR=/path/to/
 
 [Install]
 WantedBy=default.target
