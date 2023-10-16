@@ -34,13 +34,12 @@ rpi_mute = False
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
     mute_status = get_mute()
-    toggle = "0"
     if mute_status:
         toggle = "0"
     else:
         toggle = "1"
     set_mute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, toggle],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     set_mute.wait()
 
 
@@ -54,7 +53,7 @@ def fr_vol_rotation(channel):
             step = f"+{vol_step}db"
         print_datetime(f"{rpi_sink}: \tRaising volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
-                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         set_vol.wait()
     else:
@@ -65,7 +64,7 @@ def fr_vol_rotation(channel):
             step = f"-{vol_step}db"
         print_datetime(f"{rpi_sink}: \tLowering volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
-                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
 
 
@@ -77,6 +76,8 @@ if __name__ == "__main__":
 
     def main():
         try:
+            cur_vol = get_volume(rpi_sink, "db")
+            print(cur_vol)
             print_datetime("SM_Demo:\tVolume control enabled")
             while True:
                 time.sleep(1)
