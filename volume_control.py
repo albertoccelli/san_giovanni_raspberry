@@ -77,7 +77,6 @@ def fr_vol_rotation(channel):
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             set_vol.wait()
     cur_vol = round(get_volume(rpi_sink, "perc"))
-    print(cur_vol)
 
 
 if __name__ == "__main__":
