@@ -44,9 +44,6 @@ def fr_vol_button_pressed(channel):
 
 
 def fr_vol_rotation(channel):
-    cur_vol = get_volume(rpi_sink, "db")
-    print(cur_vol)
-    step = ""
     if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
         print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
         if vol_step_um == "perc":
@@ -68,6 +65,10 @@ def fr_vol_rotation(channel):
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+
+    cur_vol = get_volume(rpi_sink, "db")
+    print(cur_vol)
+    step = ""
 
 
 if __name__ == "__main__":
