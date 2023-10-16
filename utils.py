@@ -5,6 +5,7 @@
 Utility functions for SM Demo software
 
 Changelog:
+1.3.0 - added function to get mute status
 1.2.0 - added function to get volume
 1.1.0 - added functions to convert mp3 to wav
 1.0.0 - file created
@@ -130,6 +131,24 @@ def get_sinks():
     return names
 
 
+def get_mute():
+    command = "pactl list sinks"
+    sink = ""
+
+    output = subprocess.check_output(command, shell=True, text=True)
+    output_lines = output.splitlines()
+
+    muted = {}
+    for line in output_lines:
+        if "Name" in line:
+            sink = line.split(":")[-1].replace(" ", "")
+        if "Mute" in line:
+            mute = line.split("Mute: ")[-1]
+            muted[sink] = mute
+            print(mute)
+    return muted
+
+
 def get_volumes(style="perc"):
     command = "pactl list sinks"
     sink = ""
@@ -152,7 +171,7 @@ def get_volumes(style="perc"):
                         stereo.append(float(vols[i].split(":")[-1].split(" / ")[1].replace(" ", "").replace("%", "")))
                     elif style == "db":
                         stereo.append(float(vols[i].split(":")[-1].split(" / ")[2].replace(" ", "").replace("dB", "")))
-                value = sum(stereo)/len(stereo)
+                value = sum(stereo) / len(stereo)
                 volumes[sink] = value
     return volumes
 
