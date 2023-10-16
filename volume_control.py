@@ -11,6 +11,7 @@ Changelogs:
 Requirements: Raspberry Pi 3
 """
 
+import time
 import subprocess
 import RPi.GPIO as GPIO
 
@@ -63,3 +64,13 @@ def fr_vol_rotation(channel):
 # enable the functions related to the encoders
 GPIO.add_event_detect(fr_vol_button, GPIO.FALLING, callback=fr_vol_button_pressed, bouncetime=200)
 GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=150)
+
+
+def main():
+    try:
+        print_datetime("SM_Demo:\tVolume control enabled")
+        while True:
+            time.sleep(1)
+
+    except KeyboardInterrupt:
+        GPIO.cleanup()
