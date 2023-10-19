@@ -55,7 +55,7 @@ def bg_vol_rotation(channel):
     step = 0
     try:
         bt_sink = get_sinks()[1]
-        if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
+        if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
             print_datetime("SM Demo:\tbt volume rotary encoder clockwise")
             if cur_bt_vol == 100:
                 print_datetime("SM Demo:\tbt max volume reached")
