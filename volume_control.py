@@ -6,6 +6,7 @@ Volume control: creates a routine to change the global volume of the raspberry w
 This is intended to be a parallel routine with the sm demo
 
 Changelogs:
+1.2.1 - print current volume value
 1.2.0 - Locks volume at minimum/maximum
 1.1.0 - automatically sets volume at start
 1.0.0 - first release
@@ -40,8 +41,10 @@ def fr_vol_button_pressed(channel):
     mute_status = get_mute()
     if mute_status:
         toggle = "0"
+        print(toggle)
     else:
         toggle = "1"
+        print(toggle)
     set_mute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, toggle],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     set_mute.wait()
@@ -59,7 +62,7 @@ def fr_vol_rotation(channel):
                 step = f"+{vol_step}%"
             elif vol_step_um == "db":
                 step = f"+{vol_step}db"
-            print_datetime(f"{rpi_sink}: \tRaising volume by {step}")
+            print_datetime(f"{rpi_sink}:\tRaising volume by {step}")
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             set_vol.wait()
@@ -72,11 +75,12 @@ def fr_vol_rotation(channel):
                 step = f"-{vol_step}%"
             elif vol_step_um == "db":
                 step = f"-{vol_step}db"
-            print_datetime(f"{rpi_sink}: \tLowering volume by {step}")
+            print_datetime(f"{rpi_sink}:\tLowering volume by {step}")
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, step],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             set_vol.wait()
     cur_vol = round(get_volume(rpi_sink, "perc"))
+    print_datetime(f"{rpi_sink}:\tvolume {cur_vol}%")
 
 
 if __name__ == "__main__":
