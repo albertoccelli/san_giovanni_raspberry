@@ -86,8 +86,8 @@ def bg_vol_rotation(channel):
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 set_vol.wait()
                 '''
-        cur_bt_vol = round(get_volume(bt_sink, "perc"))
-        print_datetime(f"{bt_sink}:\tvolume {cur_bt_vol}%")
+        #cur_bt_vol = round(get_volume(bt_sink, "perc"))
+        #print_datetime(f"{bt_sink}:\tvolume {cur_bt_vol}%")
     except IndexError:
         print_datetime("SM Demo:\tbt not connected")
 
