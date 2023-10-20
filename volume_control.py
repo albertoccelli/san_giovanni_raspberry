@@ -67,14 +67,13 @@ def bg_vol_button_pressed(channel):
         print_datetime("SM Demo:\tlost connection with bt")
 
 
-
 def bg_vol_rotation(channel):
     global cur_bt_vol
     global bt_sink
     step = 0
     if bt_mute:
         unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         unmute.wait()
     try:
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
@@ -133,7 +132,7 @@ def fr_vol_rotation(channel):
     step = 0
     if rpi_mute:
         unmute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, "0"],
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         unmute.wait()
     if GPIO.input(fr_vol_dt_pin) == GPIO.input(fr_vol_clk_pin):
         print_datetime("SM Demo:\tfront volume rotary encoder clockwise")
