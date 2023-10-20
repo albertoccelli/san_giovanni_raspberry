@@ -89,6 +89,9 @@ def bg_vol_rotation(channel):
     except NameError:
         print_datetime("SM Demo:\tbt not connected")
 
+    except KeyError:
+        print_datetime("SM Demo:\tlost connection with bt")
+
 
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
