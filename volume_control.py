@@ -54,7 +54,6 @@ def bg_vol_rotation(channel):
     global bt_sink
     step = 0
     try:
-        bt_sink = get_sinks()[1]
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
             pass
             print_datetime("SM Demo:\tbt volume rotary encoder clockwise")
@@ -150,6 +149,12 @@ if __name__ == "__main__":
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
 
+    print_datetime("SM Demo:\tRetrieving bluetooth sink")
+    try:
+        bt_sink = get_sinks()[1]
+        print_datetime("SM Demo:\tDone")
+    except IndexError:
+        print_datetime("SM Demo:\tBt sink not found.")
 
     def main():
         # Set volume at desired level (from config)
