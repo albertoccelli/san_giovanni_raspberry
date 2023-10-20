@@ -193,7 +193,7 @@ if __name__ == "__main__":
                     bt_connected = True
                 except IndexError:
                     print("Cannot connect")
-           time.sleep(1)
+            time.sleep(1)
 
 
     def main():
