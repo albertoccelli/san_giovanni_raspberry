@@ -14,8 +14,8 @@ fr_volume: 50
 # distance sensor
 distance_sensor_enabled: False
 threshold: 250
-echo_pin: 24
-trig_pin: 23
+echo_pin: 27
+trig_pin: 28
 
 ### Encoders
 # bluetooth volume rotary encoder

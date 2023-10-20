@@ -151,7 +151,6 @@ def get_mute():
             else:
                 mute = None
             muted[sink] = mute
-            print(mute)
     return muted
 
 

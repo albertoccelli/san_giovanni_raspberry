@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Bt volume modified by separate routine
 - Print current front volume into debug monitor when rotating encoder
 
 ### Fixed
