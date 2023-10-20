@@ -161,10 +161,10 @@ if __name__ == "__main__":
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, fr_vol],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        if bt_sink:
-            set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
-                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            set_vol.wait()
+        #if bt_sink:
+        #    set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
+        #                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        #    set_vol.wait()
 
         try:
             print_datetime("SM_Demo:\tVolume control enabled")
