@@ -96,6 +96,7 @@ def fr_vol_button_pressed(channel):
     else:
         toggle = "1"
         print(toggle)
+    print(f"Setting mute {toggle}")
     set_mute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, toggle],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     set_mute.wait()
