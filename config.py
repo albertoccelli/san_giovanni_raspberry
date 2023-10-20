@@ -5,6 +5,7 @@
 Configuration script for SM Demo. Configures the GPIOs
 
 Changelogs:
+1.2.0 - support for multilanguage
 1.1.0 - volume unit of measure added
 1.0.0 - first release
 
@@ -26,6 +27,9 @@ from utils import load_config, curwd
 # configuration file
 config_file = f"/{curwd}/config.yaml"
 d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
+
+# Language
+lang = load_config(config_file).get("lang")  # language
 
 # Buttons and encoders
 # Background volume encoder

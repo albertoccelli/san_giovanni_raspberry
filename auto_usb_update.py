@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.2.0: support for multilanguage
 - 1.1.0: added functionality to automatically convert mp3 to wav when importing
 - 1.0.0: file created
 
@@ -15,7 +16,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -27,7 +28,7 @@ import os
 import pyudev
 
 from utils import get_sinks, curwd, convert_media
-
+from config import lang
 
 controlfile = ".update_smdemo.txt"
 jack_sink = get_sinks()[0]
@@ -129,7 +130,7 @@ def update(source, target):
         # Case of error
         print("ERROR:")
         print(stderr)
-        audio_prompt(f"{curwd}/prompts/usb_error.wav")
+        audio_prompt(f"{curwd}/prompts/{lang}/usb_error.wav")
         start_player()
         return
     print("SM UPDATE folder found!")
@@ -138,7 +139,7 @@ def update(source, target):
     time.sleep(0.1)
     # check if usb drive is allowed to update
     if controlfile in check:
-        audio_prompt(f"{curwd}/prompts/wait_update.wav")
+        audio_prompt(f"{curwd}/prompts/{lang}/wait_update.wav")
         # 1. copy config file
         print("1/4 Copying configuration files")
         copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
@@ -157,10 +158,10 @@ def update(source, target):
         print("Done!")
         # end update
         print("Update successful")
-        audio_prompt(f"{curwd}/prompts/update_complete.wav")
+        audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")
         start_player()
     else:
-        audio_prompt(f"{curwd}/prompts/usb_error.wav")
+        audio_prompt(f"{curwd}/prompts/{lang}/usb_error.wav")
         print("Not allowed to copy from this usb")
     time.sleep(1)
     start_player()

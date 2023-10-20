@@ -6,6 +6,7 @@ The Main loop routine of the SM Demo software. First starts by looking for a BT 
 the SM Demo. When the SM demo ends due to disconnection, it once again try to connect to the BT
 
 Changelogs:
+1.2.0 - support for multilanguage
 1.1.0 - welcome prompt added
 1.0.0 - file created
 
@@ -16,7 +17,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -24,8 +25,9 @@ __status__ = "Dev"
 import subprocess
 
 from utils import curwd, audio_prompt
+from config import lang
 
-audio_prompt(f"{curwd}/prompts/welcome.wav")
+audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 while True:
     try:
         #  connect bluetooth device
