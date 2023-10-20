@@ -28,6 +28,7 @@ __status__ = "Dev"
 import time
 import subprocess
 import RPi.GPIO as GPIO
+import threading
 
 from config import *
 from utils import get_sinks, print_datetime, get_volume, get_mute
@@ -179,6 +180,20 @@ if __name__ == "__main__":
         print_datetime("SM Demo:\tBt sink not found.")
         bt_connected = False
 
+    def check_bt():
+        global bt_connected
+        global bt_sink
+        while True:
+            if not bt_connected:
+                try:
+                    bt_sink = get_sinks()[1]
+                    print(bt_sink)
+                    bt_connected = True
+                except IndexError:
+                    print("Cannot connect")
+           time.sleep(1)
+
+
     def main():
         global bt_connected
         global bt_sink
@@ -198,16 +213,13 @@ if __name__ == "__main__":
         #    set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
         #                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         #    set_vol.wait()
+        check_bt_thread = threading.Thread(target=check_bt)
+        check_bt_thread.daemon = True
+        check_bt_thread.start()
 
         try:
             print_datetime("SM_Demo:\tVolume control enabled")
             while True:
-                if not bt_connected:
-                    try:
-                        bt_sink = get_sinks()[1]
-                        bt_connected = True
-                    except IndexError:
-                        print("Cannot connect")
                 time.sleep(1)
 
         except KeyboardInterrupt:
