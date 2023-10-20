@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- In Utils a function to reload SM services has been added
 - Support for multilanguage (ENG/ITA)
 - Unmute when vol rotary encoder is turned
 - Bt volume modified by separate routine

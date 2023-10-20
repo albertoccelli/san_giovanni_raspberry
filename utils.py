@@ -5,6 +5,7 @@
 Utility functions for SM Demo software
 
 Changelog:
+1.4.0 - added function to reload services
 1.3.0 - added function to get mute status
 1.2.0 - added function to get volume
 1.1.0 - added functions to convert mp3 to wav
@@ -17,7 +18,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.4.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -30,6 +31,17 @@ from datetime import datetime
 
 curwd = os.environ["SM_DIR"]
 
+
+def reload_system():
+    service_dir = f"{curwd}/services"
+    services = []
+    files = os.listdir(service_dir)
+    for f in files:
+        if ".service" in f:
+            services.append(f)
+    print(services)
+    for s in services:
+        os.system(f"systemctl --user daemon-reload && systemctl --user restart {s}")
 
 def convert_mp3_to_wav(source):
     if ".mp3" in source:
