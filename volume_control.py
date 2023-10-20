@@ -90,12 +90,14 @@ def bg_vol_rotation(channel):
         print_datetime("SM Demo:\tbt not connected")
 
     except KeyError:
+        # connection with bt is lost
         print_datetime("SM Demo:\tlost connection with bt")
 
 
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
     mute_status = get_mute()
+    print(f"Mute status = {mute_status}")
     if mute_status == 1:
         toggle = "0"
         print(toggle)
@@ -148,14 +150,19 @@ if __name__ == "__main__":
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
 
+    bt_connected = True
     print_datetime("SM Demo:\tRetrieving bluetooth sink")
     try:
         bt_sink = get_sinks()[1]
         print_datetime("SM Demo:\tDone")
+        bt_connected = True
     except IndexError:
         print_datetime("SM Demo:\tBt sink not found.")
+        bt_connected = False
 
     def main():
+        global bt_connected
+        global bt_sink
         # Set volume at desired level (from config)
         fr_vol = 0
         bt_vol = 0
@@ -176,6 +183,12 @@ if __name__ == "__main__":
         try:
             print_datetime("SM_Demo:\tVolume control enabled")
             while True:
+                if not bt_connected:
+                    try:
+                        bt_sink = get_sinks()[1]
+                        bt_connected = True
+                    except IndexError:
+                        print("Cannot connect")
                 time.sleep(1)
 
         except KeyboardInterrupt:
