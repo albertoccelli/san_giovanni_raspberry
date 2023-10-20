@@ -46,7 +46,26 @@ cur_bt_vol = 0
 
 # Background (neckband) volume encoder
 def bg_vol_button_pressed(channel):
-    print_datetime("SM Demo:\tbackground volume button pressed")
+    print_datetime("SM Demo:\tbt volume button pressed")
+    try:
+        mute_status = get_mute()[bt_sink]
+        if mute_status:
+            toggle = "0"
+            print(toggle)
+        else:
+            toggle = "1"
+            print(toggle)
+        print_datetime(f"{bt_sink}:\tSet mute {toggle}")
+        set_mute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, toggle],
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        set_mute.wait()
+    except NameError:
+        print_datetime("SM Demo:\tbt not connected")
+
+    except KeyError:
+        # connection with bt is lost
+        print_datetime("SM Demo:\tlost connection with bt")
+
 
 
 def bg_vol_rotation(channel):
@@ -83,8 +102,6 @@ def bg_vol_rotation(channel):
                 set_vol.wait()
         cur_bt_vol = round(get_volume(bt_sink, "perc"))
         print_datetime(f"{bt_sink}:\tvolume {cur_bt_vol}%")
-    except IndexError:
-        print_datetime("SM Demo:\tbt not connected")
 
     except NameError:
         print_datetime("SM Demo:\tbt not connected")
@@ -97,14 +114,13 @@ def bg_vol_rotation(channel):
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
     mute_status = get_mute()[rpi_sink]
-    print(f"Mute status = {mute_status}")
     if mute_status:
         toggle = "0"
         print(toggle)
     else:
         toggle = "1"
         print(toggle)
-    print(f"Setting mute {toggle}")
+    print_datetime(f"{rpi_sink}:\tSet mute {toggle}")
     set_mute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, toggle],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     set_mute.wait()
