@@ -54,7 +54,7 @@ def bg_vol_rotation(channel):
     global bt_sink
     step = 0
     try:
-        #bt_sink = get_sinks()[1]
+        bt_sink = get_sinks()[1]
         if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
             pass
             print_datetime("SM Demo:\tbt volume rotary encoder clockwise")
@@ -86,8 +86,8 @@ def bg_vol_rotation(channel):
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 set_vol.wait()
                 '''
-        #cur_bt_vol = round(get_volume(bt_sink, "perc"))
-        #print_datetime(f"{bt_sink}:\tvolume {cur_bt_vol}%")
+        cur_bt_vol = round(get_volume(bt_sink, "perc"))
+        print_datetime(f"{bt_sink}:\tvolume {cur_bt_vol}%")
     except IndexError:
         print_datetime("SM Demo:\tbt not connected")
 
