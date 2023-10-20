@@ -96,7 +96,7 @@ def bg_vol_rotation(channel):
 
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
-    mute_status = get_mute()[0]
+    mute_status = get_mute()[rpi_sink]
     print(f"Mute status = {mute_status}")
     if mute_status:
         toggle = "0"
