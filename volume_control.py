@@ -51,10 +51,8 @@ def bg_vol_button_pressed(channel):
         mute_status = get_mute()[bt_sink]
         if mute_status:
             toggle = "0"
-            print(toggle)
         else:
             toggle = "1"
-            print(toggle)
         print_datetime(f"{bt_sink}:\tSet mute {toggle}")
         set_mute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, toggle],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -116,10 +114,8 @@ def fr_vol_button_pressed(channel):
     mute_status = get_mute()[rpi_sink]
     if mute_status:
         toggle = "0"
-        print(toggle)
     else:
         toggle = "1"
-        print(toggle)
     print_datetime(f"{rpi_sink}:\tSet mute {toggle}")
     set_mute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, toggle],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
