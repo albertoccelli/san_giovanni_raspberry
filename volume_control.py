@@ -6,6 +6,7 @@ Volume control: creates a routine to change the global volume of the raspberry w
 This is intended to be a parallel routine with the sm demo
 
 Changelogs:
+1.3.2 - bugfix
 1.3.1 - unmute when vol encoder is turned
 1.3.0 - bt volume control added
 1.2.1 - print current volume value
@@ -189,6 +190,9 @@ if __name__ == "__main__":
                 try:
                     bt_sink = get_sinks()[1]
                     print(bt_sink)
+                    # unmute bt
+                    unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
+                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     bt_connected = True
                 except IndexError:
                     print("Cannot connect")
@@ -207,13 +211,22 @@ if __name__ == "__main__":
         elif vol_step_um == "db":
             fr_vol = f"{fr_volume}db"
             bt_vol = f"{bt_volume}%"
+        # set rpi volume to initial level
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, fr_vol],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+        # unmute rpi
+        unmute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, "0"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        unmute.wait()
         if bt_sink:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             set_vol.wait()
+            # unmute bt
+            unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            unmute.wait()
         check_bt_thread = threading.Thread(target=check_bt)
         check_bt_thread.daemon = True
         check_bt_thread.start()

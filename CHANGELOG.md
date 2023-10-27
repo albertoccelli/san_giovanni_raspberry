@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Known bugs on the install script
+- Known bugs in volume control python script
+- Known bugs in the install script
 
 ## [1.4.0] 
 
