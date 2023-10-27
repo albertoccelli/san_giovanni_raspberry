@@ -23,7 +23,7 @@ __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
 
 import subprocess
-
+import os
 from utils import curwd, audio_prompt
 from config import lang
 print(f"{curwd}/prompts/{lang}/welcome.wav")
