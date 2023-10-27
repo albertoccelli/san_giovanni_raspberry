@@ -36,9 +36,9 @@ from utils import get_sinks, print_datetime, get_volume, get_mute
 
 rpi_sink = get_sinks()[0]
 rpi_mute = False
+bt_mute = False
 try:
     bt_sink = get_sinks()[1]
-    bt_mute = False
 except IndexError:
     print("No bt sink found! Bt encoder disabled")
 
@@ -171,6 +171,7 @@ if __name__ == "__main__":
     GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=200)
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=200)
+    bt_sink = None
 
     bt_connected = True
     print_datetime("SM Demo:\tRetrieving bluetooth sink")
@@ -193,6 +194,7 @@ if __name__ == "__main__":
                     # unmute bt
                     unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    bt_mute = False
                     bt_connected = True
                 except IndexError:
                     print("Cannot connect")
