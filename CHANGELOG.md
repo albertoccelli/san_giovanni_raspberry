@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Normalized prompt audio files
 - Known bugs in volume control python script
 - Known bugs in the install script
 
