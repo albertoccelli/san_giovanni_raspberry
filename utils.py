@@ -74,8 +74,9 @@ def print_datetime(argument):
 
 def set_spkr_volume_max():
     try:
+        bluez = get_bluez()[0]
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
-                   "/org/bluez/hci0/dev_78_5E_A2_F9_A5_9A", "org.bluez.MediaControl1.VolumeUp"]
+                   bluez, "org.bluez.MediaControl1.VolumeUp"]
         print_datetime("Setting neckband volume at maximum")
         for i in range(30):
             raise_volume = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -120,7 +121,6 @@ def start_player():
 def get_bluez(sink=None):
     if sink is None:
         sink = get_sinks()[1]
-        print(sink)
     bluez = ""
     cur_sink = ""
     command = "pactl list sinks"
@@ -133,7 +133,7 @@ def get_bluez(sink=None):
             cur_sink = line.split(":")[-1].replace(" ", "")
         if "bluez.path" in line:
             if cur_sink == sink:
-                bluez = line.split("=")[-1].replace(" ", "")
+                bluez = line.split("=")[-1].replace(" ", "").replace('"', '')
     return bluez
 
 
