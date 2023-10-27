@@ -43,6 +43,7 @@ def reload_system():
     for s in services:
         os.system(f"systemctl --user daemon-reload && systemctl --user restart {s}")
 
+
 def convert_mp3_to_wav(source):
     if ".mp3" in source:
         wav_file = f"{source.split('.mp3')[0]}.wav"
@@ -74,6 +75,7 @@ def set_spkr_volume_max():
     try:
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
                    "/org/bluez/hci0/dev_78_5E_A2_F9_A5_9A", "org.bluez.MediaControl1.VolumeUp"]
+        print_datetime("Setting neckband volume at maximum")
         for i in range(30):
             raise_volume = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             raise_volume.wait()
