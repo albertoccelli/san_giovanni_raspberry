@@ -20,7 +20,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -210,10 +210,10 @@ if __name__ == "__main__":
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, fr_vol],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        #if bt_sink:
-        #    set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
-        #                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        #    set_vol.wait()
+        if bt_sink:
+            set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            set_vol.wait()
         check_bt_thread = threading.Thread(target=check_bt)
         check_bt_thread.daemon = True
         check_bt_thread.start()
