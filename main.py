@@ -26,7 +26,7 @@ import subprocess
 
 from utils import curwd, audio_prompt
 from config import lang
-
+print(f"{curwd}/prompts/{lang}/welcome.wav")
 audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 while True:
     try:
