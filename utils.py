@@ -5,6 +5,7 @@
 Utility functions for SM Demo software
 
 Changelog:
+1.5.0 - added function to get bluez path
 1.4.0 - added function to reload services
 1.3.0 - added function to get mute status
 1.2.0 - added function to get volume
@@ -81,6 +82,7 @@ def set_spkr_volume_max():
             raise_volume.wait()
             # print(stdout)
             time.sleep(0.05)
+        print_datetime("Done")
     except Exception as e:
         print(e)
 
@@ -115,6 +117,26 @@ def start_player():
     restart_player.wait()
 
 
+def get_bluez(sink=None):
+    if sink is None:
+        sink = get_sinks()[1]
+        print(sink)
+    bluez = ""
+    cur_sink = ""
+    command = "pactl list sinks"
+    output = subprocess.check_output(command, shell=True, text=True)
+    output_lines = output.splitlines()
+
+    volumes = {}
+    for line in output_lines:
+        if "Name" in line:
+            cur_sink = line.split(":")[-1].replace(" ", "")
+        if "bluez.path" in line:
+            if cur_sink == sink:
+                bluez = line.split("=")[-1].replace(" ", "")
+    return bluez
+
+
 def check_player():
     # check if player is running
     check = subprocess.Popen(["systemctl", "--user", "is-active", "player.service"], stdout=subprocess.PIPE,
@@ -136,12 +158,9 @@ def get_sinks():
     output_lines = output.splitlines()
 
     names = []
-    paths = []
     for line in output_lines:
         if "Name" in line:
             names.append(line.split(":")[-1].replace(" ", ""))
-        if "bluez.path" in line:
-            paths.append(line.split(":")[-1].replace('"', '').replace(' ', ''))
     return names
 
 
@@ -197,22 +216,6 @@ def get_volumes(style="perc"):
 
 def get_volume(sink, style="perc"):
     return get_volumes(style)[sink]
-
-
-def get_paths():
-    command = "pactl list sinks"
-
-    output = subprocess.check_output(command, shell=True, text=True)
-    output_lines = output.splitlines()
-
-    names = []
-    paths = []
-    for line in output_lines:
-        if "Name" in line:
-            names.append(line.split(":")[-1].replace(" ", ""))
-        if ".path" in line:
-            paths.append(line.split("=")[-1].replace('"', '').replace(' ', ''))
-    return paths
 
 
 jack_sink = get_sinks()[0]
