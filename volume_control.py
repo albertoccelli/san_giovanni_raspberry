@@ -115,7 +115,6 @@ def bg_vol_rotation(channel):
 
 def fr_vol_button_pressed(channel):
     print_datetime("SM Demo:\tfront volume button pressed")
-    '''
     mute_status = get_mute()[rpi_sink]
     if mute_status:
         toggle = "0"
@@ -125,7 +124,7 @@ def fr_vol_button_pressed(channel):
     set_mute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, toggle],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     set_mute.wait()
-    '''
+
 
 def fr_vol_rotation(channel):
     global cur_rpi_vol
