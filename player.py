@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.3.0 - variable to set/unset loop
 1.2.0 - set player's boundaries
 1.1.2 - fixed not unmuting when adjusting volume
 1.1.1 - verbose mute function
@@ -120,7 +121,7 @@ class Player:
         self.current_track = self.playlist[self.current_index]
         return self.playlist
 
-    def play_audio(self, filename=None):
+    def play_audio(self, filename=None, loop = False):
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
@@ -136,6 +137,8 @@ class Player:
                     print_datetime(f"Error reproducing audio: {stderr}")
                     break
                 self.audio_process.wait()
+                if not loop:
+                    break
             except Exception as error:
                 print_datetime(f"{self.sink}: \tError riproducing audio: {error}")
                 break
