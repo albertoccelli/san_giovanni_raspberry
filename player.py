@@ -146,6 +146,7 @@ class Player:
             except Exception as error:
                 print_datetime(f"{self.sink}: \tError riproducing audio: {error}")
                 break
+        self.stop()
         self.on_reproduction_end()
 
     def play(self, loop=False):
