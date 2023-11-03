@@ -5,6 +5,8 @@
 Utility functions for SM Demo software
 
 Changelog:
+1.5.0 - added function to get bluez path
+1.4.0 - added function to reload services
 1.3.0 - added function to get mute status
 1.2.0 - added function to get volume
 1.1.0 - added functions to convert mp3 to wav
@@ -17,7 +19,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.4.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -29,6 +31,18 @@ import os
 from datetime import datetime
 
 curwd = os.environ["SM_DIR"]
+
+
+def reload_system():
+    service_dir = f"{curwd}/services"
+    services = []
+    files = os.listdir(service_dir)
+    for f in files:
+        if ".service" in f:
+            services.append(f)
+    print(services)
+    for s in services:
+        os.system(f"systemctl --user daemon-reload && systemctl --user restart {s}")
 
 
 def convert_mp3_to_wav(source):
@@ -60,13 +74,16 @@ def print_datetime(argument):
 
 def set_spkr_volume_max():
     try:
+        bluez = get_bluez()[0]
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
-                   "/org/bluez/hci0/dev_78_5E_A2_F9_A5_9A", "org.bluez.MediaControl1.VolumeUp"]
+                   bluez, "org.bluez.MediaControl1.VolumeUp"]
+        print_datetime("Setting neckband volume at maximum")
         for i in range(30):
             raise_volume = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             raise_volume.wait()
             # print(stdout)
             time.sleep(0.05)
+        print_datetime("Done")
     except Exception as e:
         print(e)
 
@@ -101,6 +118,25 @@ def start_player():
     restart_player.wait()
 
 
+def get_bluez(sink=None):
+    if sink is None:
+        sink = get_sinks()[1]
+    bluez = ""
+    cur_sink = ""
+    command = "pactl list sinks"
+    output = subprocess.check_output(command, shell=True, text=True)
+    output_lines = output.splitlines()
+
+    volumes = {}
+    for line in output_lines:
+        if "Name" in line:
+            cur_sink = line.split(":")[-1].replace(" ", "")
+        if "bluez.path" in line:
+            if cur_sink == sink:
+                bluez = line.split("=")[-1].replace(" ", "").replace('"', '')
+    return bluez
+
+
 def check_player():
     # check if player is running
     check = subprocess.Popen(["systemctl", "--user", "is-active", "player.service"], stdout=subprocess.PIPE,
@@ -122,12 +158,9 @@ def get_sinks():
     output_lines = output.splitlines()
 
     names = []
-    paths = []
     for line in output_lines:
         if "Name" in line:
             names.append(line.split(":")[-1].replace(" ", ""))
-        if "bluez.path" in line:
-            paths.append(line.split(":")[-1].replace('"', '').replace(' ', ''))
     return names
 
 
@@ -183,22 +216,6 @@ def get_volumes(style="perc"):
 
 def get_volume(sink, style="perc"):
     return get_volumes(style)[sink]
-
-
-def get_paths():
-    command = "pactl list sinks"
-
-    output = subprocess.check_output(command, shell=True, text=True)
-    output_lines = output.splitlines()
-
-    names = []
-    paths = []
-    for line in output_lines:
-        if "Name" in line:
-            names.append(line.split(":")[-1].replace(" ", ""))
-        if ".path" in line:
-            paths.append(line.split("=")[-1].replace('"', '').replace(' ', ''))
-    return paths
 
 
 jack_sink = get_sinks()[0]

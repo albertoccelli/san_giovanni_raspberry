@@ -19,17 +19,17 @@ trig_pin: 28
 
 ### Encoders
 # bluetooth volume rotary encoder
-bg_vol_button: 23 #19
-bg_vol_dt_pin: 24 #20 
-bg_vol_clk_pin: 25 #21
+bg_vol_button: 19
+bg_vol_dt_pin: 20 
+bg_vol_clk_pin: 21
 # bluetooth track rotary encoder
 bg_tr_button: 5
 bg_tr_dt_pin: 6
 bg_tr_clk_pin: 12
 # Front volume encoder
-fr_vol_button: 19 #23
-fr_vol_dt_pin: 20 #24
-fr_vol_clk_pin: 21 #25
+fr_vol_button: 23
+fr_vol_dt_pin: 24
+fr_vol_clk_pin: 25
 # Front track encoder
 fr_tr_button: 4
 fr_tr_dt_pin: 17

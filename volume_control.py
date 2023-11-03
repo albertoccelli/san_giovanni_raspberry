@@ -6,6 +6,7 @@ Volume control: creates a routine to change the global volume of the raspberry w
 This is intended to be a parallel routine with the sm demo
 
 Changelogs:
+1.3.2 - bugfix
 1.3.1 - unmute when vol encoder is turned
 1.3.0 - bt volume control added
 1.2.1 - print current volume value
@@ -20,7 +21,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -35,12 +36,11 @@ from utils import get_sinks, print_datetime, get_volume, get_mute
 
 rpi_sink = get_sinks()[0]
 rpi_mute = False
+bt_mute = False
 try:
     bt_sink = get_sinks()[1]
-    bt_mute = False
 except IndexError:
     print("No bt sink found! Bt encoder disabled")
-
 
 cur_rpi_vol = 0
 cur_bt_vol = 0
@@ -170,6 +170,7 @@ if __name__ == "__main__":
     GPIO.add_event_detect(fr_vol_dt_pin, GPIO.BOTH, callback=fr_vol_rotation, bouncetime=200)
     GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=200)
+    bt_sink = None
 
     bt_connected = True
     print_datetime("SM Demo:\tRetrieving bluetooth sink")
@@ -184,11 +185,17 @@ if __name__ == "__main__":
     def check_bt():
         global bt_connected
         global bt_sink
+        global bt_mute
         while True:
             if not bt_connected:
                 try:
                     bt_sink = get_sinks()[1]
                     print(bt_sink)
+                    # unmute bt
+                    unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
+                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    unmute.wait()
+                    bt_mute = False
                     bt_connected = True
                 except IndexError:
                     print("Cannot connect")
@@ -207,13 +214,22 @@ if __name__ == "__main__":
         elif vol_step_um == "db":
             fr_vol = f"{fr_volume}db"
             bt_vol = f"{bt_volume}%"
+        # set rpi volume to initial level
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", rpi_sink, fr_vol],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        #if bt_sink:
-        #    set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
-        #                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        #    set_vol.wait()
+        # unmute rpi
+        unmute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, "0"],
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        unmute.wait()
+        if bt_sink:
+            set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            set_vol.wait()
+            # unmute bt
+            unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            unmute.wait()
         check_bt_thread = threading.Thread(target=check_bt)
         check_bt_thread.daemon = True
         check_bt_thread.start()
