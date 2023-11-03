@@ -125,7 +125,7 @@ class Player:
         self.current_track = self.playlist[self.current_index]
         return self.playlist
 
-    def play_audio(self, filename=None, loop = False):
+    def play_audio(self, filename=None, loop=False):
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
@@ -148,8 +148,8 @@ class Player:
                 break
         self.on_reproduction_end()
 
-    def play(self, loop = False):
-        self.audio_thread = threading.Thread(target=self.play_audio, args = (None,loop))
+    def play(self, loop=False):
+        self.audio_thread = threading.Thread(target=self.play_audio, args=(None, loop))
         self.audio_thread.daemon = True
         self.audio_thread.start()
 
@@ -239,6 +239,11 @@ if __name__ == "__main__":
         time.sleep(3)
 
     # initialize players
+    class newPlayer(Player):
+        def on_reproduction_end(self):
+            print("OVERRIDDEN FUNCTION")
+
+
     bluetooth = Player(bt_sink)
     jack = Player(jack_sink)
 
