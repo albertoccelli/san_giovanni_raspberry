@@ -19,7 +19,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -67,6 +67,10 @@ class Player:
         set_vol.wait()
         self.get_vol()
         return
+
+    def on_reproduction_end(self):
+        print_datetime(f"{self.sink}:\treproduction ended")
+        pass
 
     def mute(self):
         print_datetime(f"{self.sink}: \tmute")
@@ -142,9 +146,10 @@ class Player:
             except Exception as error:
                 print_datetime(f"{self.sink}: \tError riproducing audio: {error}")
                 break
+        self.on_reproduction_end()
 
-    def play(self):
-        self.audio_thread = threading.Thread(target=self.play_audio)
+    def play(self, loop = False):
+        self.audio_thread = threading.Thread(target=self.play_audio, args = (None,loop))
         self.audio_thread.daemon = True
         self.audio_thread.start()
 
@@ -216,7 +221,7 @@ if __name__ == "__main__":
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    voice_path = f"{script_dir}/media/front/"
+    voice_path = f"{script_dir}/media/front/ita/"
     bg_path = f"{script_dir}/media/neck/"
     voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
     print_datetime(voice_playlist)
@@ -254,7 +259,7 @@ if __name__ == "__main__":
 
     # setup player
     bluetooth.load(bg_playlist)
-    bluetooth.play()
+    bluetooth.play(loop=True)
     jack.load(voice_playlist)
     jack.play()
     print_datetime(voice_playlist)
