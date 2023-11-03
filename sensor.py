@@ -25,11 +25,6 @@ ECHO_PIN = 24
 
 treshold = 100
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(TRIG_PIN, GPIO.OUT)
-GPIO.setup(ECHO_PIN, GPIO.IN)
-
-
 class DistanceSensor:
     def __init__(self, trigpin, echopin, on_posedge_callback=None, on_negedge_callback=None):
         self.trigpin = trigpin
@@ -89,6 +84,9 @@ class DistanceSensor:
 
 
 if __name__ == "__main__":
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(TRIG_PIN, GPIO.OUT)
+    GPIO.setup(ECHO_PIN, GPIO.IN)
 
     def custom_cb():
         print("OCHEI")

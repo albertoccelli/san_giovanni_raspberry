@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0]
+
+### Added
+
+- In Utils a function to reload SM services has been added
+- Support for multilanguage (ENG/ITA)
+- Unmute when vol rotary encoder is turned
+- Bt volume modified by separate routine
+- Print current front volume into debug monitor when rotating encoder
+
+### Fixed
+
+- Normalized prompt audio files
+- Known bugs in volume control python script
+- Known bugs in the install script
+
 ## [1.4.0] 
 
 ### Added

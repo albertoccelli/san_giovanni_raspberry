@@ -55,4 +55,13 @@ else
   # Usb read service
   ./services/service_install.sh usb_read.service
 
+  # shellcheck disable=SC2162
+  read -p "Do you want to reboot the system now? (y/n)" answer
+  if [ "$answer" == "y" ] ; then
+    echo "Rebooting..."
+    sudo reboot now
+  elif [ "$answer" == "n" ] ; then
+    echo "Install complete"
+  fi
+
 fi

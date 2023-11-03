@@ -14,24 +14,24 @@ fr_volume: 50
 # distance sensor
 distance_sensor_enabled: False
 threshold: 250
-echo_pin: 24
-trig_pin: 23
+echo_pin: 27
+trig_pin: 28
 
 ### Encoders
 # bluetooth volume rotary encoder
-bg_vol_button: 4
-bg_vol_dt_pin: 17
-bg_vol_clk_pin: 18
+bg_vol_button: 19
+bg_vol_dt_pin: 20 
+bg_vol_clk_pin: 21
 # bluetooth track rotary encoder
-bg_tr_button: 23
-bg_tr_dt_pin: 24
-bg_tr_clk_pin: 25
+bg_tr_button: 5
+bg_tr_dt_pin: 6
+bg_tr_clk_pin: 12
 # Front volume encoder
-fr_vol_button: 5
-fr_vol_dt_pin: 6
-fr_vol_clk_pin: 12
+fr_vol_button: 23
+fr_vol_dt_pin: 24
+fr_vol_clk_pin: 25
 # Front track encoder
-fr_tr_button: 19
-fr_tr_dt_pin: 20
-fr_tr_clk_pin: 21
+fr_tr_button: 4
+fr_tr_dt_pin: 17
+fr_tr_clk_pin: 18
 

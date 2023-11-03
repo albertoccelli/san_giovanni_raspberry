@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.6.0 - bt volume handled by separate routine
 1.5.0 - front volume is handled by separate routine
 1.4.2 - threading for setting the bt to max volume
 1.4.1 - customizable front start volume
@@ -22,7 +23,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.5.0"
+__version__ = "1.6.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -92,7 +93,6 @@ if __name__ == "__main__":
     jack = Player(audio_sinks[0])
     jack.load(voice_playlist)
     jack.current_index = start_track
-    jack.set_volume(fr_volume)
     jack.play()
 
     # Front track encoder
@@ -109,18 +109,6 @@ if __name__ == "__main__":
             print_datetime("SM Demo:\tfront track rotary encoder counterclockwise")
             jack.prev_track()
 
-    # Background (neckband) volume encoder
-    def bg_vol_button_pressed(channel):
-        print_datetime("SM Demo:\tbackground volume button pressed")
-        bluetooth.toggle_mute()
-
-    def bg_vol_rotation(channel):
-        if GPIO.input(bg_vol_dt_pin) == GPIO.input(bg_vol_clk_pin):
-            print_datetime("SM Demo:\tbackground volume rotary encoder clockwise")
-            bluetooth.raise_volume(step=vol_step, um=vol_step_um)
-        else:
-            print_datetime("SM Demo:\tbackground volume rotary encoder counterclockwise")
-            bluetooth.lower_volume(step=vol_step, um=vol_step_um)
 
     # Front track encoder
     def bg_tr_button_pressed(channel):
@@ -152,8 +140,6 @@ if __name__ == "__main__":
     # front volume control is handled by separate routine
     GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(fr_tr_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_vol_button, GPIO.FALLING, callback=bg_vol_button_pressed, bouncetime=200)
-    GPIO.add_event_detect(bg_vol_dt_pin, GPIO.BOTH, callback=bg_vol_rotation, bouncetime=150)
     GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=200)
     GPIO.add_event_detect(bg_tr_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
 
