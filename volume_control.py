@@ -45,6 +45,7 @@ except IndexError:
 cur_rpi_vol = 0
 cur_bt_vol = 0
 
+
 # Background (neckband) volume encoder
 def bg_vol_button_pressed(channel):
     print_datetime("SM Demo:\tbt volume button pressed")
@@ -184,6 +185,7 @@ if __name__ == "__main__":
     def check_bt():
         global bt_connected
         global bt_sink
+        global bt_mute
         while True:
             if not bt_connected:
                 try:
@@ -192,6 +194,7 @@ if __name__ == "__main__":
                     # unmute bt
                     unmute = subprocess.Popen(["pactl", "set-sink-mute", bt_sink, "0"],
                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    unmute.wait()
                     bt_mute = False
                     bt_connected = True
                 except IndexError:
@@ -217,7 +220,7 @@ if __name__ == "__main__":
         set_vol.wait()
         # unmute rpi
         unmute = subprocess.Popen(["pactl", "set-sink-mute", rpi_sink, "0"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         unmute.wait()
         if bt_sink:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", bt_sink, bt_vol],
