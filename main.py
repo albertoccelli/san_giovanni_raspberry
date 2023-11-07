@@ -25,9 +25,11 @@ __status__ = "Dev"
 import subprocess
 import os
 from utils import curwd, audio_prompt
-from config import lang
+from config import *
 print(f"{curwd}/prompts/{lang}/welcome.wav")
 audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
+
+
 while True:
     try:
         #  connect bluetooth device

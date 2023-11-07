@@ -6,6 +6,10 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.7.0 - button 1 implemented:
+	short touch -> change language
+	mid touch -> change background noise
+	long touch -> turn off
 1.6.0 - bt volume handled by separate routine
 1.5.0 - front volume is handled by separate routine
 1.4.2 - threading for setting the bt to max volume
@@ -43,6 +47,7 @@ if __name__ == "__main__":
     from utils import load_config, set_spkr_volume_max, curwd
     from config import *
 
+    langs = ["eng", "ita", "fra", "spa"]
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
     if lang:
@@ -93,7 +98,7 @@ if __name__ == "__main__":
     # initializing jack player
     class JackPlayer(Player):
         def on_reproduction_end(self):
-            bluetooth.stop()
+            pass
 
 
     jack = JackPlayer(audio_sinks[0])
@@ -102,6 +107,46 @@ if __name__ == "__main__":
     jack.play(loop=True)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
+
+    def button_1_pressed(channel):
+        elapsed = 0
+        pressed_time = time.time()
+        while GPIO.input(button_1) == GPIO.HIGH:
+            elapsed = time.time()-pressed_time
+            if elapsed >= 5:
+                long_1_press()
+                return
+        if elapsed <= 0.1:
+            pass
+        elif elapsed > 0.1 and elapsed <= 2:
+            change_lang()
+        elif elapsed > 2 and elapsed < 5:
+            change_noise()
+        print(elapsed)
+
+    def long_1_press():
+        print("LONG PRESS")
+
+    def change_noise():
+        print_datetime("SM Demo:\tmid button press")
+        bluetooth.next_track()
+
+    def change_lang():
+        global lang
+        next_lang_index = langs.index(lang) + 1
+
+        if next_lang_index >= len(langs):
+            next_lang_index = 0
+        lang = langs[next_lang_index]
+        print(f"Selected language: {lang}")
+        voice_path = f"{script_dir}/media/front/{lang}/"
+        voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
+        voice_playlist.sort()
+        jack.stop()
+        jack.load(voice_playlist)
+        jack.play(loop = True)
+
+    GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=200)
 
     # the main function
     def main():
