@@ -12,12 +12,10 @@ bt_volume: 20
 fr_volume: 50
 
 # Buttons
-# Front track
-fr_tr_button: 19
-# bluetooth track
-bg_tr_button: 5
-# Front volume up
-fr_vol_up_button: 23
-# Front volume down
-fr_vol_down_button: 4
+# Button 1
+button_1: 4
+# Button 2
+button_2: 23
+# Button 3
+button_3: 5
 
