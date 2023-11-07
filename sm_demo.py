@@ -99,7 +99,7 @@ if __name__ == "__main__":
     jack = JackPlayer(audio_sinks[0])
     jack.load(voice_playlist)
     jack.current_index = start_track
-    jack.play()
+    jack.play(loop=True)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
 
