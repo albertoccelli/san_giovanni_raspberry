@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Across The Universe - 1.6.0]
+
+### Added
+- Start/Stop function
+- Loop function in the player library
+- 
+### Changed
+- Replaced the 4 rotary encoders with 6 buttons
+
+### Fixed 
+- Bluetooth restarts itself if problems with bluetooth.service
 
 ## [1.5.0]
 

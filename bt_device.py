@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.2.0 - restart bluetooth service if too many attempts are made
 - 1.1.0 - added first attempt prompt
 - 1.0.3 - Sped up connection
 - 1.0.2 - Removed audio prompt at bt connection
@@ -127,10 +128,18 @@ class Device:
                 if "failed" in outcome.lower():
                     if attempts <= 5:
                         print_datetime("Failed to connect: please check that the device is turned on, then try again")
-                        audio_prompt(f"prompts/{lang}/turnon.wav")
+                        if attempts%10 == 9:
+                            audio_prompt(f"prompts/{lang}/turnon.wav")
                     else:
+                        if attempts == 30:
+                            if "NotReady" in outcome:
+                                print_datetime("Rebooting the device")
+                                reboot = supbrocess.Popen(["sudo", "systemctl", "restart", "bluetooth.service"])
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
-                        audio_prompt(f"prompts/{lang}/error1.wav")
+                        if attempts%10 == 9:
+                            audio_prompt(f"prompts/{lang}/error1.wav")
+                    time.sleep(0.5)
+
                 elif "success" in outcome.lower():
                     # audio_prompt("prompts/connected.wav")
                     self.get_sink()
@@ -192,6 +201,7 @@ if __name__ == "__main__":
     def initialize(device):
         # after the connection, check if the device can listen to music
         while not device.ready_to_play:
+            print("HOLA")
             device.get_info()
             device.get_sink()
             time.sleep(0.1)

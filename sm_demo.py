@@ -88,68 +88,20 @@ if __name__ == "__main__":
     bluetooth.load(bg_playlist)
     bluetooth.current_index = start_track
     bluetooth.set_volume(bt_volume)
-    bluetooth.play()
+    bluetooth.play(loop=True)
+
     # initializing jack player
-    jack = Player(audio_sinks[0])
+    class JackPlayer(Player):
+        def on_reproduction_end(self):
+            bluetooth.stop()
+
+
+    jack = JackPlayer(audio_sinks[0])
     jack.load(voice_playlist)
     jack.current_index = start_track
-    jack.play()
-
-    # Front track encoder
-    def fr_tr_button_pressed(channel):
-        print_datetime("SM Demo:\tfront track button pressed")
-        jack.toggle_play_pause()
-
-
-    def fr_tr_rotation(channel):
-        if GPIO.input(fr_tr_dt_pin) == GPIO.input(fr_tr_clk_pin):
-            print_datetime("SM Demo:\tfront track rotary encoder clockwise")
-            jack.next_track()
-        else:
-            print_datetime("SM Demo:\tfront track rotary encoder counterclockwise")
-            jack.prev_track()
-
-
-    # Front track encoder
-    def bg_tr_button_pressed(channel):
-        print_datetime("SM Demo:\tbackground track button pressed")
-        bluetooth.toggle_play_pause()
-
-    def bg_tr_rotation(channel):
-        if GPIO.input(bg_tr_dt_pin) == GPIO.input(bg_tr_clk_pin):
-            print_datetime("SM Demo:\tbackground track rotary encoder clockwise")
-            bluetooth.next_track()
-        else:
-            print_datetime("SM Demo:\tbackground track rotary encoder counterclockwise")
-            bluetooth.prev_track()
-
-    # Sensor
-    def distance_pause():
-        print_datetime("SM Demo:\tUser too far away: pause")
-        bluetooth.pause()
-        jack.pause()
-
-
-    def distance_resume():
-        print_datetime("SM Demo:\tUser detected: resume")
-        bluetooth.resume()
-        jack.resume()
-
-
-    # define sensors/button detect functions
-    # front volume control is handled by separate routine
-    GPIO.add_event_detect(fr_tr_button, GPIO.FALLING, callback=fr_tr_button_pressed, bouncetime=200)
-    GPIO.add_event_detect(fr_tr_dt_pin, GPIO.BOTH, callback=fr_tr_rotation, bouncetime=150)
-    GPIO.add_event_detect(bg_tr_button, GPIO.FALLING, callback=bg_tr_button_pressed, bouncetime=200)
-    GPIO.add_event_detect(bg_tr_dt_pin, GPIO.BOTH, callback=bg_tr_rotation, bouncetime=150)
+    jack.play(loop=True)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
-    if d_sensor_enabled:
-        print_datetime("SM Demo:\tSensor started")
-        d_sensor = DistanceSensor(trig_pin, echo_pin, on_posedge_callback=distance_pause,
-                                  on_negedge_callback=distance_resume)
-        d_sensor.threshold = load_config(config_file).get("threshold")
-        d_sensor.start_measuring()
 
     # the main function
     def main():
@@ -171,5 +123,6 @@ if __name__ == "__main__":
             killall = subprocess.Popen(["killall", "paplay"])
             killall.wait()
             GPIO.cleanup()
+
 
     main()
