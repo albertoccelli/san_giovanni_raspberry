@@ -33,14 +33,12 @@ d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # lo
 lang = load_config(config_file).get("lang")  # language
 
 # Buttons
-# Front track button
-fr_tr_button = load_config(config_file).get("fr_tr_button")
-# Background track button
-bg_tr_button = load_config(config_file).get("bg_tr_button")
-# Front volume up button
-fr_vol_up_button = load_config(config_file).get("fr_vol_up_button")
-# Front volume down button
-fr_vol_down_button = load_config(config_file).get("fr_vol_up_button")
+# Button 1
+button_1 = load_config(config_file).get("button_1")
+# Button 2
+button_2 = load_config(config_file).get("button_2")
+# Button 3
+button_3 = load_config(config_file).get("button_3")
 
 
 start_track = load_config(config_file).get("start_track") - 1  # start track
@@ -52,7 +50,6 @@ lang = load_config(config_file).get("lang")  # language
 
 # Setup GPIOs as inputs
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(fr_tr_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(bg_tr_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(fr_vol_up_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(fr_vol_down_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
