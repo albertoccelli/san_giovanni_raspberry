@@ -133,12 +133,20 @@ if __name__ == "__main__":
 
     def change_lang():
         global lang
-        next_lang_index = langs.index(lang) + 1
+        timer = 0
+        while True:
+            start_time = time.time()
+            next_lang_index = langs.index(lang) + 1
 
-        if next_lang_index >= len(langs):
-            next_lang_index = 0
-        lang = langs[next_lang_index]
-        print(f"Selected language: {lang}")
+            if next_lang_index >= len(langs):
+                next_lang_index = 0
+            lang = langs[next_lang_index]
+            print(f"Selected language: {lang}")
+            while GPIO.input(button_1) == GPIO.LOW:
+                print(time.time()-start_time)
+
+        # give some time to change before reproduction
+        # start reproduction
         voice_path = f"{script_dir}/media/front/{lang}/"
         voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
         voice_playlist.sort()
