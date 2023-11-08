@@ -3,7 +3,7 @@ import subprocess
 
 import RPi.GPIO as GPIO
 
-from config import *
+from config import button_1
 from utils import audio_prompt, curwd
 
 standby_status = False
@@ -29,7 +29,6 @@ def standby():
     subprocess.Popen(["sudo", "systemctl", "stop", "ssh.service"])
     '''
 
-
 def pressed(channel):
     elapsed = 0
     pressed_time = time.time()
@@ -46,6 +45,7 @@ GPIO.add_event_detect(button_1, GPIO.RISING, callback=pressed, bouncetime=200)
 def main():
     try:
         while True:
+            time.sleep(10)
             pass
     except KeyboardInterrupt:
         GPIO.cleanup()

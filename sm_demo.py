@@ -40,6 +40,7 @@ from utils import print_datetime
 
 if __name__ == "__main__":
     from utils import get_sinks
+    import sys
     import os
     from player import Player
     import threading
@@ -124,32 +125,31 @@ if __name__ == "__main__":
         elif elapsed > 1 and elapsed < 5:
             change_noise()
 
-    def long_1_press():
-        global standby
-        if not standby:
-             print("STANDBY")
-             standby = True
-        else:
-             print("STANDBY QUIT")
-             standby = False
-
     def change_noise():
+        bluetooth.stop()
         print_datetime("SM Demo:\tmid button press")
+        next_index = bluetooth.current_index + 1
+        if next_index >= len(bg_playlist):
+            next_index = 0
+        # audio_prompt(f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
+        bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
+        print(f"{next_index+1}/{len(bg_playlist)}")
         bluetooth.next_track()
+        #bluetooth.play(loop = True)
 
     def change_lang():
         jack.stop()
         global lang
         timer = 0
         while True:
-            if timer >= 1: break
+            if timer >= 2: break
             start_time = time.time()
             next_lang_index = langs.index(lang) + 1
             if next_lang_index >= len(langs):
                 next_lang_index = 0
             lang = langs[next_lang_index]
-            audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
             print(f"Selected language: {lang}")
+            audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
             while GPIO.input(button_1) == GPIO.LOW and timer <= 2:
                 timer = (time.time()-start_time)
             while GPIO.input(button_1) == GPIO.HIGH:

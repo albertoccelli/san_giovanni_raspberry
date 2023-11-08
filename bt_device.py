@@ -204,7 +204,6 @@ if __name__ == "__main__":
     def initialize(device):
         # after the connection, check if the device can listen to music
         while not device.ready_to_play:
-            print("HOLA")
             device.get_info()
             device.get_sink()
             time.sleep(0.1)
