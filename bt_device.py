@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.2.1 - enhanced auto-bluetooth recovery
 - 1.2.0 - restart bluetooth service if too many attempts are made
 - 1.1.0 - added first attempt prompt
 - 1.0.3 - Sped up connection
@@ -125,16 +126,18 @@ class Device:
                 connect = subprocess.run(["bluetoothctl", "connect", self.mac_address], capture_output=True, text=True)
                 outcome = connect.stdout
                 print_datetime(outcome)
+                print("NotReady" in outcome)
                 if "failed" in outcome.lower():
                     if attempts <= 5:
                         print_datetime("Failed to connect: please check that the device is turned on, then try again")
                         if attempts%10 == 9:
                             audio_prompt(f"prompts/{lang}/turnon.wav")
                     else:
-                        if attempts == 30:
+                        if attempts == 20:
                             if "NotReady" in outcome:
                                 print_datetime("Rebooting the device")
-                                reboot = supbrocess.Popen(["sudo", "systemctl", "restart", "bluetooth.service"])
+                                reboot = subprocess.Popen(["sudo", "systemctl", "restart", "bluetooth.service"])
+                                restore = subprocess.Popen(["sudo", "rfkill", "unblock", "bluetooth"])
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
                         if attempts%10 == 9:
                             audio_prompt(f"prompts/{lang}/error1.wav")

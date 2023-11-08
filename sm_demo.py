@@ -36,7 +36,6 @@ import time
 import subprocess
 import RPi.GPIO as GPIO
 
-from sensor import DistanceSensor
 from utils import print_datetime
 
 if __name__ == "__main__":
@@ -44,9 +43,10 @@ if __name__ == "__main__":
     import os
     from player import Player
     import threading
-    from utils import load_config, set_spkr_volume_max, curwd
+    from utils import audio_prompt, load_config, set_spkr_volume_max, curwd
     from config import *
 
+    standby = False
     langs = ["eng", "ita", "fra", "spa"]
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -109,6 +109,7 @@ if __name__ == "__main__":
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
 
     def button_1_pressed(channel):
+        print("Button 1 pressed")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
@@ -118,39 +119,47 @@ if __name__ == "__main__":
                 return
         if elapsed <= 0.1:
             pass
-        elif elapsed > 0.1 and elapsed <= 2:
+        elif elapsed > 0.1 and elapsed <= 1:
             change_lang()
-        elif elapsed > 2 and elapsed < 5:
+        elif elapsed > 1 and elapsed < 5:
             change_noise()
-        print(elapsed)
 
     def long_1_press():
-        print("LONG PRESS")
+        global standby
+        if not standby:
+             print("STANDBY")
+             standby = True
+        else:
+             print("STANDBY QUIT")
+             standby = False
 
     def change_noise():
         print_datetime("SM Demo:\tmid button press")
         bluetooth.next_track()
 
     def change_lang():
+        jack.stop()
         global lang
         timer = 0
         while True:
+            if timer >= 1: break
             start_time = time.time()
             next_lang_index = langs.index(lang) + 1
-
             if next_lang_index >= len(langs):
                 next_lang_index = 0
             lang = langs[next_lang_index]
+            audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
             print(f"Selected language: {lang}")
-            while GPIO.input(button_1) == GPIO.LOW:
-                print(time.time()-start_time)
-
-        # give some time to change before reproduction
+            while GPIO.input(button_1) == GPIO.LOW and timer <= 2:
+                timer = (time.time()-start_time)
+            while GPIO.input(button_1) == GPIO.HIGH:
+                pass
+            print(timer)
+            time.sleep(0.1)
         # start reproduction
         voice_path = f"{script_dir}/media/front/{lang}/"
         voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
         voice_playlist.sort()
-        jack.stop()
         jack.load(voice_playlist)
         jack.play(loop = True)
 
