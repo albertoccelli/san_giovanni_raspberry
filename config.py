@@ -5,6 +5,7 @@
 Configuration script for SM Demo. Configures the GPIOs
 
 Changelogs:
+1.4.0 - added amplifier standby pin
 1.3.0 - removed encoders
 1.2.0 - support for multilanguage
 1.1.0 - volume unit of measure added
@@ -32,6 +33,9 @@ d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # lo
 # Language
 lang = load_config(config_file).get("lang")  # language
 
+# Amplifier standby pin
+standby_pin = load_config(config_file).get("standby_pin")
+
 # Buttons
 # Button 1
 button_1 = load_config(config_file).get("button_1")
@@ -50,6 +54,7 @@ lang = load_config(config_file).get("lang")  # language
 
 # Setup GPIOs as inputs
 GPIO.setmode(GPIO.BCM)
+GPIO.setup(standby_pin, GPIO.OUT)
 GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)

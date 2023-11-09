@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Start/Stop function
 - Loop function in the player library
-- 
+- Control for standby function of the amplifier
+
 ### Changed
 - Replaced the 4 rotary encoders with 6 buttons
 

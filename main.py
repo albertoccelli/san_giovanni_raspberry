@@ -6,6 +6,7 @@ The Main loop routine of the SM Demo software. First starts by looking for a BT 
 the SM Demo. When the SM demo ends due to disconnection, it once again try to connect to the BT
 
 Changelogs:
+1.3.0 - added amplifier standby pin
 1.2.0 - support for multilanguage
 1.1.0 - welcome prompt added
 1.0.0 - file created
@@ -26,6 +27,11 @@ import subprocess
 import os
 from utils import curwd, audio_prompt
 from config import *
+import RPi.GPIO as GPIO
+
+
+GPIO.output(standby_pin, 1)
+
 print(f"{curwd}/prompts/{lang}/welcome.wav")
 audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 
