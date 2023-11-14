@@ -196,6 +196,7 @@ if __name__ == "__main__":
         pressed_time = time.time()
         while GPIO.input(button_4) == GPIO.HIGH:
             elapsed = time.time()-pressed_time
+            print(elapsed)
         if elapsed <= 0.1:
             pass
         else:
@@ -206,6 +207,7 @@ if __name__ == "__main__":
         pressed_time = time.time()
         while GPIO.input(button_5) == GPIO.HIGH:
             elapsed = time.time()-pressed_time
+            print(elapsed)
         if elapsed <= 0.1:
             pass
         else:
