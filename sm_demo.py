@@ -116,7 +116,7 @@ if __name__ == "__main__":
         while GPIO.input(button_1) == GPIO.HIGH:
             elapsed = time.time()-pressed_time
             if elapsed >= 5:
-                long_1_press()
+                # long_1_press()
                 return
         if elapsed <= 0.1:
             pass
@@ -185,6 +185,35 @@ if __name__ == "__main__":
                 else:
                     jack.stop()
 
+    def button_4_pressed(channel):
+        print("Button 4 pressed")
+        elapsed = 0
+        pressed_time = time.time()
+        while GPIO.input(button_4) == GPIO.HIGH:
+            elapsed = time.time()-pressed_time
+        if elapsed <= 0.1:
+            pass
+        else:
+            vol_up()
+
+    def button_5_pressed(channel):
+        print("Button 5 pressed")
+        elapsed = 0
+        pressed_time = time.time()
+        while GPIO.input(button_5) == GPIO.HIGH:
+            elapsed = time.time()-pressed_time
+        if elapsed <= 0.1:
+            pass
+        else:
+            vol_up()
+
+
+    def vol_up():
+        print("VOLUME UP")
+
+    def vol_down():
+        print("VOLUME DOWN")
+
     def button_23_pressed():
         print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
         while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_2) == GPIO.HIGH:
@@ -196,6 +225,8 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=200)
     GPIO.add_event_detect(button_2, GPIO.RISING, callback=button_2_pressed, bouncetime=200)
     GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=200)
+    GPIO.add_event_detect(button_4, GPIO.RISING, callback=button_4_pressed, bouncetime=150)
+    GPIO.add_event_detect(button_5, GPIO.RISING, callback=button_5_pressed, bouncetime=150)
 
     # the main function
     def main():
