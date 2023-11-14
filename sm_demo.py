@@ -199,41 +199,6 @@ if __name__ == "__main__":
                 else:
                     jack.stop()
 
-
-    def button_4_pressed(channel):
-        elapsed = 0
-        pressed_time = time.time()
-        while GPIO.input(button_4) == GPIO.HIGH:
-<<<<<<< HEAD
-            elapsed = round(time.time()-pressed_time, 2)
-            time.sleep(0.01)
-        if elapsed <= 0.02:
-=======
-            elapsed = round(time.time() - pressed_time, 2)
-        if elapsed <= 0.05:
->>>>>>> 35fb5be2537758fb52850bde1e7f22c94f2b049b
-            return
-        else:
-            vol_down()
-
-
-    def button_5_pressed(channel):
-        elapsed = 0
-        pressed_time = time.time()
-        while GPIO.input(button_5) == GPIO.HIGH:
-<<<<<<< HEAD
-            elapsed = round(time.time()-pressed_time, 2)
-            time.sleep(0.01)
-        if elapsed <= 0.02:
-=======
-            elapsed = round(time.time() - pressed_time, 2)
-        if elapsed <= 0.05:
->>>>>>> 35fb5be2537758fb52850bde1e7f22c94f2b049b
-            return
-        else:
-            vol_up()
-
-
     def vol_up(channel):
         p_time = time.time()
         elapsed = 0
