@@ -1,9 +1,0 @@
-Requirement 1
-
-- The device should have 6 buttons
-    1. Cycle through the voices
-    2. Cycle through the background noises
-    3. Front volume up
-    4. Front volume down
-    5. Start/Stop
-    6. Select source (upper/lower speaker)
