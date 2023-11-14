@@ -102,7 +102,7 @@ class Player:
             step = f"+{step}%"
         elif um == "db":
             step = f"+{step}db"
-            print_datetime(f"{self.sink}: \tRaising volume by {step}")
+        print_datetime(f"{self.sink}: \tRaising volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
