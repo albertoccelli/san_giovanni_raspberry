@@ -164,13 +164,19 @@ if __name__ == "__main__":
         # jack.play(loop = True)
 
     def button_2_pressed(channel):
-        print("BUTTON 2 PRESSED")
+        p_time = time.time()
         while GPIO.input(button_2) == GPIO.HIGH:
             if GPIO.input(button_3) == GPIO.HIGH and GPIO.input(button_2) == GPIO.HIGH:
                 button_23_pressed()
                 return
             pass
-        print("BUTTON 2 RELEASED")
+        if time.time() - p_time > 0.1:
+            print("BUTTON 2 RELEASED")
+            print(time.time())
+            if not bluetooth.playing:
+                bluetooth.play(loop = True)
+            else:
+                bluetooth.stop()
 
     def button_3_pressed(channel):
         if GPIO.input(button_2) == GPIO.LOW:
@@ -186,7 +192,6 @@ if __name__ == "__main__":
                     jack.stop()
 
     def button_4_pressed(channel):
-        print("Button 4 pressed")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_4) == GPIO.HIGH:
@@ -194,10 +199,9 @@ if __name__ == "__main__":
         if elapsed <= 0.1:
             pass
         else:
-            vol_up()
+            vol_down()
 
     def button_5_pressed(channel):
-        print("Button 5 pressed")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_5) == GPIO.HIGH:
