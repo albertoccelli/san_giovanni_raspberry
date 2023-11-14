@@ -5,6 +5,7 @@
 Configuration script for SM Demo. Configures the GPIOs
 
 Changelogs:
+1.5.0 - added 2 buttons
 1.4.0 - added amplifier standby pin
 1.3.0 - removed encoders
 1.2.0 - support for multilanguage
@@ -43,7 +44,10 @@ button_1 = load_config(config_file).get("button_1")
 button_2 = load_config(config_file).get("button_2")
 # Button 3
 button_3 = load_config(config_file).get("button_3")
-
+# Button 4
+button_4 = load_config(config_file).get("button_4")
+# Button 5
+button_5 = load_config(config_file).get("button_5")
 
 start_track = load_config(config_file).get("start_track") - 1  # start track
 vol_step_um = load_config(config_file).get("volume_steps_um")  # unit of measure for volume steps
@@ -55,6 +59,8 @@ lang = load_config(config_file).get("lang")  # language
 # Setup GPIOs as inputs
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(standby_pin, GPIO.OUT)
-GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)

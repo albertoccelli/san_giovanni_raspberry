@@ -12,13 +12,11 @@ bt_volume: 20
 fr_volume: 50
 
 # Amplifier standby pin
-standby_pin: 18
+standby_pin: 4
 
 # Buttons
-# Button 1
-button_1: 4
-# Button 2
-button_2: 23
-# Button 3
-button_3: 5
-
+button_1: 23
+button_2: 22
+button_3: 27
+button_4: 18
+button_5: 17

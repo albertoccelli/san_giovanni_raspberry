@@ -6,6 +6,8 @@ import RPi.GPIO as GPIO
 from config import button_1
 from utils import audio_prompt, curwd
 
+print(button_1)
+
 standby_status = False
 
 def standby():

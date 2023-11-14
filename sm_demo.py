@@ -105,7 +105,7 @@ if __name__ == "__main__":
     jack = JackPlayer(audio_sinks[0])
     jack.load(voice_playlist)
     jack.current_index = start_track
-    jack.play(loop=True)
+#    jack.play(loop=True)
 
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
         print(f"{next_index+1}/{len(bg_playlist)}")
         bluetooth.next_track()
-        #bluetooth.play(loop = True)
+        bluetooth.play(loop = True)
 
     def change_lang():
         jack.stop()
@@ -161,9 +161,41 @@ if __name__ == "__main__":
         voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
         voice_playlist.sort()
         jack.load(voice_playlist)
-        jack.play(loop = True)
+        # jack.play(loop = True)
+
+    def button_2_pressed(channel):
+        print("BUTTON 2 PRESSED")
+        while GPIO.input(button_2) == GPIO.HIGH:
+            if GPIO.input(button_3) == GPIO.HIGH and GPIO.input(button_2) == GPIO.HIGH:
+                button_23_pressed()
+                return
+            pass
+        print("BUTTON 2 RELEASED")
+
+    def button_3_pressed(channel):
+        if GPIO.input(button_2) == GPIO.LOW:
+            p_time = time.time()
+            while GPIO.input(button_3) == GPIO.HIGH:
+                pass
+            if time.time() - p_time > 0.1:
+                print("BUTTON 3 RELEASED")
+                print(time.time())
+                if not jack.playing:
+                    jack.play(loop = True)
+                else:
+                    jack.stop()
+
+    def button_23_pressed():
+        print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
+        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_2) == GPIO.HIGH:
+            pass
+        print("DOUBLE PRESS RELEASED")
+        time.sleep(0.2)
+
 
     GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=200)
+    GPIO.add_event_detect(button_2, GPIO.RISING, callback=button_2_pressed, bouncetime=200)
+    GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=200)
 
     # the main function
     def main():
