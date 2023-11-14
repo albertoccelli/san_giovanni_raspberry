@@ -94,9 +94,7 @@ if __name__ == "__main__":
     bluetooth.load(bg_playlist)
     bluetooth.current_index = start_track
     bluetooth.set_volume(bt_volume)
-
-
-    #    bluetooth.play(loop=True)
+#    bluetooth.play(loop=True)
 
     # initializing jack player
     class JackPlayer(Player):
@@ -122,9 +120,9 @@ if __name__ == "__main__":
             time.sleep(0.1)
         if elapsed <= 0.02:
             pass
-        elif elapsed > 0.02 and elapsed <= 1:
+        elif 0.02 < elapsed <= 1:
             change_lang()
-        elif elapsed > 1 and elapsed < 5:
+        elif 1 < elapsed < 5:
             change_noise()
 
 
@@ -149,7 +147,8 @@ if __name__ == "__main__":
         global lang
         timer = 0
         while True:
-            if timer >= 2: break
+            if timer >= 2:
+                break
             start_time = time.time()
             next_lang_index = langs.index(lang) + 1
             if next_lang_index >= len(langs):
@@ -207,13 +206,11 @@ if __name__ == "__main__":
             elapsed = round(time.time()-p_time, 2)
             if elapsed >= 0.5:
                 if time.time() - p_raised_vol >= 0.2:
-                    print("VOLUME UP")
                     jack.raise_volume(step=vol_step, um=vol_step_um)
                     p_raised_vol = time.time()
             time.sleep(0.01)
             pass
-        if elapsed >= 0.05 and elapsed < 0.5:
-            print("VOLUME UP")
+        if 0.05 <= elapsed < 0.5:
             jack.raise_volume(step=vol_step, um=vol_step_um)
 
 
@@ -225,13 +222,11 @@ if __name__ == "__main__":
             elapsed = round(time.time()-p_time, 2)
             if elapsed >= 0.5:
                 if time.time() - p_lowrd_vol >= 0.2:
-                    print("VOLUME DOWN")
                     jack.lower_volume(step=vol_step, um=vol_step_um)
                     p_lowrd_vol = time.time()
             time.sleep(0.01)
             pass
-        if elapsed >= 0.05 and elapsed < 0.5:
-            print("VOLUME DOWN")
+        if 0.05 <= elapsed < 0.5:
             jack.lower_volume(step=vol_step, um=vol_step_um)
 
 
