@@ -24,7 +24,7 @@ __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
 
 import subprocess
-import os
+# import os
 from utils import curwd, audio_prompt
 from config import *
 import RPi.GPIO as GPIO
