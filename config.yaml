@@ -11,13 +11,12 @@ volume_steps: 2
 bt_volume: 20
 fr_volume: 50
 
-# Buttons
-# Front track
-fr_tr_button: 19
-# bluetooth track
-bg_tr_button: 5
-# Front volume up
-fr_vol_up_button: 23
-# Front volume down
-fr_vol_down_button: 4
+# Amplifier standby pin
+standby_pin: 4
 
+# Buttons
+button_1: 23
+button_2: 22
+button_3: 27
+button_4: 18
+button_5: 17

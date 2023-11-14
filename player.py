@@ -51,6 +51,7 @@ class Player:
         self.stopped = True
         self.muted = False
         self.get_vol()
+        self.loop = False
 
     def get_vol(self):
         self.volume = get_volume(self.sink)
@@ -126,6 +127,7 @@ class Player:
         return self.playlist
 
     def play_audio(self, filename=None, loop=False):
+        self.loop = loop
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
@@ -195,7 +197,7 @@ class Player:
             self.current_index = 0
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Next track -> {self.current_track}")
-        self.play()
+        self.play(self.loop)
 
     def prev_track(self):
         self.stop()
@@ -204,7 +206,7 @@ class Player:
             self.current_index = len(self.playlist) - 1
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Previous track <- {self.current_track}")
-        self.play()
+        self.play(self.loop)
 
 
 def main():
