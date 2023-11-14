@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.8.0 - Buttons 2, 3, 4, 5 implemented
 1.7.0 - button 1 implemented:
 	short touch -> change language
 	mid touch -> change background noise
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     bluetooth.load(bg_playlist)
     bluetooth.current_index = start_track
     bluetooth.set_volume(bt_volume)
-    bluetooth.play(loop=True)
+#    bluetooth.play(loop=True)
 
     # initializing jack player
     class JackPlayer(Player):
@@ -110,7 +111,6 @@ if __name__ == "__main__":
     print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
 
     def button_1_pressed(channel):
-        print("Button 1 pressed")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
@@ -126,18 +126,21 @@ if __name__ == "__main__":
             change_noise()
 
     def change_noise():
-        bluetooth.stop()
-        print_datetime("SM Demo:\tmid button press")
-        next_index = bluetooth.current_index + 1
-        if next_index >= len(bg_playlist):
-            next_index = 0
-        # audio_prompt(f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
-        bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
-        print(f"{next_index+1}/{len(bg_playlist)}")
-        bluetooth.next_track()
-        bluetooth.play(loop = True)
+        if bluetooth.playing:
+            bluetooth.stop()
+            print_datetime("SM Demo:\tmid button press")
+            next_index = bluetooth.current_index + 1
+            if next_index >= len(bg_playlist):
+                next_index = 0
+            # audio_prompt(f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
+            bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
+            print(f"{next_index+1}/{len(bg_playlist)}")
+            bluetooth.next_track()
 
     def change_lang():
+        to_resume = False
+        if jack.playing:
+            to_resume = True
         jack.stop()
         global lang
         timer = 0
@@ -148,20 +151,20 @@ if __name__ == "__main__":
             if next_lang_index >= len(langs):
                 next_lang_index = 0
             lang = langs[next_lang_index]
-            print(f"Selected language: {lang}")
+            print_datetime(f"SM Demo:\tselected language: {lang}")
             audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
             while GPIO.input(button_1) == GPIO.LOW and timer <= 2:
                 timer = (time.time()-start_time)
             while GPIO.input(button_1) == GPIO.HIGH:
                 pass
-            print(timer)
             time.sleep(0.1)
         # start reproduction
         voice_path = f"{script_dir}/media/front/{lang}/"
         voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
         voice_playlist.sort()
         jack.load(voice_playlist)
-        # jack.play(loop = True)
+        if to_resume:
+            jack.play(loop = True)
 
     def button_2_pressed(channel):
         p_time = time.time()
@@ -170,22 +173,20 @@ if __name__ == "__main__":
                 button_23_pressed()
                 return
             pass
-        if time.time() - p_time > 0.1:
-            print("BUTTON 2 RELEASED")
-            print(time.time())
+        if time.time() - p_time > 0.05:
             if not bluetooth.playing:
                 bluetooth.play(loop = True)
+                bluetooth.playing = True
             else:
                 bluetooth.stop()
+                bluetooth.playing = False
 
     def button_3_pressed(channel):
         if GPIO.input(button_2) == GPIO.LOW:
             p_time = time.time()
             while GPIO.input(button_3) == GPIO.HIGH:
                 pass
-            if time.time() - p_time > 0.1:
-                print("BUTTON 3 RELEASED")
-                print(time.time())
+            if time.time() - p_time > 0.05:
                 if not jack.playing:
                     jack.play(loop = True)
                 else:
@@ -195,10 +196,9 @@ if __name__ == "__main__":
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_4) == GPIO.HIGH:
-            elapsed = time.time()-pressed_time
-            print(elapsed)
-        if elapsed <= 0.1:
-            pass
+            elapsed = round(time.time()-pressed_time, 2)
+        if elapsed <= 0.05:
+            return
         else:
             vol_down()
 
@@ -206,19 +206,28 @@ if __name__ == "__main__":
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_5) == GPIO.HIGH:
-            elapsed = time.time()-pressed_time
-            print(elapsed)
-        if elapsed <= 0.1:
-            pass
+            elapsed = round(time.time()-pressed_time, 2)
+        if elapsed <= 0.05:
+            return
         else:
             vol_up()
 
 
-    def vol_up():
-        print("VOLUME UP")
+    def vol_up(channel):
+        p_time = time.time()
+        while GPIO.input(button_5) == GPIO.HIGH:
+            pass
+        if time.time() - p_time >= 0.05:
+            print("VOLUME UP")
+            jack.raise_volume(step=vol_step, um=vol_step_um)
 
-    def vol_down():
-        print("VOLUME DOWN")
+    def vol_down(channel):
+        p_time = time.time()
+        while GPIO.input(button_4) == GPIO.HIGH:
+            pass
+        if time.time() - p_time >= 0.05:
+            print("VOLUME DOWN")
+            jack.lower_volume(step=vol_step, um=vol_step_um)
 
     def button_23_pressed():
         print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
@@ -231,8 +240,8 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=200)
     GPIO.add_event_detect(button_2, GPIO.RISING, callback=button_2_pressed, bouncetime=200)
     GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=200)
-    GPIO.add_event_detect(button_4, GPIO.RISING, callback=button_4_pressed, bouncetime=150)
-    GPIO.add_event_detect(button_5, GPIO.RISING, callback=button_5_pressed, bouncetime=150)
+    GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=150)
+    GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=150)
 
     # the main function
     def main():
@@ -247,7 +256,7 @@ if __name__ == "__main__":
                     subprocess.Popen(["killall", "paplay"])
                     print_datetime("SM_Demo:\tDemo interrupted")
                     return
-                time.sleep(1)
+                time.sleep(2)
 
         except KeyboardInterrupt:
             subprocess.Popen(["pactl", "suspend-sink", "0"])
