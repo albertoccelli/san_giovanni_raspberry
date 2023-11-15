@@ -29,6 +29,7 @@ from utils import curwd, audio_prompt, print_datetime
 import RPi.GPIO as GPIO
 from config import standby_pin, lang
 
+GPIO.setup(standby_pin, GPIO.OUT)
 GPIO.output(standby_pin, 1)
 audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 

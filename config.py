@@ -58,9 +58,11 @@ lang = load_config(config_file).get("lang")  # language
 
 # Setup GPIOs as inputs
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(standby_pin, GPIO.OUT)
-GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(button_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+
+def setup_buttons():
+    GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(button_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)

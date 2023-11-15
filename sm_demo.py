@@ -245,6 +245,7 @@ if __name__ == "__main__":
         time.sleep(0.2)
 
 
+    setup_buttons()
     GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=200)
     GPIO.add_event_detect(button_2, GPIO.RISING, callback=button_2_pressed, bouncetime=200)
     GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=200)
