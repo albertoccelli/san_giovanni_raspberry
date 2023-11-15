@@ -21,7 +21,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -139,7 +139,7 @@ class Player:
             filename = self.current_track
         while self.playing:
             try:
-                print_datetime(f"{self.sink}: playing {filename}|Loop={self.repeat_one}")
+                print_datetime(f"{self.sink}: playing {filename}|Repeat one={self.repeat_one}; Repeat all={self.repeat_all}")
                 self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", filename],
                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = self.audio_process.communicate()
