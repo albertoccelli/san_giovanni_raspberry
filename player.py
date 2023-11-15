@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.3.1 - bugfix on loop function
 1.3.0 - variable to set/unset loop
 1.2.0 - set player's boundaries
 1.1.2 - fixed not unmuting when adjusting volume
@@ -62,7 +63,7 @@ class Player:
             vol_level = f"{vol_level}%"
         elif um == "db":
             vol_level = f"{vol_level}db"
-        print_datetime(f"{self.sink}: \tSetting volume to {vol_level}")
+        print_datetime(f"{self.sink}:\tSetting volume to {vol_level}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
@@ -74,7 +75,7 @@ class Player:
         pass
 
     def mute(self):
-        print_datetime(f"{self.sink}: \tmute")
+        print_datetime(f"{self.sink}:\tmute")
         mute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "1"],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.muted = True
@@ -82,7 +83,7 @@ class Player:
         return
 
     def unmute(self):
-        print_datetime(f"{self.sink}: \tunmute")
+        print_datetime(f"{self.sink}:\tunmute")
         unmute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "0"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.muted = False
@@ -102,7 +103,7 @@ class Player:
             step = f"+{step}%"
         elif um == "db":
             step = f"+{step}db"
-        print_datetime(f"{self.sink}: \tRaising volume by {step}")
+        print_datetime(f"{self.sink}:\tRaising volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
@@ -115,7 +116,7 @@ class Player:
             step = f"-{step}%"
         elif um == "db":
             step = f"-{step}db"
-        print_datetime(f"{self.sink}: \tLowering volume by {step}")
+        print_datetime(f"{self.sink}:\tLowering volume by {step}")
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
@@ -135,7 +136,7 @@ class Player:
             filename = self.current_track
         while self.playing:
             try:
-                print_datetime(f"{self.sink}: \tPlaying {filename}")
+                print_datetime(f"{self.sink}:\tPlaying {filename}|Loop={self.loop}")
                 self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", filename],
                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = self.audio_process.communicate()
@@ -158,14 +159,14 @@ class Player:
 
     def pause(self):
         self.playing = False
-        print_datetime(f"{self.sink}: \tPause")
+        print_datetime(f"{self.sink}:\tPause")
         # self.audio_process.send_signal(subprocess.signal.SIGSTOP)
         pause = subprocess.Popen(["pactl", "suspend-sink", self.sink, "1"])
         pause.wait()
 
     def resume(self):
         self.playing = True
-        print_datetime(f"{self.sink}: \tResume")
+        print_datetime(f"{self.sink}:\tResume")
         # self.audio_process.send_signal(subprocess.signal.SIGCONT)
         resume = subprocess.Popen(["pactl", "suspend-sink", self.sink, "0"])
         resume.wait()
@@ -190,14 +191,15 @@ class Player:
             if "nonetype" in str(exception).lower():
                 print_datetime("{self.sink}: \tNo audio to stop")
 
-    def next_track(self):
+    def next_track(self, loop=None):
+        if loop == None:
+            loop = self.loop
         self.stop()
         self.current_index += 1
         if self.current_index >= len(self.playlist):
             self.current_index = 0
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Next track -> {self.current_track}")
-        self.play(self.loop)
 
     def prev_track(self):
         self.stop()
