@@ -79,9 +79,9 @@ if __name__ == "__main__":
         audio_sinks = get_sinks()
         if len(audio_sinks) == 2:
             break
-        print_datetime("SM Demo:\tBT device not found. Please wait...")
+        print_datetime("SM Demo: BT device not found. Please wait...")
         if (time.time() - start) >= timeout:
-            print_datetime("SM Demo:\tTimeout!")
+            print_datetime("SM Demo: timeout!")
             quit()
         time.sleep(0.5)
 
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     jack.current_index = start_track
     #    jack.play(loop=True)
 
-    print_datetime(f"SM Demo:\tDistance sensor status={d_sensor_enabled}")
+    print_datetime(f"SM Demo: distance sensor status={d_sensor_enabled}")
 
 
     def button_1_pressed(channel):
@@ -129,13 +129,11 @@ if __name__ == "__main__":
     def change_noise():
         if bluetooth.playing:
             bluetooth.stop()
-            print_datetime("SM Demo:\tmid button press")
             next_index = bluetooth.current_index + 1
             if next_index >= len(bg_playlist):
                 next_index = 0
             # audio_prompt(f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
             bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index + 1}.wav")
-            print(f"{next_index + 1}/{len(bg_playlist)}")
             bluetooth.next_track()
 
 
@@ -154,7 +152,7 @@ if __name__ == "__main__":
             if next_lang_index >= len(langs):
                 next_lang_index = 0
             lang = langs[next_lang_index]
-            print_datetime(f"SM Demo:\tselected language: {lang}")
+            print_datetime(f"SM Demo: selected language: {lang}")
             audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
             while GPIO.input(button_1) == GPIO.LOW and timer <= 2:
                 timer = (time.time() - start_time)
@@ -250,12 +248,12 @@ if __name__ == "__main__":
             print_datetime("SM_Demo:\tDemo started...")
             while True:
                 if len(get_sinks()) < 2:
-                    print_datetime("SM Demo:\tFatal: lost connection")
+                    print_datetime("SM Demo: fatal: lost connection")
                     subprocess.Popen(["pactl", "suspend-sink", "0"])
                     bluetooth.stop()
                     jack.stop()
                     subprocess.Popen(["killall", "paplay"])
-                    print_datetime("SM_Demo:\tDemo interrupted")
+                    print_datetime("SM_Demo: demo interrupted")
                     return
                 time.sleep(2)
 

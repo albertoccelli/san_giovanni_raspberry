@@ -25,18 +25,17 @@ __status__ = "Dev"
 
 import subprocess
 # import os
-from utils import curwd, audio_prompt
+from utils import curwd, audio_prompt, print_datetime
 from config import *
 import RPi.GPIO as GPIO
 
-
 GPIO.output(standby_pin, 1)
 
-print(f"{curwd}/prompts/{lang}/welcome.wav")
 audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 
 
 while True:
+    print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
     try:
         #  connect bluetooth device
         bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
@@ -47,3 +46,5 @@ while True:
     except KeyboardInterrupt:
         subprocess.Popen(["killall", "paplay"])
         break
+
+print_datetime("SANMARCO INSTORE DEMO ENDED")
