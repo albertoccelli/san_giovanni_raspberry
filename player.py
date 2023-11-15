@@ -149,8 +149,7 @@ class Player:
                 self.audio_process.wait()
                 if not repeat_one:
                     if self.repeat_all:
-                        self.stop()
-                        self.next_track()
+                        print(f"NEXT TRACK: {self.playlist[self.current_index + 1]}")
                     break
             except Exception as error:
                 print_datetime(f"{self.sink}: error reproducing audio: {error}")
