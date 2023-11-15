@@ -194,7 +194,12 @@ if __name__ == "__main__":
                 if not jack.playing:
                     jack.play(repeat_all=True)
                 else:
+                    print(len(jack.playlist))
+                    print(jack.current_index)
                     jack.stop()
+                    jack.next_track()
+                    print(jack.playing)
+                    #jack.stop()
 
     def vol_up(channel):
         p_time = time.time()
