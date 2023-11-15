@@ -6,6 +6,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.9.0 - added shuffle function
 1.8.0 - Buttons 2, 3, 4, 5 implemented
 1.7.0 - button 1 implemented:
     short touch -> change language
@@ -44,6 +45,7 @@ if __name__ == "__main__":
     import os
     from player import Player
     import threading
+
     from utils import audio_prompt, load_config, set_spkr_volume_max, curwd
     from config import *
 
@@ -103,6 +105,7 @@ if __name__ == "__main__":
 
 
     jack = JackPlayer(audio_sinks[0])
+    jack.shuffle = True
     jack.load(voice_playlist)
     jack.current_index = start_track
     #    jack.play(loop=True)
@@ -111,6 +114,7 @@ if __name__ == "__main__":
 
 
     def button_1_pressed(channel):
+        print("BUTTON 1 PRESSED")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
@@ -165,6 +169,7 @@ if __name__ == "__main__":
                           os.path.isfile(os.path.join(voice_path, f))]
         voice_playlist.sort()
         jack.load(voice_playlist)
+        jack.current_index = 0
         if to_resume:
             jack.play(repeat_one=True)
 
@@ -194,12 +199,11 @@ if __name__ == "__main__":
                 if not jack.playing:
                     jack.play(repeat_one=True)
                 else:
-                    print(len(jack.playlist))
-                    print(jack.current_index)
                     jack.stop()
-                    jack.next_track()
-                    print(jack.playing)
-                    #jack.stop()
+                    if jack.current_index + 1 < len(jack.playlist):
+                        jack.next_track()
+                    else:
+                        jack.current_index = 0
 
     def vol_up(channel):
         p_time = time.time()
@@ -259,7 +263,7 @@ if __name__ == "__main__":
                     jack.stop()
                     subprocess.Popen(["killall", "paplay"])
                     print_datetime("SM_Demo: demo interrupted")
-                    return
+                    break
                 time.sleep(2)
 
         except KeyboardInterrupt:
@@ -267,6 +271,7 @@ if __name__ == "__main__":
             killall = subprocess.Popen(["killall", "paplay"])
             killall.wait()
             GPIO.cleanup()
-
+        finally:
+            GPIO.cleanup()
 
     main()

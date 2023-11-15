@@ -26,11 +26,10 @@ __status__ = "Dev"
 import subprocess
 # import os
 from utils import curwd, audio_prompt, print_datetime
-from config import *
 import RPi.GPIO as GPIO
+from config import standby_pin, lang
 
 GPIO.output(standby_pin, 1)
-
 audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 
 
@@ -46,5 +45,6 @@ while True:
     except KeyboardInterrupt:
         subprocess.Popen(["killall", "paplay"])
         break
-
+    finally:
+        GPIO.cleanup()
 print_datetime("SANMARCO INSTORE DEMO ENDED")

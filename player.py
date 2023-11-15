@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.5.0 - added shuffle mode
 1.4.0 - repeat all function (cycle among all tracks)
 1.3.1 - bugfix on loop function
 1.3.0 - variable to set/unset loop
@@ -30,6 +31,7 @@ import subprocess
 import time
 import threading
 import RPi.GPIO as GPIO
+import random
 
 from utils import print_datetime, get_volume
 
@@ -55,6 +57,7 @@ class Player:
         self.get_vol()
         self.repeat_one = False
         self.repeat_all = False
+        self.shuffle = False
 
     def get_vol(self):
         self.volume = get_volume(self.sink)
@@ -126,6 +129,8 @@ class Player:
 
     def load(self, playlist):
         self.playlist = playlist
+        if self.shuffle:
+            random.shuffle(self.playlist)
         self.current_track = self.playlist[self.current_index]
         return self.playlist
 

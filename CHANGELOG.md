@@ -13,7 +13,8 @@ First stable release
 - Up to 5 buttons: volume (+/-), change language, change noise, start/stop
 - Added 2 languages: FRA/ESP
 - Start/Stop function
-- Loop function in the player library
+- Repeat all/repeat one function in the player library
+- Shuffle function in the player library
 - Control for standby function of the amplifier
 
 ### Changed
