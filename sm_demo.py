@@ -192,7 +192,7 @@ if __name__ == "__main__":
                 pass
             if time.time() - p_time > 0.02:
                 if not jack.playing:
-                    jack.play(repeat_all=True)
+                    jack.play(repeat_one=True)
                 else:
                     print(len(jack.playlist))
                     print(jack.current_index)
