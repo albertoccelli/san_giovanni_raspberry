@@ -166,7 +166,7 @@ if __name__ == "__main__":
         voice_playlist.sort()
         jack.load(voice_playlist)
         if to_resume:
-            jack.play(loop=True)
+            jack.play(repeat_one=True)
 
 
     def button_2_pressed(channel):
@@ -178,7 +178,7 @@ if __name__ == "__main__":
             time.sleep(0.01)
         if time.time() - p_time > 0.02:
             if not bluetooth.playing:
-                bluetooth.play(loop=True)
+                bluetooth.play(repeat_one=True)
                 bluetooth.playing = True
             else:
                 bluetooth.stop()
@@ -192,7 +192,7 @@ if __name__ == "__main__":
                 pass
             if time.time() - p_time > 0.02:
                 if not jack.playing:
-                    jack.play(loop=True)
+                    jack.play(repeat_one=True)
                 else:
                     jack.stop()
 

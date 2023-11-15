@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.4.0 - repeat all function (cycle among all tracks)
 1.3.1 - bugfix on loop function
 1.3.0 - variable to set/unset loop
 1.2.0 - set player's boundaries
@@ -52,7 +53,8 @@ class Player:
         self.stopped = True
         self.muted = False
         self.get_vol()
-        self.loop = False
+        self.repeat_one = False
+        self.repeat_all = False
 
     def get_vol(self):
         self.volume = get_volume(self.sink)
@@ -127,8 +129,9 @@ class Player:
         self.current_track = self.playlist[self.current_index]
         return self.playlist
 
-    def play_audio(self, filename=None, loop=False):
-        self.loop = loop
+    def play_audio(self, filename=None, repeat_one=False, repeat_all=False):
+        self.repeat_all = repeat_all
+        self.repeat_one = repeat_one
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
@@ -136,7 +139,7 @@ class Player:
             filename = self.current_track
         while self.playing:
             try:
-                print_datetime(f"{self.sink}: playing {filename}|Loop={self.loop}")
+                print_datetime(f"{self.sink}: playing {filename}|Loop={self.repeat_one}")
                 self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", filename],
                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = self.audio_process.communicate()
@@ -144,7 +147,9 @@ class Player:
                     print_datetime(f"{self.sink}: error reproducing audio: {stderr}")
                     break
                 self.audio_process.wait()
-                if not loop:
+                if not repeat_one:
+                    if self.repeat_all:
+                        self.next_track()
                     break
             except Exception as error:
                 print_datetime(f"{self.sink}: error reproducing audio: {error}")
@@ -152,8 +157,8 @@ class Player:
         self.stop()
         self.on_reproduction_end()
 
-    def play(self, loop=False):
-        self.audio_thread = threading.Thread(target=self.play_audio, args=(None, loop))
+    def play(self, repeat_one=False, repeat_all=False):
+        self.audio_thread = threading.Thread(target=self.play_audio, args=(None, repeat_one, repeat_all))
         self.audio_thread.daemon = True
         self.audio_thread.start()
 
@@ -191,16 +196,18 @@ class Player:
             if "nonetype" in str(exception).lower():
                 print_datetime(f"{self.sink}: no audio to stop")
 
-    def next_track(self, loop=None):
-        if loop is None:
-            loop = self.loop
+    def next_track(self, repeat_one=None, repeat_all=None):
+        if repeat_one is None:
+            repeat_one = self.repeat_one
+        if repeat_all is None:
+            repeat_all = self.repeat_all
         self.stop()
         self.current_index += 1
         if self.current_index >= len(self.playlist):
             self.current_index = 0
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: next track -> {self.current_track}")
-        self.play(loop)
+        self.play(repeat_one, repeat_all)
 
     def prev_track(self):
         self.stop()
@@ -209,7 +216,7 @@ class Player:
             self.current_index = len(self.playlist) - 1
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: previous track <- {self.current_track}")
-        self.play(self.loop)
+        self.play(self.repeat_one)
 
 
 def main():
@@ -272,7 +279,7 @@ if __name__ == "__main__":
 
     # setup player
     bluetooth.load(bg_playlist)
-    bluetooth.play(loop=True)
+    bluetooth.play(repeat_one=True)
     jack.load(voice_playlist)
     jack.play()
     print_datetime(voice_playlist)
