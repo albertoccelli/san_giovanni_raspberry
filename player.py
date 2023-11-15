@@ -149,6 +149,7 @@ class Player:
                 self.audio_process.wait()
                 if not repeat_one:
                     if self.repeat_all:
+                        self.stop()
                         self.next_track()
                     break
             except Exception as error:
