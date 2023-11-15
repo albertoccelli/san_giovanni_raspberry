@@ -8,7 +8,7 @@ device_name: "NS7"
 start_track: 1
 volume_steps_um: "perc" # unit of measure of volume steps: perc|db
 volume_steps: 5
-bt_volume: 40
+bt_volume: 30
 fr_volume: 50
 
 # Amplifier standby pin
