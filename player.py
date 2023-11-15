@@ -200,6 +200,7 @@ class Player:
             self.current_index = 0
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Next track -> {self.current_track}")
+        self.play(loop)
 
     def prev_track(self):
         self.stop()
