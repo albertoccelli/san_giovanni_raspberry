@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.2.2 - added more log outputs
 - 1.2.1 - enhanced auto-bluetooth recovery
 - 1.2.0 - restart bluetooth service if too many attempts are made
 - 1.1.0 - added first attempt prompt
@@ -122,11 +123,11 @@ class Device:
         audio_prompt(f"prompts/{lang}/attempt.wav")
         if self.mac_address:
             while True:
-                print("Trying to connect...")
+                print_datetime("Trying to connect...")
                 connect = subprocess.run(["bluetoothctl", "connect", self.mac_address], capture_output=True, text=True)
                 outcome = connect.stdout
                 print_datetime(outcome)
-                print("NotReady" in outcome)
+                # print_datetime("NotReady" in outcome)
                 if "failed" in outcome.lower():
                     if attempts <= 5:
                         print_datetime("Failed to connect: please check that the device is turned on, then try again")
@@ -183,7 +184,7 @@ class Device:
             if len(sinks) == 2:
                 self.ready_to_play = True
         except Exception as e:
-            print(f"Error getting sinks: {e}")
+            print_datetime(f"Error getting sinks: {e}")
             self.ready_to_play = False
             if not self.check_connected():
                 self.connect()
