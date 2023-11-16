@@ -44,10 +44,17 @@ if __name__ == "__main__":
     from utils import get_sinks
     import os
     from player import Player
+    import subprocess
     import threading
 
     from utils import audio_prompt, load_config, set_spkr_volume_max, curwd
     from config import *
+
+    print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
+    audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
+
+    bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
+    bt_connect.wait()
 
     standby = False
     langs = ["eng", "ita", "fra", "spa"]
@@ -105,6 +112,7 @@ if __name__ == "__main__":
 
 
     jack = JackPlayer(audio_sinks[0])
+    jack.set_volume(fr_volume)
     jack.shuffle = True
     jack.load(voice_playlist)
     jack.current_index = start_track
@@ -114,13 +122,19 @@ if __name__ == "__main__":
 
 
     def button_1_pressed(channel):
-        print("BUTTON 1 PRESSED")
+        #print("BUTTON 1 PRESSED")
+        #audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
             elapsed = time.time() - pressed_time
-            if elapsed >= 5:
-                return
+            if elapsed >= 20:
+                print_datetime("CLOSING DEMO")
+                jack.stop()
+                bluetooth.stop()
+                audio_prompt(f"{curwd}/prompts/eng/standby.wav")
+                subprocess.Popen(["sudo", "killall", "paplay"])
+                quit()
             time.sleep(0.1)
         if elapsed <= 0.02:
             pass
@@ -128,7 +142,6 @@ if __name__ == "__main__":
             change_lang()
         elif 1 < elapsed < 5:
             change_noise()
-
 
     def change_noise():
         if bluetooth.playing:
@@ -171,7 +184,7 @@ if __name__ == "__main__":
         jack.load(voice_playlist)
         jack.current_index = 0
         if to_resume:
-            jack.play(repeat_one=True)
+            jack.play(repeat_one=False)
 
 
     def button_2_pressed(channel):
@@ -197,13 +210,10 @@ if __name__ == "__main__":
                 pass
             if time.time() - p_time > 0.02:
                 if not jack.playing:
-                    jack.play(repeat_one=True)
+                    jack.play(repeat_one=False)
                 else:
                     jack.stop()
-                    if jack.current_index + 1 < len(jack.playlist):
-                        jack.next_track()
-                    else:
-                        jack.current_index = 0
+                    jack.current_index = 0
 
     def vol_up(channel):
         p_time = time.time()
@@ -215,7 +225,7 @@ if __name__ == "__main__":
                 if time.time() - p_raised_vol >= 0.2:
                     jack.raise_volume(step=vol_step, um=vol_step_um)
                     p_raised_vol = time.time()
-            time.sleep(0.01)
+            time.sleep(0.1)
             pass
         if 0.05 <= elapsed < 0.5:
             jack.raise_volume(step=vol_step, um=vol_step_um)
@@ -231,7 +241,7 @@ if __name__ == "__main__":
                 if time.time() - p_lowrd_vol >= 0.2:
                     jack.lower_volume(step=vol_step, um=vol_step_um)
                     p_lowrd_vol = time.time()
-            time.sleep(0.01)
+            time.sleep(0.1)
             pass
         if 0.05 <= elapsed < 0.5:
             jack.lower_volume(step=vol_step, um=vol_step_um)
@@ -266,6 +276,7 @@ if __name__ == "__main__":
                     print_datetime("SM_Demo: demo interrupted")
                     break
                 time.sleep(2)
+
 
         except KeyboardInterrupt:
             subprocess.Popen(["pactl", "suspend-sink", "0"])

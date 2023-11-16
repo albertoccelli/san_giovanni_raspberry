@@ -22,7 +22,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -140,12 +140,12 @@ class Player:
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
-        if filename is None:
-            filename = self.current_track
+        if filename != None:
+            self.current_track = filename
         while self.playing:
             try:
                 print_datetime(f"{self.sink}: playing {filename}|Repeat one={self.repeat_one}; Repeat all={self.repeat_all}")
-                self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", filename],
+                self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", self.current_track],
                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = self.audio_process.communicate()
                 if stderr:
@@ -153,13 +153,19 @@ class Player:
                     break
                 self.audio_process.wait()
                 if not repeat_one:
-                    if self.repeat_all:
-                        print(f"NEXT TRACK: {self.playlist[self.current_index + 1]}")
-                    break
+                    self.current_index = self.current_index + 1
+                    if self.current_index >= len(self.playlist):
+                        self.current_index = 0
+                        if not repeat_all:
+                            self.playing = False
+                            break
+                    self.current_track = self.playlist[self.current_index]
+                    print(f"NEXT TRACK: {self.current_track}")
             except Exception as error:
                 print_datetime(f"{self.sink}: error reproducing audio: {error}")
                 break
         self.stop()
+        print_datetime(f"{self.sink}: end of reproduction")
         self.on_reproduction_end()
 
     def play(self, repeat_one=False, repeat_all=False):
