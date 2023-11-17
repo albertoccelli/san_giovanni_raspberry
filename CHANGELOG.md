@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 First stable release
 
 ### Added
+- Main routine handling stadby mode
 - Up to 5 buttons: volume (+/-), change language, change noise, start/stop
 - Added 2 languages: FRA/ESP
 - Start/Stop function
