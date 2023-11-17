@@ -11,6 +11,7 @@ First stable release
 
 ### Added
 - Main routine handling stadby mode
+- Guide prompt
 - Up to 5 buttons: volume (+/-), change language, change noise, start/stop
 - Added 2 languages: FRA/ESP
 - Start/Stop function
