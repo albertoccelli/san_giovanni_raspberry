@@ -115,8 +115,7 @@ if __name__ == "__main__":
     jack.set_volume(fr_volume)
     jack.shuffle = True
     jack.load(voice_playlist)
-    jack.current_index = start_track
-    #    jack.play(loop=True)
+    #jack.play(loop=True)
 
     print_datetime(f"SM Demo: distance sensor status={d_sensor_enabled}")
 
@@ -261,6 +260,8 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=200)
     GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=100)
     GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=100)
+
+    audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
 
     # the main function
     def main():
