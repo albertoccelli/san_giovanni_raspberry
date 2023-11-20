@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.3.0 - variable to set/unset loop
 1.2.0 - set player's boundaries
 1.1.2 - fixed not unmuting when adjusting volume
 1.1.1 - verbose mute function
@@ -18,7 +19,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -50,6 +51,7 @@ class Player:
         self.stopped = True
         self.muted = False
         self.get_vol()
+        self.loop = False
 
     def get_vol(self):
         self.volume = get_volume(self.sink)
@@ -66,6 +68,10 @@ class Player:
         set_vol.wait()
         self.get_vol()
         return
+
+    def on_reproduction_end(self):
+        print_datetime(f"{self.sink}:\treproduction ended")
+        pass
 
     def mute(self):
         print_datetime(f"{self.sink}: \tmute")
@@ -120,7 +126,8 @@ class Player:
         self.current_track = self.playlist[self.current_index]
         return self.playlist
 
-    def play_audio(self, filename=None):
+    def play_audio(self, filename=None, loop=False):
+        self.loop = loop
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
@@ -136,12 +143,16 @@ class Player:
                     print_datetime(f"Error reproducing audio: {stderr}")
                     break
                 self.audio_process.wait()
+                if not loop:
+                    break
             except Exception as error:
                 print_datetime(f"{self.sink}: \tError riproducing audio: {error}")
                 break
+        self.stop()
+        self.on_reproduction_end()
 
-    def play(self):
-        self.audio_thread = threading.Thread(target=self.play_audio)
+    def play(self, loop=False):
+        self.audio_thread = threading.Thread(target=self.play_audio, args=(None, loop))
         self.audio_thread.daemon = True
         self.audio_thread.start()
 
@@ -186,7 +197,7 @@ class Player:
             self.current_index = 0
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Next track -> {self.current_track}")
-        self.play()
+        self.play(self.loop)
 
     def prev_track(self):
         self.stop()
@@ -195,7 +206,7 @@ class Player:
             self.current_index = len(self.playlist) - 1
         self.current_track = self.playlist[self.current_index]
         print_datetime(f"{self.sink}: Previous track <- {self.current_track}")
-        self.play()
+        self.play(self.loop)
 
 
 def main():
@@ -213,7 +224,7 @@ if __name__ == "__main__":
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    voice_path = f"{script_dir}/media/front/"
+    voice_path = f"{script_dir}/media/front/ita/"
     bg_path = f"{script_dir}/media/neck/"
     voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
     print_datetime(voice_playlist)
@@ -231,6 +242,11 @@ if __name__ == "__main__":
         time.sleep(3)
 
     # initialize players
+    class newPlayer(Player):
+        def on_reproduction_end(self):
+            print("OVERRIDDEN FUNCTION")
+
+
     bluetooth = Player(bt_sink)
     jack = Player(jack_sink)
 
@@ -251,7 +267,7 @@ if __name__ == "__main__":
 
     # setup player
     bluetooth.load(bg_playlist)
-    bluetooth.play()
+    bluetooth.play(loop=True)
     jack.load(voice_playlist)
     jack.play()
     print_datetime(voice_playlist)
