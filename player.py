@@ -140,11 +140,12 @@ class Player:
         self.playing = True
         self.stopped = False
         self.current_track = self.playlist[self.current_index]
-        if filename != None:
+        if filename is not None:
             self.current_track = filename
         while self.playing:
             try:
-                print_datetime(f"{self.sink}: playing {self.current_track}|Repeat one={self.repeat_one}; Repeat all={self.repeat_all}")
+                print_datetime(f"{self.sink}: playing {self.current_track}|Repeat one={self.repeat_one}; "
+                               f"Repeat all={self.repeat_all}")
                 self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", self.current_track],
                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = self.audio_process.communicate()
@@ -262,16 +263,14 @@ if __name__ == "__main__":
             pass
         time.sleep(3)
 
-
     # initialize players
-    class newPlayer(Player):
+    class NewPlayer(Player):
         def on_reproduction_end(self):
             print("OVERRIDDEN FUNCTION")
 
 
     bluetooth = Player(bt_sink)
     jack = Player(jack_sink)
-
 
     # initialize GPIOs
     def bt_next(channel):

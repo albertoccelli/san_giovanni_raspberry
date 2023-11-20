@@ -20,7 +20,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.4.0"
+__version__ = "1.5.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -107,9 +107,10 @@ def stop_player():
 
 def audio_prompt(filename, sink=None):
     # play prompt
-    if sink == None: sink=jack_sink
+    if sink is None:
+        sink = jack_sink
     subprocess.Popen(["pactl", "suspend-sink", "0"])
-    play_prompt = subprocess.Popen(["paplay", f"--device={jack_sink}", filename])
+    play_prompt = subprocess.Popen(["paplay", f"--device={sink}", filename])
     play_prompt.wait()
 
 

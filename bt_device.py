@@ -21,7 +21,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.2.2"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -31,6 +31,7 @@ import time
 
 from utils import get_sinks, print_datetime, curwd
 from config import *
+
 
 class Device:
 
@@ -131,16 +132,18 @@ class Device:
                 if "failed" in outcome.lower():
                     if attempts <= 5:
                         print_datetime("Failed to connect: please check that the device is turned on, then try again")
-                        if attempts%10 == 9:
+                        if attempts % 10 == 9:
                             audio_prompt(f"{curwd}/prompts/{lang}/turnon.wav")
                     else:
                         if attempts == 20:
                             if "NotReady" in outcome:
                                 print_datetime("Rebooting the device")
                                 reboot = subprocess.Popen(["sudo", "systemctl", "restart", "bluetooth.service"])
+                                reboot.wait()
                                 restore = subprocess.Popen(["sudo", "rfkill", "unblock", "bluetooth"])
+                                restore.wait()
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
-                        if attempts%10 == 9:
+                        if attempts % 10 == 9:
                             audio_prompt(f"{curwd}/prompts/{lang}/error1.wav")
                     time.sleep(0.5)
 

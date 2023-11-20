@@ -10,6 +10,7 @@ GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 running = False
 
+
 def toggle_standby(channel):
     pressed_time = time.time()
     while GPIO.input(button_1) == GPIO.HIGH:
@@ -41,6 +42,7 @@ def reboot():
         audio_prompt(f"{curwd}/prompts/{lang}/reboot.wav")
         os.system("sudo reboot now")
 
+
 def standby():
     global running
     if running:
@@ -51,6 +53,7 @@ def standby():
         print("Starting demo")
         os.system("systemctl --user start player")
     running = not running
+
 
 GPIO.add_event_detect(button_1, GPIO.RISING, callback=toggle_standby, bouncetime=200)
 GPIO.add_event_detect(button_5, GPIO.RISING, callback=reboot_button, bouncetime=200)
@@ -67,6 +70,7 @@ def main():
     except KeyboardInterrupt:
         GPIO.cleanup()
         return
+
 
 main()
 os.system("systemctl --user stop player")

@@ -29,7 +29,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.6.0"
+__version__ = "1.9.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -106,7 +106,6 @@ if __name__ == "__main__":
 
     def button_1_pressed(channel):
         print("BUTTON 1 PRESSED")
-        #audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
@@ -248,7 +247,6 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=100)
     GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=100)
 
-
     # the main function
     def main():
         try:
@@ -266,7 +264,6 @@ if __name__ == "__main__":
                     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
                     bt_connect.wait()
                 time.sleep(2)
-
 
         except KeyboardInterrupt:
             subprocess.Popen(["pactl", "suspend-sink", "0"])
