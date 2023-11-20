@@ -1,49 +1,76 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-"""
-The Main loop routine of the SM Demo software. First starts by looking for a BT device, then starts
-the SM Demo. When the SM demo ends due to disconnection, it once again try to connect to the BT
-
-Changelogs:
-1.3.0 - added amplifier standby pin
-1.2.0 - support for multilanguage
-1.1.0 - welcome prompt added
-1.0.0 - file created
-
-Requirements: Raspberry Pi 3
-"""
-
-__author__ = "Alberto Occelli"
-__copyright__ = "Copyright 2023,"
-__credits__ = ["Alberto Occelli"]
-__license__ = "MIT"
-__version__ = "1.2.0"
-__maintainer__ = "Alberto Occelli"
-__email__ = "albertoccelli@gmail.com"
-__status__ = "Dev"
-
-import subprocess
-import os
-from utils import curwd, audio_prompt
-from config import *
 import RPi.GPIO as GPIO
+import time
+import os
 
 
-GPIO.output(standby_pin, 1)
+from config import *
+from utils import curwd, audio_prompt
 
-print(f"{curwd}/prompts/{lang}/welcome.wav")
-audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
+GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+running = False
 
 
-while True:
+def toggle_standby(channel):
+    pressed_time = time.time()
+    while GPIO.input(button_1) == GPIO.HIGH:
+        if GPIO.input(button_5) == GPIO.HIGH:
+            reboot()
+            return
+        elapsed = time.time()-pressed_time
+        if elapsed >= 4:
+            standby()
+            return
+
+
+def reboot_button(channel):
+    while GPIO.input(button_5) == GPIO.HIGH:
+        if GPIO.input(button_5) == GPIO.HIGH and GPIO.input(button_1) == GPIO.HIGH:
+            reboot()
+            return
+
+
+def reboot():
+    time_pressed = time.time()
+    elapsed = 0
+    while (GPIO.input(button_5) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH) and elapsed <= 5:
+        elapsed = time.time() - time_pressed
+        time.sleep(0.1)
+        pass
+    if elapsed > 5:
+        print("REBOOT")
+        audio_prompt(f"{curwd}/prompts/{lang}/reboot.wav")
+        os.system("sudo reboot now")
+
+
+def standby():
+    global running
+    if running:
+        print("Stopping demo")
+        os.system("systemctl --user stop player")
+        audio_prompt(f"{curwd}/prompts/eng/standby.wav")
+    else:
+        print("Starting demo")
+        os.system("systemctl --user start player")
+    running = not running
+
+
+GPIO.add_event_detect(button_1, GPIO.RISING, callback=toggle_standby, bouncetime=200)
+GPIO.add_event_detect(button_5, GPIO.RISING, callback=reboot_button, bouncetime=200)
+
+
+def main():
+    os.system(f"pactl set-sink-volume 0 {fr_volume}%")
+    os.system("systemctl --user stop player")
+    audio_prompt(f"{curwd}/prompts/startup.wav")
     try:
-        #  connect bluetooth device
-        bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
-        bt_connect.wait()
-        #  start player service
-        demo = subprocess.Popen(["python", f"{curwd}/sm_demo.py"])
-        demo.wait()
+        while True:
+            time.sleep(10)
+            pass
     except KeyboardInterrupt:
-        subprocess.Popen(["killall", "paplay"])
-        break
+        GPIO.cleanup()
+        return
+
+
+main()
+os.system("systemctl --user stop player")

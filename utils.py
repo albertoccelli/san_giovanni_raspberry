@@ -5,6 +5,7 @@
 Utility functions for SM Demo software
 
 Changelog:
+1.5.1 - bugfix
 1.5.0 - added function to get bluez path
 1.4.0 - added function to reload services
 1.3.0 - added function to get mute status
@@ -19,7 +20,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.4.0"
+__version__ = "1.5.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -74,7 +75,7 @@ def print_datetime(argument):
 
 def set_spkr_volume_max():
     try:
-        bluez = get_bluez()[0]
+        bluez = get_bluez()
         command = ["dbus-send", "--system", "--type=method_call", "--print-reply", "--dest=org.bluez",
                    bluez, "org.bluez.MediaControl1.VolumeUp"]
         print_datetime("Setting neckband volume at maximum")
@@ -106,9 +107,10 @@ def stop_player():
 
 def audio_prompt(filename, sink=None):
     # play prompt
-    if sink == None: sink=jack_sink
+    if sink is None:
+        sink = jack_sink
     subprocess.Popen(["pactl", "suspend-sink", "0"])
-    play_prompt = subprocess.Popen(["paplay", f"--device={jack_sink}", filename])
+    play_prompt = subprocess.Popen(["paplay", f"--device={sink}", filename])
     play_prompt.wait()
 
 

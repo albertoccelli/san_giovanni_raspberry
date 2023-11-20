@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.2.2 - added more log outputs
 - 1.2.1 - enhanced auto-bluetooth recovery
 - 1.2.0 - restart bluetooth service if too many attempts are made
 - 1.1.0 - added first attempt prompt
@@ -20,7 +21,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.2.2"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -30,6 +31,7 @@ import time
 
 from utils import get_sinks, print_datetime, curwd
 from config import *
+
 
 class Device:
 
@@ -69,7 +71,7 @@ class Device:
             return self.mac_address
         # prompt to turn on the neckband and put into adv, since the MAC is not among the list
         print_datetime("Please turn on the bluetooth device and put it in advertising mode")
-        audio_prompt(f"prompts/{lang}/turnon_adv.wav")
+        audio_prompt(f"{curwd}/prompts/{lang}/turnon_adv.wav")
         while ntry <= maxtry:
             bt_scan = subprocess.Popen(["bluetoothctl", "--timeout", str(timeout), "scan", "on"],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -86,7 +88,7 @@ class Device:
                 for i in range(len(device_list)):
                     if self.name in device_list[i]:
                         print_datetime(f"Found: {device_list[i]}")
-                        audio_prompt(f"prompts/{lang}/found.wav")
+                        audio_prompt(f"{curwd}/prompts/{lang}/found.wav")
                         self.mac_address = device_list[i].split(" ")[1]
                         self.name = " ".join(device_list[i].split(" ")[2:])
                         break
@@ -119,28 +121,30 @@ class Device:
 
     def connect(self):
         attempts = 0
-        audio_prompt(f"prompts/{lang}/attempt.wav")
+        audio_prompt(f"{curwd}/prompts/{lang}/attempt.wav")
         if self.mac_address:
             while True:
-                print("Trying to connect...")
+                print_datetime("Trying to connect...")
                 connect = subprocess.run(["bluetoothctl", "connect", self.mac_address], capture_output=True, text=True)
                 outcome = connect.stdout
                 print_datetime(outcome)
-                print("NotReady" in outcome)
+                # print_datetime("NotReady" in outcome)
                 if "failed" in outcome.lower():
                     if attempts <= 5:
                         print_datetime("Failed to connect: please check that the device is turned on, then try again")
-                        if attempts%10 == 9:
-                            audio_prompt(f"prompts/{lang}/turnon.wav")
+                        if attempts % 10 == 9:
+                            audio_prompt(f"{curwd}/prompts/{lang}/turnon.wav")
                     else:
                         if attempts == 20:
                             if "NotReady" in outcome:
                                 print_datetime("Rebooting the device")
                                 reboot = subprocess.Popen(["sudo", "systemctl", "restart", "bluetooth.service"])
+                                reboot.wait()
                                 restore = subprocess.Popen(["sudo", "rfkill", "unblock", "bluetooth"])
+                                restore.wait()
                         print_datetime("Failed to connect. Please try putting the device into pairing mode")
-                        if attempts%10 == 9:
-                            audio_prompt(f"prompts/{lang}/error1.wav")
+                        if attempts % 10 == 9:
+                            audio_prompt(f"{curwd}/prompts/{lang}/error1.wav")
                     time.sleep(0.5)
 
                 elif "success" in outcome.lower():
@@ -159,12 +163,12 @@ class Device:
             if "failed" in outcome.lower():
                 if attempts <= 5:
                     print_datetime("Failed to pair: please check that the device is turned on, then try again")
-                    audio_prompt(f"prompts/{lang}/turnon.wav")
+                    audio_prompt(f"{curwd}/prompts/{lang}/turnon.wav")
                 else:
                     print_datetime("Failed to pair. Please try putting the device into pairing mode")
-                    audio_prompt(f"prompts/{lang}/error1.wav")
+                    audio_prompt(f"{curwd}/prompts/{lang}/error1.wav")
             elif "success" in outcome.lower():
-                audio_prompt(f"prompts/{lang}/connected.wav")
+                audio_prompt(f"{curwd}/prompts/{lang}/connected.wav")
                 self.get_sink()
                 return
             attempts += 1
@@ -183,7 +187,7 @@ class Device:
             if len(sinks) == 2:
                 self.ready_to_play = True
         except Exception as e:
-            print(f"Error getting sinks: {e}")
+            print_datetime(f"Error getting sinks: {e}")
             self.ready_to_play = False
             if not self.check_connected():
                 self.connect()

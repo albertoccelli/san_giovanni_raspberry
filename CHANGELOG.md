@@ -7,13 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Across The Universe - 1.6.0]
 
+First stable release
+
 ### Added
+- Main routine handling stadby mode
+- Guide prompt
+- Up to 5 buttons: volume (+/-), change language, change noise, start/stop
+- Added 2 languages: FRA/ESP
 - Start/Stop function
-- Loop function in the player library
+- Repeat all/repeat one function in the player library
+- Shuffle function in the player library
 - Control for standby function of the amplifier
 
 ### Changed
-- Replaced the 4 rotary encoders with 6 buttons
+- Replaced the 4 rotary encoders with 5 buttons
 
 ### Fixed 
 - Bluetooth restarts itself if problems with bluetooth.service

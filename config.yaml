@@ -7,16 +7,16 @@ device_name: "NS7"
 # player settings
 start_track: 1
 volume_steps_um: "perc" # unit of measure of volume steps: perc|db
-volume_steps: 2
-bt_volume: 20
+volume_steps: 5
+bt_volume: 30
 fr_volume: 50
 
 # Amplifier standby pin
-standby_pin: 4
+standby_pin: 21
 
 # Buttons
-button_1: 23
+button_1: 20
 button_2: 22
 button_3: 27
 button_4: 18
-button_5: 17
+button_5: 19
