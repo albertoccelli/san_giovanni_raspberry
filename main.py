@@ -7,6 +7,7 @@ from config import *
 from utils import curwd, audio_prompt
 
 GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 running = False
 
 def toggle_standby(channel):
@@ -29,10 +30,16 @@ def reboot_button(channel):
 
 
 def reboot():
-    while GPIO.input(button_5) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
+    time_pressed = time.time()
+    elapsed = 0
+    while (GPIO.input(button_5) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH) and elapsed <= 5:
+        elapsed = time.time() - time_pressed
+        time.sleep(0.1)
         pass
-    print("SIMULTANEOUS PRESS - REBOOT")
-    #os.system("sudo reboot now")
+    if elapsed > 5:
+        print("REBOOT")
+        audio_prompt(f"{curwd}/prompts/{lang}/reboot.wav")
+        os.system("sudo reboot now")
 
 def standby():
     global running

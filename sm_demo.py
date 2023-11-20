@@ -262,7 +262,9 @@ if __name__ == "__main__":
                     jack.stop()
                     subprocess.Popen(["killall", "paplay"])
                     print_datetime("SM_Demo: demo interrupted")
-                    break
+                    audio_prompt(f"{curwd}/prompts/{lang}/lost_connection.wav")
+                    bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
+                    bt_connect.wait()
                 time.sleep(2)
 
 
