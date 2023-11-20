@@ -51,6 +51,9 @@ if __name__ == "__main__":
     from config import *
 
     print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
+    sink = get_sinks()[0]
+    set_volume = subprocess.Popen(["pactl", "set-sink-volume", "0", f"{fr_volume}%"])
+    set_volume.wait()
     audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 
     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
@@ -121,7 +124,7 @@ if __name__ == "__main__":
 
 
     def button_1_pressed(channel):
-        #print("BUTTON 1 PRESSED")
+        print("BUTTON 1 PRESSED")
         #audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
         elapsed = 0
         pressed_time = time.time()
@@ -143,6 +146,8 @@ if __name__ == "__main__":
             change_noise()
 
     def change_noise():
+        print(bluetooth.playing)
+        '''
         if bluetooth.playing:
             bluetooth.stop()
             next_index = bluetooth.current_index + 1
@@ -151,7 +156,7 @@ if __name__ == "__main__":
             # audio_prompt(f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
             bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index + 1}.wav")
             bluetooth.next_track()
-
+        '''
 
     def change_lang():
         to_resume = False
@@ -195,7 +200,8 @@ if __name__ == "__main__":
             time.sleep(0.01)
         if time.time() - p_time > 0.02:
             if not bluetooth.playing:
-                bluetooth.play(repeat_one=True)
+                bluetooth.current_index = 0
+                bluetooth.play(repeat_one=False)
                 bluetooth.playing = True
             else:
                 bluetooth.stop()
@@ -261,12 +267,12 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=100)
     GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=100)
 
-    audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
 
     # the main function
     def main():
         try:
             print_datetime("SM_Demo:\tDemo started...")
+            audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
             while True:
                 if len(get_sinks()) < 2:
                     print_datetime("SM Demo: fatal: lost connection")
@@ -283,8 +289,6 @@ if __name__ == "__main__":
             subprocess.Popen(["pactl", "suspend-sink", "0"])
             killall = subprocess.Popen(["killall", "paplay"])
             killall.wait()
-            GPIO.cleanup()
-        finally:
             GPIO.cleanup()
 
     main()
