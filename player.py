@@ -76,7 +76,7 @@ class Player:
         return
 
     def on_reproduction_end(self):
-        print_datetime(f"{self.sink}: reproduction ended")
+        # print_datetime(f"{self.sink}: reproduction ended")
         pass
 
     def mute(self):
@@ -144,7 +144,7 @@ class Player:
             self.current_track = filename
         while self.playing:
             try:
-                print_datetime(f"{self.sink}: playing {filename}|Repeat one={self.repeat_one}; Repeat all={self.repeat_all}")
+                print_datetime(f"{self.sink}: playing {self.current_track}|Repeat one={self.repeat_one}; Repeat all={self.repeat_all}")
                 self.audio_process = subprocess.Popen(["paplay", f"--device={self.sink}", self.current_track],
                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = self.audio_process.communicate()
