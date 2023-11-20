@@ -48,10 +48,12 @@ def standby():
     if running:
         print("Stopping demo")
         os.system("systemctl --user stop player")
+        os.system("sudo systemctl stop bluetooth")
         audio_prompt(f"{curwd}/prompts/eng/standby.wav")
     else:
         print("Starting demo")
         os.system("systemctl --user start player")
+        os.system("sudo systemctl start bluetooth")
     running = not running
 
 
