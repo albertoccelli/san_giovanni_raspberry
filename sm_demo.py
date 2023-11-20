@@ -59,8 +59,8 @@ if __name__ == "__main__":
     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
     bt_connect.wait()
 
-    standby = False
     langs = ["eng", "ita", "fra", "spa"]
+
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
     if lang:
@@ -75,13 +75,6 @@ if __name__ == "__main__":
 
     # make sure that the paplay service is not suspended
     subprocess.Popen(["pactl", "suspend-sink", "0"])
-
-    print_datetime("Front playlist:")
-    for t in voice_playlist:
-        print_datetime(f"\t{t}")
-    print_datetime("Neck playlist: ")
-    for t in bg_playlist:
-        print_datetime(f"\t{t}")
 
     # initiate players
     # make sure that the bt device is ready to play:
@@ -101,27 +94,15 @@ if __name__ == "__main__":
     set_max_thread = threading.Thread(target=set_spkr_volume_max)
     set_max_thread.start()
 
-    # initializing bluetooth player
+    # initializing players
     bluetooth = Player(audio_sinks[1])
     bluetooth.load(bg_playlist)
     bluetooth.current_index = start_track
     bluetooth.set_volume(bt_volume)
-#    bluetooth.play(loop=True)
-
-    # initializing jack player
-    class JackPlayer(Player):
-        def on_reproduction_end(self):
-            pass
-
-
-    jack = JackPlayer(audio_sinks[0])
+    jack = Player(audio_sinks[0])
     jack.set_volume(fr_volume)
     jack.shuffle = True
     jack.load(voice_playlist)
-    #jack.play(loop=True)
-
-    print_datetime(f"SM Demo: distance sensor status={d_sensor_enabled}")
-
 
     def button_1_pressed(channel):
         print("BUTTON 1 PRESSED")
