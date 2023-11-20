@@ -34,6 +34,7 @@ GPIO.add_event_detect(button_1, GPIO.RISING, callback=toggle_standby, bouncetime
 def main():
     os.system(f"pactl set-sink-volume 0 {fr_volume}%")
     os.system("systemctl --user stop player")
+    audio_prompt(f"{curwd}/prompts/startup.wav")
     try:
         while True:
             time.sleep(10)
