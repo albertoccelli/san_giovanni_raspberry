@@ -31,7 +31,7 @@ def reboot_button(channel):
 def reboot():
     while GPIO.input(button_5) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
         pass
-    print("SIMULTANEOUS PRESS")
+    print("SIMULTANEOUS PRESS - REBOOT")
     #os.system("sudo reboot now")
 
 def standby():
