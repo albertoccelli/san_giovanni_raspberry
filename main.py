@@ -12,10 +12,27 @@ running = False
 def toggle_standby(channel):
     pressed_time = time.time()
     while GPIO.input(button_1) == GPIO.HIGH:
+        if GPIO.input(button_5) == GPIO.HIGH:
+            reboot()
+            return
         elapsed = time.time()-pressed_time
         if elapsed >= 4:
             standby()
             return
+
+
+def reboot_button(channel):
+    while GPIO.input(button_5) == GPIO.HIGH:
+        if GPIO.input(button_5) == GPIO.HIGH and GPIO.input(button_1) == GPIO.HIGH:
+            reboot()
+            return
+
+
+def reboot():
+    while GPIO.input(button_5) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
+        pass
+    print("SIMULTANEOUS PRESS")
+    #os.system("sudo reboot now")
 
 def standby():
     global running
@@ -29,6 +46,7 @@ def standby():
     running = not running
 
 GPIO.add_event_detect(button_1, GPIO.RISING, callback=toggle_standby, bouncetime=200)
+GPIO.add_event_detect(button_5, GPIO.RISING, callback=reboot_button, bouncetime=200)
 
 
 def main():
