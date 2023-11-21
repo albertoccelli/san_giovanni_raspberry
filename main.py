@@ -1,10 +1,31 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
+
+Changelogs:
+1.6.0 - ACROSS THE UNIVERSE - first stable release
+
+Requirements: Raspberry Pi 3
+"""
+
+__author__ = "Alberto Occelli"
+__copyright__ = "Copyright 2023,"
+__credits__ = ["Alberto Occelli"]
+__license__ = "MIT"
+__version__ = "1.6.0 - Across the universe"
+__maintainer__ = "Alberto Occelli"
+__email__ = "albertoccelli@gmail.com"
+__status__ = "Dev"
+
 import RPi.GPIO as GPIO
 import time
 import os
 
 
 from config import *
-from utils import curwd, audio_prompt
+from utils import curwd, audio_prompt, print_datetime
 
 GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -38,7 +59,7 @@ def reboot():
         time.sleep(0.1)
         pass
     if elapsed > 5:
-        print("REBOOT")
+        print_datetime("REBOOT")
         audio_prompt(f"{curwd}/prompts/{lang}/reboot.wav")
         os.system("sudo reboot now")
 
@@ -46,12 +67,12 @@ def reboot():
 def standby():
     global running
     if running:
-        print("Stopping demo")
+        print_datetime("Stopping demo")
         os.system("systemctl --user stop player")
         os.system("sudo systemctl stop bluetooth")
         audio_prompt(f"{curwd}/prompts/eng/standby.wav")
     else:
-        print("Starting demo")
+        print_datetime("Starting demo")
         os.system("systemctl --user start player")
         os.system("sudo systemctl start bluetooth")
     running = not running
@@ -62,6 +83,8 @@ GPIO.add_event_detect(button_5, GPIO.RISING, callback=reboot_button, bouncetime=
 
 
 def main():
+    print_datetime("+++ WELCOME TO THE SANMARCO INSTORE DEMO +++")
+    print_datetime(f"Version: {__version__}")
     os.system(f"pactl set-sink-volume 0 {fr_volume}%")
     os.system("systemctl --user stop player")
     audio_prompt(f"{curwd}/prompts/startup.wav")
