@@ -251,8 +251,8 @@ if __name__ == "__main__":
     def main():
         try:
             print_datetime("SM_Demo:\tDemo started...")
+            audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
             while True:
-                audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
                 if len(get_sinks()) < 2:
                     print_datetime("SM Demo: fatal: lost connection")
                     subprocess.Popen(["pactl", "suspend-sink", "0"])
@@ -263,6 +263,7 @@ if __name__ == "__main__":
                     audio_prompt(f"{curwd}/prompts/{lang}/lost_connection.wav")
                     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
                     bt_connect.wait()
+                    audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
                 time.sleep(2)
 
         except KeyboardInterrupt:
