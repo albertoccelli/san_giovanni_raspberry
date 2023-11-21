@@ -59,7 +59,7 @@ if __name__ == "__main__":
     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
     bt_connect.wait()
 
-    langs = ["eng", "ita", "fra", "spa"]
+    langs = ["eng", "ita", "fra", "spa", "ger"]
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
