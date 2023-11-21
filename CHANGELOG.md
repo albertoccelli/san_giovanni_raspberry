@@ -18,6 +18,7 @@ First stable release
 - Repeat all/repeat one function in the player library
 - Shuffle function in the player library
 - Control for standby function of the amplifier
+- Reboot with 1 and 5 pressed
 
 ### Changed
 - Replaced the 4 rotary encoders with 5 buttons
