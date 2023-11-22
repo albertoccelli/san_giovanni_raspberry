@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.2.3 - make device pairable by default
 - 1.2.2 - added more log outputs
 - 1.2.1 - enhanced auto-bluetooth recovery
 - 1.2.0 - restart bluetooth service if too many attempts are made
@@ -21,7 +22,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -67,6 +68,7 @@ class Device:
         get_devices = subprocess.run(["bluetoothctl", "devices"], capture_output=True, text=True)
         device_list = get_devices.stdout.split("\n")
         device_list.remove("")
+        print_datetime(f"Looking for device named {self.name}")
         for i in range(len(device_list)):
             if self.name in device_list[i]:
                 self.mac_address = device_list[i].split(" ")[1]
