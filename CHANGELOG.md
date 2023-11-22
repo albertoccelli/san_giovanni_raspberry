@@ -13,11 +13,12 @@ First stable release
 - Main routine handling stadby mode
 - Guide prompt
 - Up to 5 buttons: volume (+/-), change language, change noise, start/stop
-- Added 2 languages: FRA/ESP
+- Added 3 languages: FRA/ESP/DEU
 - Start/Stop function
 - Repeat all/repeat one function in the player library
 - Shuffle function in the player library
 - Control for standby function of the amplifier
+- Reboot with 1 and 5 pressed
 
 ### Changed
 - Replaced the 4 rotary encoders with 5 buttons
