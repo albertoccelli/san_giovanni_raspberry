@@ -32,6 +32,7 @@ import time
 from utils import get_sinks, print_datetime, curwd
 from config import *
 
+lang = "eng"
 
 class Device:
 
@@ -45,14 +46,18 @@ class Device:
         self.ready_to_play = False
         self.get_mac_address()
         self.get_info()
+        pairable = subprocess.Popen(["bluetoothctl", "pairable", "on"])
+        pairable.wait()
         if not self.trusted:
             self.trust()
         if not self.paired:
             self.pair()
         if not self.connected:
             self.connect()
+        '''
         else:
             print_datetime("Device already connected")
+        '''
 
     def get_mac_address(self):
         ntry = 1
@@ -119,9 +124,10 @@ class Device:
                     else:
                         self.connected = False
 
-    def connect(self):
+    def connect(self, mute=False):
         attempts = 0
-        audio_prompt(f"{curwd}/prompts/{lang}/attempt.wav")
+        if not mute:
+            audio_prompt(f"{curwd}/prompts/{lang}/attempt.wav")
         if self.mac_address:
             while True:
                 print_datetime("Trying to connect...")
@@ -168,8 +174,7 @@ class Device:
                     print_datetime("Failed to pair. Please try putting the device into pairing mode")
                     audio_prompt(f"{curwd}/prompts/{lang}/error1.wav")
             elif "success" in outcome.lower():
-                audio_prompt(f"{curwd}/prompts/{lang}/connected.wav")
-                self.get_sink()
+                self.get_sink("pairing")
                 return
             attempts += 1
 
@@ -180,14 +185,14 @@ class Device:
             outcome = trust.stdout
             print_datetime(outcome)
 
-    def get_sink(self):
+    def get_sink(self, message = None):
         sinks = get_sinks()
         try:
             self.sink = sinks[1]
             if len(sinks) == 2:
                 self.ready_to_play = True
         except Exception as e:
-            print_datetime(f"Error getting sinks: {e}")
+            print_datetime(f"Error getting sinks during {message}: {e}")
             self.ready_to_play = False
             if not self.check_connected():
                 self.connect()
@@ -216,4 +221,5 @@ if __name__ == "__main__":
 
     # initialize the neckband connection. Closes the program once it's ready to play
     neckband = Device(device_name)
+    neckband.connect(mute=True)
     initialize(neckband)
