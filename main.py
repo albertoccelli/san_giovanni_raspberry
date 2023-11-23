@@ -60,7 +60,7 @@ def reboot():
         pass
     if elapsed > 5:
         print_datetime("REBOOT")
-        audio_prompt(f"{curwd}/prompts/{lang}/reboot.wav")
+        audio_prompt(f"{curwd}/prompts/ita/reboot.wav")
         os.system("sudo reboot now")
 
 

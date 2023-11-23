@@ -55,13 +55,13 @@ if __name__ == "__main__":
     sink = get_sinks()[0]
     set_volume = subprocess.Popen(["pactl", "set-sink-volume", "0", f"{fr_volume}%"])
     set_volume.wait()
-    audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
+#    audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
 
     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
     bt_connect.wait()
 
     langs = ["eng", "ita", "fra", "spa", "ger"]
-
+    lang = "ita"
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
     if lang:
@@ -102,8 +102,8 @@ if __name__ == "__main__":
     bluetooth.set_volume(bt_volume)
     jack = Player(audio_sinks[0])
     jack.set_volume(fr_volume)
-    jack.shuffle = True
     jack.load(voice_playlist)
+    jack.play(repeat_one = True, repeat_all = True)
 
     def button_1_pressed(channel):
         elapsed = 0
@@ -251,7 +251,6 @@ if __name__ == "__main__":
     def main():
         try:
             print_datetime("SM_Demo:\tDemo started...")
-            audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
             while True:
                 if len(get_sinks()) < 2:
                     print_datetime("SM Demo: fatal: lost connection")
@@ -263,7 +262,6 @@ if __name__ == "__main__":
                     audio_prompt(f"{curwd}/prompts/{lang}/lost_connection.wav")
                     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
                     bt_connect.wait()
-                    audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
                 time.sleep(2)
 
         except KeyboardInterrupt:
