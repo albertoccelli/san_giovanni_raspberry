@@ -122,10 +122,8 @@ if __name__ == "__main__":
             pass
         elif 0.02 < elapsed <= 1:
             change_lang()
-        elif 1 < elapsed < 5:
-            change_noise()
 
-    def change_noise():
+    def connect_bluetooth():
         print(bluetooth.playing)
         '''
         if bluetooth.playing:
@@ -251,7 +249,7 @@ if __name__ == "__main__":
     def main():
         try:
             print_datetime("SM_Demo:\tDemo started...")
-            audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
+            audio_prompt(f"{curwd}/prompts/eng/press3.wav")
             while True:
                 if len(get_sinks()) < 2:
                     print_datetime("SM Demo: fatal: lost connection")
@@ -260,10 +258,17 @@ if __name__ == "__main__":
                     jack.stop()
                     subprocess.Popen(["killall", "paplay"])
                     print_datetime("SM_Demo: demo interrupted")
-                    audio_prompt(f"{curwd}/prompts/{lang}/lost_connection.wav")
-                    bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
-                    bt_connect.wait()
-                    audio_prompt(f"{curwd}/prompts/{lang}/press3.wav")
+                    #audio_prompt(f"{curwd}/prompts/eng/lost_connection.wav")
+                    while True:
+                        time.sleep(10)
+                    #bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
+                    #bt_connect.wait()
+                    #audio_prompt(f"{curwd}/prompts/eng/press3.wav")
+                    #print_datetime("STANDBY")
+                    #bt_disconnect = subprocess.Popen(["sudo", "systemctl", "stop", "bluetooth"])
+                    #bt_disconnect.wait()
+                    #audio_prompt(f"{curwd}/prompts/eng/standby.wav")
+                    quit()
                 time.sleep(2)
 
         except KeyboardInterrupt:
