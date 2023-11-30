@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Blackbird - 1.7.0] - 30-11-2023
+
+Second stable release: implemented changes wanted by costumer
+
+### Added
+- 3 new languages: POR(BRA)/JAP/CHI
+- Watchdog function to stabilize system
+- Function to reset bluetooth
+
 ## [Across The Universe - 1.6.0] - 20-11-2023
 
 First stable release
