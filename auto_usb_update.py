@@ -40,6 +40,8 @@ def stop_player():
     # stop player.service
     stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "player.service"])
     stop_pl.wait()
+    stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "main_demo.service"])
+    stop_pl.wait()
     return
 
 
@@ -51,7 +53,7 @@ def audio_prompt(filename):
 
 def start_player():
     # restart player.service
-    restart_player = subprocess.Popen(["systemctl", "--user", "start", "player.service"])
+    restart_player = subprocess.Popen(["systemctl", "--user", "start", "main_demo.service"])
     restart_player.wait()
 
 
@@ -139,7 +141,7 @@ def update(source, target):
     time.sleep(0.1)
     # check if usb drive is allowed to update
     if controlfile in check:
-        audio_prompt(f"{curwd}/prompts/{lang}/wait_update.wav")
+        audio_prompt(f"{curwd}/prompts/eng/wait_update.wav")
         # 1. copy config file
         print("1/4 Copying configuration files")
         copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
@@ -149,13 +151,13 @@ def update(source, target):
         os.system(f"cp -r {source}/sm_copy/media {target}/")
         print("Done!")
         # 3. convert mp3 into wav
-        print("3/4 Converting mp3 files into wav")
-        convert_media()
-        print("Done!")
+        #print("3/4 Converting mp3 files into wav")
+        #convert_media()
+        #print("Done!")
         # 4. run script runme.sh inside the folder
-        print("4/4 Running bash script")
-        os.system(f"{source}/sm_copy/runme.sh")
-        print("Done!")
+        #print("4/4 Running bash script")
+        #os.system(f"{source}/sm_copy/runme.sh")
+        #print("Done!")
         # end update
         print("Update successful")
         audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")

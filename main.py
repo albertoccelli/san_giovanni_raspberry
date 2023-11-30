@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.7.0 - BLACKBIRD - second stable release: added bluetooth unpairing function/enhanced performances
 1.6.0 - ACROSS THE UNIVERSE - first stable release
 
 Requirements: Raspberry Pi 3
@@ -14,7 +15,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.6.0 - Across the universe"
+__version__ = "1.7.0 - Blackbird"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -28,8 +29,11 @@ from config import *
 from utils import curwd, audio_prompt, print_datetime, get_sinks
 
 GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(button_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
 running = False
+
+hold = 1
 
 def get_running():
     run = subprocess.Popen(["systemctl", "--user", "status", "player.service"], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
@@ -48,19 +52,20 @@ def toggle_standby(channel):
     global running
     pressed_time = time.time()
     while GPIO.input(button_1) == GPIO.HIGH:
-        if GPIO.input(button_5) == GPIO.HIGH:
+        if GPIO.input(button_2) == GPIO.HIGH:
             reboot()
             return
         elapsed = time.time()-pressed_time
-        if elapsed >= 4:
-            print(running)
+        #print(elapsed)
+        if elapsed >= hold:
+            print(elapsed)
             standby()
             return
 
 
 def reboot_button(channel):
-    while GPIO.input(button_5) == GPIO.HIGH:
-        if GPIO.input(button_5) == GPIO.HIGH and GPIO.input(button_1) == GPIO.HIGH:
+    while GPIO.input(button_2) == GPIO.HIGH:
+        if GPIO.input(button_2) == GPIO.HIGH and GPIO.input(button_1) == GPIO.HIGH:
             reboot()
             return
 
@@ -68,34 +73,60 @@ def reboot_button(channel):
 def reboot():
     time_pressed = time.time()
     elapsed = 0
-    while (GPIO.input(button_5) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH) and elapsed <= 5:
+    while (GPIO.input(button_2) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH) and elapsed <= 5:
         elapsed = time.time() - time_pressed
         time.sleep(0.1)
         pass
+    running = get_running()
+    print(running)
     if elapsed > 5:
-        print_datetime("REBOOT")
-        audio_prompt(f"{curwd}/prompts/ita/reboot.wav")
-        os.system("sudo reboot now")
-
+        if not running:
+            print_datetime("Reset bluetooth")
+            os.system("sudo systemctl start bluetooth")
+            audio_prompt(f"{curwd}/prompts/eng/reset_bt.wav")
+            time.sleep(1)
+            os.system(f"python {curwd}/reset_bt.py")
+            time.sleep(2)
+            #os.system("sudo reboot now")
+            standby()
 
 def standby():
     global running
     running = get_running()
     if running:
+        running = False
         print_datetime("Stopping demo")
         os.system("systemctl --user stop player")
         audio_prompt(f"{curwd}/prompts/eng/standby.wav")
-        time.sleep(1)
+        time.sleep(0.1)
         os.system("sudo systemctl stop bluetooth")
     else:
         print_datetime("Starting demo")
         os.system("systemctl --user start player")
-        os.system("sudo systemctl start bluetooth")
-    running = not running
+        #os.system("sudo systemctl start bluetooth")
+        running = True
+        time.sleep(3)
 
+
+def boot():
+    global running
+    running = get_running()
+    if running:
+        running = False
+        print_datetime("Stopping demo")
+        os.system("systemctl --user stop player")
+        audio_prompt(f"{curwd}/prompts/eng/standby.wav")
+        time.sleep(0.1)
+        os.system("sudo systemctl stop bluetooth")
+        time.sleep(4)
+    else:
+        print_datetime("Checking system integrity")
+        os.system("systemctl --user start watchdog")
+        os.system("sudo systemctl stop bluetooth")
+        running = True
 
 GPIO.add_event_detect(button_1, GPIO.RISING, callback=toggle_standby, bouncetime=200)
-GPIO.add_event_detect(button_5, GPIO.RISING, callback=reboot_button, bouncetime=200)
+GPIO.add_event_detect(button_2, GPIO.RISING, callback=reboot_button, bouncetime=200)
 
 
 def main():
@@ -104,11 +135,13 @@ def main():
     print_datetime(f"Version: {__version__}")
     os.system(f"pactl set-sink-volume 0 {fr_volume}%")
     os.system("systemctl --user stop player")
-    audio_prompt(f"{curwd}/prompts/startup.wav")
     p_sinks = 1
+    audio_prompt(f"{curwd}/prompts/eng/please_wait.wav")
+    boot()
     try:
         while True:
             n_sinks = len(get_sinks())
+            #print(f"{running}\t{n_sinks}\t{p_sinks}")
             if running and n_sinks == 1 and p_sinks != 1:
                 standby()
             time.sleep(1)

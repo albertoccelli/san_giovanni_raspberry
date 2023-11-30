@@ -7,6 +7,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.9.1 - added variable for starting track
 1.9.0 - added shuffle function
 1.8.0 - Buttons 2, 3, 4, 5 implemented
 1.7.0 - button 1 implemented:
@@ -30,7 +31,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.9.0"
+__version__ = "1.9.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -48,19 +49,22 @@ if __name__ == "__main__":
     import subprocess
     import threading
 
-    from utils import audio_prompt, load_config, set_spkr_volume_max, curwd
+    from utils import audio_prompt, load_config, set_spkr_volume_max, curwd, save_parameter
     from config import *
+
+    starting_index = 0
 
     print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
     sink = get_sinks()[0]
     set_volume = subprocess.Popen(["pactl", "set-sink-volume", "0", f"{fr_volume}%"])
     set_volume.wait()
-    audio_prompt(f"{curwd}/prompts/{lang}/welcome.wav")
-
+    audio_prompt(f"{curwd}/prompts/eng/welcome.wav")
+    os.system("sudo systemctl start bluetooth")
+    time.sleep(0.5)
     bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
     bt_connect.wait()
 
-    langs = ["eng", "ita", "fra", "spa", "ger"]
+    langs = ["eng", "ita", "fra", "spa", "ger", "por", "chi", "jap"]
 
     # read audio files from folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -71,6 +75,7 @@ if __name__ == "__main__":
     bg_path = f"{script_dir}/media/neck/"
     voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
     voice_playlist.sort()
+    print(voice_playlist)
     bg_playlist = [f"{bg_path}{f}" for f in os.listdir(bg_path) if os.path.isfile(os.path.join(bg_path, f))]
     bg_playlist.sort()
 
@@ -102,8 +107,9 @@ if __name__ == "__main__":
     bluetooth.set_volume(bt_volume)
     jack = Player(audio_sinks[0])
     jack.set_volume(fr_volume)
-    jack.shuffle = True
+    jack.shuffle = False
     jack.load(voice_playlist)
+    jack.current_index = starting_index
 
     def button_1_pressed(channel):
         elapsed = 0
@@ -117,7 +123,7 @@ if __name__ == "__main__":
                 audio_prompt(f"{curwd}/prompts/eng/standby.wav")
                 subprocess.Popen(["sudo", "killall", "paplay"])
                 quit()
-            time.sleep(0.1)
+            time.sleep(0.2)
         if elapsed <= 0.02:
             pass
         elif 0.02 < elapsed <= 1:
@@ -163,10 +169,13 @@ if __name__ == "__main__":
         voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if
                           os.path.isfile(os.path.join(voice_path, f))]
         voice_playlist.sort()
+        print(voice_playlist)
         jack.load(voice_playlist)
-        jack.current_index = 0
+        jack.current_index = starting_index
         if to_resume:
-            jack.play(repeat_one=False)
+            jack.play(repeat_one=False, repeat_all=True)
+        print_datetime(f"Parameter -lang- saved: {lang}")
+        #save_parameter(config_file, "lang", lang)
 
 
     def button_2_pressed(channel):
@@ -193,10 +202,11 @@ if __name__ == "__main__":
                 pass
             if time.time() - p_time > 0.02:
                 if not jack.playing:
-                    jack.play(repeat_one=False)
+                    jack.current_index = starting_index
+                    jack.play(repeat_one=False, repeat_all=True)
                 else:
                     jack.stop()
-                    jack.current_index = 0
+                    jack.current_index = starting_index
 
     def vol_up(channel):
         p_time = time.time()
@@ -207,12 +217,13 @@ if __name__ == "__main__":
             if elapsed >= 0.5:
                 if time.time() - p_raised_vol >= 0.2:
                     jack.raise_volume(step=vol_step, um=vol_step_um)
+                    bluetooth.raise_volume(step=5, um=vol_step_um)
                     p_raised_vol = time.time()
             time.sleep(0.1)
             pass
         if 0.05 <= elapsed < 0.5:
             jack.raise_volume(step=vol_step, um=vol_step_um)
-
+            bluetooth.raise_volume(step=5, um=vol_step_um)
 
     def vol_down(channel):
         p_time = time.time()
@@ -223,12 +234,13 @@ if __name__ == "__main__":
             if elapsed >= 0.5:
                 if time.time() - p_lowrd_vol >= 0.2:
                     jack.lower_volume(step=vol_step, um=vol_step_um)
+                    bluetooth.lower_volume(step=5, um=vol_step_um)
                     p_lowrd_vol = time.time()
             time.sleep(0.1)
             pass
         if 0.05 <= elapsed < 0.5:
             jack.lower_volume(step=vol_step, um=vol_step_um)
-
+            bluetooth.lower_volume(step=5, um=vol_step_um)
 
     def button_23_pressed():
         print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
@@ -252,9 +264,9 @@ if __name__ == "__main__":
             audio_prompt(f"{curwd}/prompts/eng/press3.wav")
             while True:
                 if len(get_sinks()) < 2:
+                    bluetooth.stop()
                     print_datetime("SM Demo: fatal: lost connection")
                     subprocess.Popen(["pactl", "suspend-sink", "0"])
-                    bluetooth.stop()
                     jack.stop()
                     subprocess.Popen(["killall", "paplay"])
                     print_datetime("SM_Demo: demo interrupted")
@@ -269,7 +281,7 @@ if __name__ == "__main__":
                     #bt_disconnect.wait()
                     #audio_prompt(f"{curwd}/prompts/eng/standby.wav")
                     quit()
-                time.sleep(2)
+                time.sleep(0.2)
 
         except KeyboardInterrupt:
             subprocess.Popen(["pactl", "suspend-sink", "0"])
