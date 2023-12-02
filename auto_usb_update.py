@@ -111,9 +111,11 @@ def mount_usb(usb_path, mount_path):
 
 def usb_in_callback(event):
     if event.device_node is not None and event.action == "add":
-        print(f"USB detected:")
+        print(f"USB detected")
         # get path of the usb
+        print("Getting USB path")
         path = wait_for_usb()
+        print("Done")
         print(path)
         s_path = path
         # mount the usb into the s_path folder
@@ -123,6 +125,7 @@ def usb_in_callback(event):
 
 
 def update(source, target):
+    print(f"Update in progress ({source} -> {target})")
     stop_player()
     # check if there is the source folder
     check = subprocess.Popen(["ls", "-a", f"{source}/sm_copy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -132,6 +135,7 @@ def update(source, target):
         # Case of error
         print("ERROR:")
         print(stderr)
+        print("USB drive not suitable for update")
         audio_prompt(f"{curwd}/prompts/{lang}/usb_error.wav")
         start_player()
         return
@@ -150,15 +154,6 @@ def update(source, target):
         print("2/4 Copying audio files in media folder")
         os.system(f"cp -r {source}/sm_copy/media {target}/")
         print("Done!")
-        # 3. convert mp3 into wav
-        #print("3/4 Converting mp3 files into wav")
-        #convert_media()
-        #print("Done!")
-        # 4. run script runme.sh inside the folder
-        #print("4/4 Running bash script")
-        #os.system(f"{source}/sm_copy/runme.sh")
-        #print("Done!")
-        # end update
         print("Update successful")
         audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")
         start_player()

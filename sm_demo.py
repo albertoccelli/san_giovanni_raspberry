@@ -123,10 +123,10 @@ if __name__ == "__main__":
                 audio_prompt(f"{curwd}/prompts/eng/standby.wav")
                 subprocess.Popen(["sudo", "killall", "paplay"])
                 quit()
-            time.sleep(0.2)
-        if elapsed <= 0.02:
+            time.sleep(0.01)
+        if elapsed <= 0.01:
             pass
-        elif 0.02 < elapsed <= 1:
+        elif 0.01 < elapsed <= 1:
             change_lang()
 
     def connect_bluetooth():
@@ -251,9 +251,9 @@ if __name__ == "__main__":
 
 
     setup_buttons()
-    GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=200)
-    GPIO.add_event_detect(button_2, GPIO.RISING, callback=button_2_pressed, bouncetime=200)
-    GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=200)
+    GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=150)
+    GPIO.add_event_detect(button_2, GPIO.RISING, callback=button_2_pressed, bouncetime=150)
+    GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=150)
     GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=100)
     GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=100)
 
@@ -281,7 +281,7 @@ if __name__ == "__main__":
                     #bt_disconnect.wait()
                     #audio_prompt(f"{curwd}/prompts/eng/standby.wav")
                     quit()
-                time.sleep(0.2)
+                time.sleep(1)
 
         except KeyboardInterrupt:
             subprocess.Popen(["pactl", "suspend-sink", "0"])
