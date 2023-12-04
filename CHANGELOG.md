@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Across The Universe - 1.6.0]
+## [Blackbird - 1.7.0] - 30-11-2023
+
+Second stable release: implemented changes wanted by costumer
+
+### Added
+- 3 new languages: POR(BRA)/JAP/CHI
+- Watchdog function to stabilize system
+- Function to reset bluetooth
+
+## [Across The Universe - 1.6.0] - 20-11-2023
 
 First stable release
 
@@ -13,11 +22,12 @@ First stable release
 - Main routine handling stadby mode
 - Guide prompt
 - Up to 5 buttons: volume (+/-), change language, change noise, start/stop
-- Added 2 languages: FRA/ESP
+- Added 3 languages: FRA/ESP/DEU
 - Start/Stop function
 - Repeat all/repeat one function in the player library
 - Shuffle function in the player library
 - Control for standby function of the amplifier
+- Reboot with 1 and 5 pressed
 
 ### Changed
 - Replaced the 4 rotary encoders with 5 buttons

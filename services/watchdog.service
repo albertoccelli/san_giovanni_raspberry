@@ -1,0 +1,9 @@
+[Unit]
+Description=Ensures stability to the system once turned on
+
+[Service]
+ExecStart=python /home/a.occelli/sm_demo/watchdog.py
+Environment=SM_DIR=/home/a.occelli/sm_demo
+
+[Install]
+WantedBy=default.target

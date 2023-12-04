@@ -98,6 +98,15 @@ def load_config(file):
             print(f"Error: {e}")
             return None
 
+def save_parameter(file_path, parameter, new_value):
+    with open(file_path, "r") as file:
+        data = yaml.safe_load(file)
+    if parameter in data:
+        data[parameter] = new_value
+    else:
+        print("Parameter not found")
+    with open(file_path, 'w') as file:
+        yaml.dump(data, file, default_flow_style=False)
 
 def stop_player():
     # stop player.service

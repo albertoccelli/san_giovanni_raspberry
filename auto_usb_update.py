@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.3.0: update from zip
 - 1.2.0: support for multilanguage
 - 1.1.0: added functionality to automatically convert mp3 to wav when importing
 - 1.0.0: file created
@@ -40,6 +41,8 @@ def stop_player():
     # stop player.service
     stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "player.service"])
     stop_pl.wait()
+    stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "main_demo.service"])
+    stop_pl.wait()
     return
 
 
@@ -51,7 +54,7 @@ def audio_prompt(filename):
 
 def start_player():
     # restart player.service
-    restart_player = subprocess.Popen(["systemctl", "--user", "start", "player.service"])
+    restart_player = subprocess.Popen(["systemctl", "--user", "start", "main_demo.service"])
     restart_player.wait()
 
 
@@ -109,9 +112,11 @@ def mount_usb(usb_path, mount_path):
 
 def usb_in_callback(event):
     if event.device_node is not None and event.action == "add":
-        print(f"USB detected:")
+        print(f"USB detected")
         # get path of the usb
+        print("Getting USB path")
         path = wait_for_usb()
+        print("Done")
         print(path)
         s_path = path
         # mount the usb into the s_path folder
@@ -121,42 +126,46 @@ def usb_in_callback(event):
 
 
 def update(source, target):
+    print(f"Update in progress ({source} -> {target})")
     stop_player()
     # check if there is the source folder
-    check = subprocess.Popen(["ls", "-a", f"{source}/sm_copy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    check = subprocess.Popen(["ls", "-a", f"{source}/sg_update"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              text=True)
     stdout, stderr = check.communicate()
     if stderr:
         # Case of error
         print("ERROR:")
         print(stderr)
+        print("USB drive not suitable for update")
         audio_prompt(f"{curwd}/prompts/{lang}/usb_error.wav")
         start_player()
         return
     print("SM UPDATE folder found!")
     check = stdout.split("\n")
     print(check)
+    files = os.listdir(f"{source}/sg_update/")
+    tar_files = []
+    for f in files:
+        if "tar.gz" in f:
+            tar_files.append(f)
+    update_file = tar_files[-1]
+    print(f"Udpate file: {update_file}")
     time.sleep(0.1)
     # check if usb drive is allowed to update
-    if controlfile in check:
-        audio_prompt(f"{curwd}/prompts/{lang}/wait_update.wav")
-        # 1. copy config file
+    if True:
+        audio_prompt(f"{curwd}/prompts/eng/wait_update.wav")
+        # 1. copy tar file into home
         print("1/4 Copying configuration files")
-        copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
+        copy_config = f"cp -r {source}/sg_update/*.tar.gz {target}"
+        print(copy_config)
         os.system(copy_config)
-        # 2. copy all files in media folder
-        print("2/4 Copying audio files in media folder")
-        os.system(f"cp -r {source}/sm_copy/media {target}/")
+        # 2. extract files
+        unzip = f"tar -xzvf {curwd}/{update_file} -C {curwd}/"
+        print(unzip)
+        os.system(unzip)
+        #print("2/4 Copying audio files in media folder")
+        #os.system(f"cp -r {source}/sm_copy/media {target}/")
         print("Done!")
-        # 3. convert mp3 into wav
-        print("3/4 Converting mp3 files into wav")
-        convert_media()
-        print("Done!")
-        # 4. run script runme.sh inside the folder
-        print("4/4 Running bash script")
-        os.system(f"{source}/sm_copy/runme.sh")
-        print("Done!")
-        # end update
         print("Update successful")
         audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")
         start_player()

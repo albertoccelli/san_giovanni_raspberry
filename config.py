@@ -29,7 +29,7 @@ from utils import load_config, curwd
 
 # configuration file
 config_file = f"/{curwd}/config.yaml"
-d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
+#d_sensor_enabled = load_config(config_file).get("distance_sensor_enabled")  # load distance sensor configuration
 
 # Language
 lang = load_config(config_file).get("lang")  # language

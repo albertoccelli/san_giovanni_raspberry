@@ -6,3 +6,6 @@ logs/*
 
 # exclude swp files
 *.swp
+
+# update files
+*.tar.gz

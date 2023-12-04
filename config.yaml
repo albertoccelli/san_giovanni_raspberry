@@ -1,5 +1,5 @@
 # language
-lang: "ita"
+lang: "eng"
 
 # bluetooth device name (can also be a part of the actual name, e.g. "Pixel" also works for "Pixel Buds", "Pixel Buds A series", "Pixel phone" and so on)
 device_name: "NS7"
@@ -8,8 +8,8 @@ device_name: "NS7"
 start_track: 1
 volume_steps_um: "perc" # unit of measure of volume steps: perc|db
 volume_steps: 5
-bt_volume: 30
-fr_volume: 50
+bt_volume: 35
+fr_volume: 70
 
 # Amplifier standby pin
 standby_pin: 21

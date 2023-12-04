@@ -41,7 +41,11 @@ Make sure, during the install, to enable the ssh, in order to communicate with t
    ```
    sudo apt-get update && sudo apt-get upgrade
    ```
-4. The bluetooth A2DP won't work out-of-the-box: a few commands and editings are required:
+4. Install Pulseaudio:
+   ```
+   sudo apt-get install pulseaudio
+   ```
+5. The bluetooth A2DP won't work out-of-the-box: a few commands and editings are required:
    - Add the user to the bluetooth group:
    ```
    sudo adduser pi bluetooth
@@ -72,7 +76,7 @@ Make sure, during the install, to enable the ssh, in order to communicate with t
    systemctl --user enable pulseaudio
    systemctl --user start pulseaudio
    ```
-5. Install PIP, in order to install the python dependencies: 
+6. Install PIP, in order to install the python dependencies: 
    ```
    sudo apt-get install python3-pip
    ```
