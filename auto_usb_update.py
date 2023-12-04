@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.3.1:bugfix
 - 1.3.0: update from zip
 - 1.2.0: support for multilanguage
 - 1.1.0: added functionality to automatically convert mp3 to wav when importing
@@ -160,9 +161,10 @@ def update(source, target):
         print(copy_config)
         os.system(copy_config)
         # 2. extract files
-        unzip = f"tar -xzvf {curwd}/{update_file} -C {curwd}/"
+        unzip = f"tar -xzvf {curwd}/{update_file} --strip-components=1 -C {curwd}/"
         print(unzip)
         os.system(unzip)
+        os.system(f"sudo rm {curwd}/{update_file}")
         #print("2/4 Copying audio files in media folder")
         #os.system(f"cp -r {source}/sm_copy/media {target}/")
         print("Done!")

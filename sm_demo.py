@@ -7,6 +7,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.9.2 - ready prompt
 1.9.1 - added variable for starting track
 1.9.0 - added shuffle function
 1.8.0 - Buttons 2, 3, 4, 5 implemented
@@ -31,7 +32,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.9.1"
+__version__ = "1.9.2"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -261,7 +262,7 @@ if __name__ == "__main__":
     def main():
         try:
             print_datetime("SM_Demo:\tDemo started...")
-            audio_prompt(f"{curwd}/prompts/eng/press3.wav")
+            audio_prompt(f"{curwd}/prompts/eng/ready.wav")
             while True:
                 if len(get_sinks()) < 2:
                     bluetooth.stop()
