@@ -5,6 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
+- 1.3.0: update from zip
 - 1.2.0: support for multilanguage
 - 1.1.0: added functionality to automatically convert mp3 to wav when importing
 - 1.0.0: file created
@@ -128,7 +129,7 @@ def update(source, target):
     print(f"Update in progress ({source} -> {target})")
     stop_player()
     # check if there is the source folder
-    check = subprocess.Popen(["ls", "-a", f"{source}/sm_copy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    check = subprocess.Popen(["ls", "-a", f"{source}/sg_update"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              text=True)
     stdout, stderr = check.communicate()
     if stderr:
@@ -142,17 +143,28 @@ def update(source, target):
     print("SM UPDATE folder found!")
     check = stdout.split("\n")
     print(check)
+    files = os.listdir(f"{source}/sg_update/")
+    tar_files = []
+    for f in files:
+        if "tar.gz" in f:
+            tar_files.append(f)
+    update_file = tar_files[-1]
+    print(f"Udpate file: {update_file}")
     time.sleep(0.1)
     # check if usb drive is allowed to update
-    if controlfile in check:
+    if True:
         audio_prompt(f"{curwd}/prompts/eng/wait_update.wav")
-        # 1. copy config file
+        # 1. copy tar file into home
         print("1/4 Copying configuration files")
-        copy_config = f"cp -r {source}/sm_copy/*.yaml {target}"
+        copy_config = f"cp -r {source}/sg_update/*.tar.gz {target}"
+        print(copy_config)
         os.system(copy_config)
-        # 2. copy all files in media folder
-        print("2/4 Copying audio files in media folder")
-        os.system(f"cp -r {source}/sm_copy/media {target}/")
+        # 2. extract files
+        unzip = f"tar -xzvf {curwd}/{update_file} -C {curwd}/"
+        print(unzip)
+        os.system(unzip)
+        #print("2/4 Copying audio files in media folder")
+        #os.system(f"cp -r {source}/sm_copy/media {target}/")
         print("Done!")
         print("Update successful")
         audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")

@@ -1,9 +1,0 @@
-[Unit]
-Description=The main player service. Reproduces music via jack and bluetooth simultaneously.
-
-[Service]
-ExecStart=/usr/bin/python3 /path/to/volume_control.py
-Environment=SM_DIR=/path/to/
-
-[Install]
-WantedBy=default.target
