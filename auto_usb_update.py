@@ -40,6 +40,8 @@ t_path = curwd
 
 def stop_player():
     # stop player.service
+    stop_bt = subprocess.Popen(["sudo", "systemctl", "stop", "bluetooth"])
+    stop_bt.wait()
     stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "player.service"])
     stop_pl.wait()
     stop_pl = subprocess.Popen(["systemctl", "--user", "stop", "main_demo.service"])
