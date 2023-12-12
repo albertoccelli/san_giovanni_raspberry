@@ -48,7 +48,7 @@ class Player:
         self.sink = sink
         self.audio_process = None
         self.current_index = 0
-        self.volume = []
+        self.volume = 0
         self.playlist = None
         self.current_track = None
         self.playing = False
@@ -73,6 +73,7 @@ class Player:
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
         self.get_vol()
+        self.volume = vol_level
         return
 
     def on_reproduction_end(self):
@@ -112,6 +113,7 @@ class Player:
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+        self.volume+=step
         return
 
     def lower_volume(self, step=10, um="perc"):
@@ -125,6 +127,7 @@ class Player:
         set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+        self.volume -= step
         return
 
     def load(self, playlist):

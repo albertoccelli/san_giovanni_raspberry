@@ -1,9 +1,0 @@
-[Unit]
-Description=The update service. Waits for USB to be connected in order to perform update
-
-[Service]
-ExecStart=python /home/a.occelli/sm_demo/auto_usb_update.py
-Environment=SM_DIR=/home/a.occelli/sm_demo
-
-[Install]
-WantedBy=default.target

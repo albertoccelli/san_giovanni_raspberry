@@ -225,6 +225,7 @@ if __name__ == "__main__":
         if 0.05 <= elapsed < 0.5:
             jack.raise_volume(step=vol_step, um=vol_step_um)
             bluetooth.raise_volume(step=5, um=vol_step_um)
+        print_datetime(f"Volume: {jack.volume}")
 
     def vol_down(channel):
         p_time = time.time()
@@ -242,6 +243,7 @@ if __name__ == "__main__":
         if 0.05 <= elapsed < 0.5:
             jack.lower_volume(step=vol_step, um=vol_step_um)
             bluetooth.lower_volume(step=5, um=vol_step_um)
+        print_datetime(f"Volume: {jack.volume}")
 
     def button_23_pressed():
         print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
