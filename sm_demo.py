@@ -7,6 +7,7 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.10.0 - command to select speakers
 1.9.2 - ready prompt
 1.9.1 - added variable for starting track
 1.9.0 - added shuffle function
@@ -32,7 +33,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.9.2"
+__version__ = "1.10.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -52,7 +53,7 @@ if __name__ == "__main__":
 
     from utils import audio_prompt, load_config, set_spkr_volume_max, curwd, save_parameter
     from config import *
-
+    up_spkr_only = False
     starting_index = 0
 
     print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
@@ -106,6 +107,7 @@ if __name__ == "__main__":
     bluetooth.load(bg_playlist)
     bluetooth.current_index = start_track
     bluetooth.set_volume(bt_volume)
+    print(bluetooth.volume)
     jack = Player(audio_sinks[0])
     jack.set_volume(fr_volume)
     jack.shuffle = False
@@ -116,6 +118,9 @@ if __name__ == "__main__":
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
+            if GPIO.input(button_3) == GPIO.HIGH:
+                button_13_pressed()
+                return
             elapsed = time.time() - pressed_time
             if elapsed >= 20:
                 print_datetime("CLOSING DEMO")
@@ -182,9 +187,6 @@ if __name__ == "__main__":
     def button_2_pressed(channel):
         p_time = time.time()
         while GPIO.input(button_2) == GPIO.HIGH:
-            if GPIO.input(button_3) == GPIO.HIGH and GPIO.input(button_2) == GPIO.HIGH:
-                button_23_pressed()
-                return
             time.sleep(0.01)
         if time.time() - p_time > 0.02:
             if not bluetooth.playing:
@@ -200,6 +202,9 @@ if __name__ == "__main__":
         if GPIO.input(button_2) == GPIO.LOW:
             p_time = time.time()
             while GPIO.input(button_3) == GPIO.HIGH:
+                if GPIO.input(button_1) == GPIO.HIGH:
+                    button_13_pressed()
+                    return
                 pass
             if time.time() - p_time > 0.02:
                 if not jack.playing:
@@ -225,7 +230,6 @@ if __name__ == "__main__":
         if 0.05 <= elapsed < 0.5:
             jack.raise_volume(step=vol_step, um=vol_step_um)
             bluetooth.raise_volume(step=5, um=vol_step_um)
-        print_datetime(f"Volume: {jack.volume}")
 
     def vol_down(channel):
         p_time = time.time()
@@ -243,15 +247,32 @@ if __name__ == "__main__":
         if 0.05 <= elapsed < 0.5:
             jack.lower_volume(step=vol_step, um=vol_step_um)
             bluetooth.lower_volume(step=5, um=vol_step_um)
-        print_datetime(f"Volume: {jack.volume}")
 
-    def button_23_pressed():
-        print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
-        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_2) == GPIO.HIGH:
+    def button_13_pressed():
+        p_time = time.time()
+        elapsed = 0
+        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
+            elapsed = round(time.time()-p_time, 2)
+            time.sleep(0.1)
+            if elapsed >= 2:
+                toggle_speaker()
+                return
+        return
+
+    def toggle_speaker():
+        global up_spkr_only
+        up_spkr_only = not up_spkr_only
+        print(up_spkr_only)
+        print("TOGGLE SPEAKER")
+        if up_spkr_only:
+            jack.mute(target = "left")
+            print(jack.volume)
+        else:
+            jack.set_volume(jack.volume)
+            print(jack.volume)
             pass
-        print("DOUBLE PRESS RELEASED")
-        time.sleep(0.2)
-
+        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
+            pass
 
     setup_buttons()
     GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=150)
@@ -259,6 +280,7 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=150)
     GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=100)
     GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=100)
+
 
     # the main function
     def main():
