@@ -262,15 +262,23 @@ if __name__ == "__main__":
     def toggle_speaker():
         global up_spkr_only
         up_spkr_only = not up_spkr_only
-        print(up_spkr_only)
-        print("TOGGLE SPEAKER")
         if up_spkr_only:
+            to_resume = False
+            if jack.playing:
+                to_resume = True
+            jack.pause()
+            audio_prompt(f"{curwd}/prompts/eng/1_speaker.wav")
+            if to_resume:
+                jack.resume()
             jack.mute(target = "left")
-            print(jack.volume)
         else:
+            to_resume = False
+            if jack.playing:
+                to_resume = True
+            audio_prompt(f"{curwd}/prompts/eng/1_speaker.wav")
             jack.set_volume(jack.volume)
-            print(jack.volume)
-            pass
+            if to_resume:
+                jack.resume()
         while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
             pass
 

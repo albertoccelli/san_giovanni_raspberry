@@ -64,7 +64,8 @@ class Player:
         self.volume = get_volume(self.sink)
         return
 
-    def set_volume(self, vol_level, um="perc", mode = "both"):
+    def set_volume(self, vol_level, um="perc", mode="both"):
+        set_vol = None
         p_volume = f"{int(self.volume)}"
         if mode == "both":
             self.muted = [False, False]
@@ -78,37 +79,37 @@ class Player:
         if mode == "both":
             print_datetime(f"{self.sink}: setting volume to {vol_level}")
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         elif mode == "left":
             print(vol_level)
             print(p_volume)
             print_datetime(f"{self.sink}: setting left volume to {vol_level}")
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, vol_level, p_volume],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         elif mode == "right":
             print_datetime(f"{self.sink}: setting right volume to {vol_level}")
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, p_volume, vol_level],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
-        #self.get_vol()
+        # self.get_vol()
         return
 
     def on_reproduction_end(self):
         # print_datetime(f"{self.sink}: reproduction ended")
         pass
 
-    def mute(self, target = "both"):
+    def mute(self, target="both"):
         if target == "both":
             print_datetime(f"{self.sink}: mute")
             mute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "1"],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             self.muted = [True, True]
             mute.wait()
         elif target == "left":
-            self.set_volume("0", mode = "left")
+            self.set_volume("0", mode="left")
             self.muted[0] = True
         elif target == "right":
-            self.set_volume("0", mode = "right")
+            self.set_volume("0", mode="right")
             self.muted[1] = True
         return
 
@@ -116,9 +117,10 @@ class Player:
         print_datetime(f"{self.sink}: unmute")
         unmute = subprocess.Popen(["pactl", "set-sink-mute", self.sink, "0"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        unmute.wait()
         self.muted = [False, False]
         adjust_channels = subprocess.Popen(["pactl", "set-sink-volume", self.sink, self.volume],
-                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         adjust_channels.wait()
         return
 
@@ -128,8 +130,9 @@ class Player:
         elif not self.muted:
             self.mute()
 
-    def raise_volume(self, step=10, um="perc", target = "both"):
-        self.volume+=step
+    def raise_volume(self, step=10, um="perc", target="both"):
+        set_vol = None
+        self.volume += step
         if self.muted[0] and self.muted[1]:
             self.unmute()
         if um == "perc":
@@ -143,18 +146,19 @@ class Player:
         print_datetime(f"{self.sink}: raising volume by {step}")
         if target == "both" and not self.muted[0] and not self.muted[1]:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         elif target == "left" or self.muted[1]:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step, mute],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         elif target == "right" or self.muted[0]:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, mute, step],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
         return
 
-    def lower_volume(self, step=10, um="perc", target = "both"):
-        self.volume-=step
+    def lower_volume(self, step=10, um="perc", target="both"):
+        set_vol = None
+        self.volume -= step
         if self.muted[0] and self.muted[1]:
             self.unmute()
         if um == "perc":
@@ -168,13 +172,13 @@ class Player:
         print_datetime(f"{self.sink}: lowering volume by {step}")
         if target == "both" and not self.muted[0] and not self.muted[1]:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         elif target == "left" or self.muted[1]:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, step, mute],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         elif target == "right" or self.muted[0]:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, mute, step],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
         return
 
@@ -314,6 +318,7 @@ if __name__ == "__main__":
             pass
         time.sleep(3)
 
+
     # initialize players
     class NewPlayer(Player):
         def on_reproduction_end(self):
@@ -322,6 +327,7 @@ if __name__ == "__main__":
 
     bluetooth = Player(bt_sink)
     jack = Player(jack_sink)
+
 
     # initialize GPIOs
     def bt_next(channel):
