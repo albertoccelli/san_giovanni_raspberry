@@ -154,6 +154,7 @@ class Player:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, mute, step],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+        print_datetime(f"{self.sink}: volume -> {self.volume}")
         return
 
     def lower_volume(self, step=10, um="perc", target="both"):
@@ -180,6 +181,7 @@ class Player:
             set_vol = subprocess.Popen(["pactl", "set-sink-volume", self.sink, mute, step],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         set_vol.wait()
+        print_datetime(f"{self.sink}: volume -> {self.volume}")
         return
 
     def load(self, playlist):
