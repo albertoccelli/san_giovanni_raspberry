@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Dear Prudence - 1.9.0] - 12-12-2023
 
+Fourth release: select upper or lower speaker
+
 ### Added
 - Python script to install service files
 - Press 1-3 to select lower/upper or both speakers
+- Max volume handling
 
 ### Changed
 - Updated README
