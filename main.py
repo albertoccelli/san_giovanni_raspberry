@@ -32,6 +32,7 @@ from utils import curwd, audio_prompt, print_datetime, get_sinks
 
 GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(button_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 running = False
 
@@ -53,7 +54,7 @@ def get_running():
 def toggle_standby(channel):
     global running
     pressed_time = time.time()
-    while GPIO.input(button_1) == GPIO.HIGH:
+    while GPIO.input(button_1) == GPIO.HIGH and GPIO.input(button_3) == GPIO.LOW:
         if GPIO.input(button_2) == GPIO.HIGH:
             reboot()
             return

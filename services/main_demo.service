@@ -1,9 +1,0 @@
-[Unit]
-Description=The main demo routine. Handles standby function
-
-[Service]
-ExecStart=python /home/a.occelli/sm_demo/main.py
-Environment=SM_DIR=/home/a.occelli/sm_demo
-
-[Install]
-WantedBy=default.target
