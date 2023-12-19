@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -7,6 +6,9 @@ SM demo: control the reproducing of 2 audio streams via BT and Jack. Controls ar
 sensors and buttons/rotary encoders
 
 Changelogs:
+1.10.2 - max volume handling
+1.10.1 - no change language for prompt audio if only one language is available
+1.10.0 - command to select speakers
 1.9.2 - ready prompt
 1.9.1 - added variable for starting track
 1.9.0 - added shuffle function
@@ -32,7 +34,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.9.2"
+__version__ = "1.10.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -53,6 +55,8 @@ if __name__ == "__main__":
     from utils import audio_prompt, load_config, set_spkr_volume_max, curwd, save_parameter
     from config import *
 
+    spkr_mode = ["both", "lower", "upper"]
+    cur_spkr_mode = 0
     starting_index = 0
 
     print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
@@ -76,7 +80,7 @@ if __name__ == "__main__":
     bg_path = f"{script_dir}/media/neck/"
     voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if os.path.isfile(os.path.join(voice_path, f))]
     voice_playlist.sort()
-    print(voice_playlist)
+    print_datetime(voice_playlist)
     bg_playlist = [f"{bg_path}{f}" for f in os.listdir(bg_path) if os.path.isfile(os.path.join(bg_path, f))]
     bg_playlist.sort()
 
@@ -116,6 +120,9 @@ if __name__ == "__main__":
         elapsed = 0
         pressed_time = time.time()
         while GPIO.input(button_1) == GPIO.HIGH:
+            if GPIO.input(button_3) == GPIO.HIGH:
+                button_13_pressed()
+                return
             elapsed = time.time() - pressed_time
             if elapsed >= 20:
                 print_datetime("CLOSING DEMO")
@@ -130,61 +137,46 @@ if __name__ == "__main__":
         elif 0.01 < elapsed <= 1:
             change_lang()
 
-    def connect_bluetooth():
-        print(bluetooth.playing)
-        '''
-        if bluetooth.playing:
-            bluetooth.stop()
-            next_index = bluetooth.current_index + 1
-            if next_index >= len(bg_playlist):
-                next_index = 0
-            # audio_prompt(f"{curwd}/prompts/eng/noise_{next_index+1}.wav")
-            bluetooth.play_audio(filename=f"{curwd}/prompts/eng/noise_{next_index + 1}.wav")
-            bluetooth.next_track()
-        '''
-
     def change_lang():
-        to_resume = False
-        if jack.playing:
-            to_resume = True
-        jack.stop()
-        global lang
-        timer = 0
-        while True:
-            if timer >= 2:
-                break
-            start_time = time.time()
-            next_lang_index = langs.index(lang) + 1
-            if next_lang_index >= len(langs):
-                next_lang_index = 0
-            lang = langs[next_lang_index]
-            print_datetime(f"SM Demo: selected language: {lang}")
-            audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
-            while GPIO.input(button_1) == GPIO.LOW and timer <= 2:
-                timer = (time.time() - start_time)
-            while GPIO.input(button_1) == GPIO.HIGH:
-                pass
-            time.sleep(0.01)
-        # start reproduction
-        voice_path = f"{script_dir}/media/front/{lang}/"
-        voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if
-                          os.path.isfile(os.path.join(voice_path, f))]
-        voice_playlist.sort()
-        print(voice_playlist)
-        jack.load(voice_playlist)
-        jack.current_index = starting_index
-        if to_resume:
-            jack.play(repeat_one=False, repeat_all=True)
-        print_datetime(f"Parameter -lang- saved: {lang}")
-        #save_parameter(config_file, "lang", lang)
+        if len(langs) > 1:
+            to_resume = False
+            if jack.playing:
+                to_resume = True
+            jack.stop()
+            global lang
+            timer = 0
+            while True:
+                if timer >= 2:
+                    break
+                start_time = time.time()
+                next_lang_index = langs.index(lang) + 1
+                if next_lang_index >= len(langs):
+                    next_lang_index = 0
+                lang = langs[next_lang_index]
+                print_datetime(f"SM Demo: selected language: {lang}")
+                audio_prompt(f"{curwd}/prompts/{lang}/language.wav")
+                while GPIO.input(button_1) == GPIO.LOW and timer <= 2:
+                    timer = (time.time() - start_time)
+                while GPIO.input(button_1) == GPIO.HIGH:
+                    pass
+                time.sleep(0.01)
+            # start reproduction
+            voice_path = f"{script_dir}/media/front/{lang}/"
+            voice_playlist = [f"{voice_path}{f}" for f in os.listdir(voice_path) if
+                              os.path.isfile(os.path.join(voice_path, f))]
+            voice_playlist.sort()
+            print_datetime(voice_playlist)
+            jack.load(voice_playlist)
+            jack.current_index = starting_index
+            if to_resume:
+                jack.play(repeat_one=False, repeat_all=True)
+            print_datetime(f"Parameter -lang- saved: {lang}")
+            #save_parameter(config_file, "lang", lang)
 
 
     def button_2_pressed(channel):
         p_time = time.time()
         while GPIO.input(button_2) == GPIO.HIGH:
-            if GPIO.input(button_3) == GPIO.HIGH and GPIO.input(button_2) == GPIO.HIGH:
-                button_23_pressed()
-                return
             time.sleep(0.01)
         if time.time() - p_time > 0.02:
             if not bluetooth.playing:
@@ -200,6 +192,9 @@ if __name__ == "__main__":
         if GPIO.input(button_2) == GPIO.LOW:
             p_time = time.time()
             while GPIO.input(button_3) == GPIO.HIGH:
+                if GPIO.input(button_1) == GPIO.HIGH:
+                    button_13_pressed()
+                    return
                 pass
             if time.time() - p_time > 0.02:
                 if not jack.playing:
@@ -209,6 +204,18 @@ if __name__ == "__main__":
                     jack.stop()
                     jack.current_index = starting_index
 
+    def raise_vol():
+        if max(bluetooth.volume, jack.volume) >= max_volume:
+            print_datetime("SM Demo: max volume reached")
+        else:
+            jack.raise_volume(step=vol_step, um=vol_step_um)
+            bluetooth.raise_volume(step=5, um=vol_step_um)
+
+    def lower_vol():
+        jack.lower_volume(step=vol_step, um=vol_step_um)
+        bluetooth.lower_volume(step=5, um=vol_step_um)
+
+
     def vol_up(channel):
         p_time = time.time()
         elapsed = 0
@@ -217,14 +224,12 @@ if __name__ == "__main__":
             elapsed = round(time.time()-p_time, 2)
             if elapsed >= 0.5:
                 if time.time() - p_raised_vol >= 0.2:
-                    jack.raise_volume(step=vol_step, um=vol_step_um)
-                    bluetooth.raise_volume(step=5, um=vol_step_um)
+                    raise_vol()
                     p_raised_vol = time.time()
-            time.sleep(0.1)
+            time.sleep(0.05)
             pass
         if 0.05 <= elapsed < 0.5:
-            jack.raise_volume(step=vol_step, um=vol_step_um)
-            bluetooth.raise_volume(step=5, um=vol_step_um)
+            raise_vol()
 
     def vol_down(channel):
         p_time = time.time()
@@ -234,22 +239,67 @@ if __name__ == "__main__":
             elapsed = round(time.time()-p_time, 2)
             if elapsed >= 0.5:
                 if time.time() - p_lowrd_vol >= 0.2:
-                    jack.lower_volume(step=vol_step, um=vol_step_um)
-                    bluetooth.lower_volume(step=5, um=vol_step_um)
+                    lower_vol()
                     p_lowrd_vol = time.time()
-            time.sleep(0.1)
+            time.sleep(0.05)
             pass
         if 0.05 <= elapsed < 0.5:
-            jack.lower_volume(step=vol_step, um=vol_step_um)
-            bluetooth.lower_volume(step=5, um=vol_step_um)
+            lower_vol()
 
-    def button_23_pressed():
-        print("SIMULTANEOUS PRESS OF 2 AND 3 BUTTON")
-        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_2) == GPIO.HIGH:
+    def button_13_pressed():
+        p_time = time.time()
+        elapsed = 0
+        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
+            elapsed = round(time.time()-p_time, 2)
+            time.sleep(0.1)
+            if elapsed >= 2:
+                toggle_speaker()
+                return
+        return
+
+    def toggle_speaker():
+        global cur_spkr_mode
+        cur_spkr_mode += 1
+        if cur_spkr_mode == 3:
+            cur_spkr_mode = 0
+        if cur_spkr_mode == 1:
+            jack.set_volume(jack.volume)
+            print_datetime("SM Demo: upper speaker selected")
+            to_resume = False
+            if jack.playing:
+                to_resume = True
+                jack.stop()
+                jack.current_index = 0
+            audio_prompt(f"{curwd}/prompts/eng/l_speaker.wav")
+            jack.mute(target = "right")
+            if to_resume:
+                jack.play(repeat_one=False, repeat_all=True)
+        elif cur_spkr_mode == 2:
+            jack.set_volume(jack.volume)
+            print_datetime("SM Demo: lower speaker selected")
+            to_resume = False
+            if jack.playing:
+                to_resume = True
+                jack.stop()
+                jack.current_index = 0
+            audio_prompt(f"{curwd}/prompts/eng/u_speaker.wav")
+            jack.mute(target = "left")
+            if to_resume:
+                jack.play(repeat_one=False, repeat_all=True)
+        else:
+            jack.set_volume(jack.volume)
+            print_datetime("SM Demo: both speaker selected")
+            to_resume = False
+            if jack.playing:
+                jack.stop()
+                to_resume = True
+                jack.current_index = 0
+            audio_prompt(f"{curwd}/prompts/eng/2_speaker.wav")
+            time.sleep(1)
+            if to_resume:
+                jack.play(repeat_one=False, repeat_all=True)
+        while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
             pass
-        print("DOUBLE PRESS RELEASED")
-        time.sleep(0.2)
-
 
     setup_buttons()
     GPIO.add_event_detect(button_1, GPIO.RISING, callback=button_1_pressed, bouncetime=150)
@@ -257,6 +307,7 @@ if __name__ == "__main__":
     GPIO.add_event_detect(button_3, GPIO.RISING, callback=button_3_pressed, bouncetime=150)
     GPIO.add_event_detect(button_4, GPIO.RISING, callback=vol_down, bouncetime=100)
     GPIO.add_event_detect(button_5, GPIO.RISING, callback=vol_up, bouncetime=100)
+
 
     # the main function
     def main():
@@ -271,16 +322,8 @@ if __name__ == "__main__":
                     jack.stop()
                     subprocess.Popen(["killall", "paplay"])
                     print_datetime("SM_Demo: demo interrupted")
-                    #audio_prompt(f"{curwd}/prompts/eng/lost_connection.wav")
                     while True:
                         time.sleep(10)
-                    #bt_connect = subprocess.Popen(["python", f"{curwd}/bt_device.py"])
-                    #bt_connect.wait()
-                    #audio_prompt(f"{curwd}/prompts/eng/press3.wav")
-                    #print_datetime("STANDBY")
-                    #bt_disconnect = subprocess.Popen(["sudo", "systemctl", "stop", "bluetooth"])
-                    #bt_disconnect.wait()
-                    #audio_prompt(f"{curwd}/prompts/eng/standby.wav")
                     quit()
                 time.sleep(1)
 

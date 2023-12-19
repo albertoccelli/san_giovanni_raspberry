@@ -5,6 +5,7 @@
 Configuration script for SM Demo. Configures the GPIOs
 
 Changelogs:
+1.6.0 - added max volume
 1.5.0 - added 2 buttons
 1.4.0 - added amplifier standby pin
 1.3.0 - removed encoders
@@ -19,7 +20,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.3.0"
+__version__ = "1.6.0"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -55,6 +56,7 @@ vol_step = load_config(config_file).get("volume_steps")  # volume steps
 bt_volume = load_config(config_file).get("bt_volume")  # starting volume
 fr_volume = load_config(config_file).get("fr_volume")  # starting volume
 lang = load_config(config_file).get("lang")  # language
+max_volume = load_config(config_file).get("max_volume")  # maximum volume
 
 # Setup GPIOs as inputs
 GPIO.setmode(GPIO.BCM)

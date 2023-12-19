@@ -10,6 +10,7 @@ volume_steps_um: "perc" # unit of measure of volume steps: perc|db
 volume_steps: 5
 bt_volume: 35
 fr_volume: 70
+max_volume: 100
 
 # Amplifier standby pin
 standby_pin: 21
