@@ -53,7 +53,8 @@ if __name__ == "__main__":
 
     from utils import audio_prompt, load_config, set_spkr_volume_max, curwd, save_parameter
     from config import *
-    up_spkr_only = False
+    spkr_mode = ["both", "lower", "upper"]
+    cur_spkr_mode = 0
     starting_index = 0
 
     print_datetime("WELCOME TO THE SANMARCO INSTORE DEMO")
@@ -260,25 +261,41 @@ if __name__ == "__main__":
         return
 
     def toggle_speaker():
-        global up_spkr_only
-        up_spkr_only = not up_spkr_only
-        if up_spkr_only:
+        global cur_spkr_mode
+        cur_spkr_mode += 1
+        if cur_spkr_mode == 3:
+            cur_spkr_mode = 0
+        if cur_spkr_mode == 1:
             to_resume = False
             if jack.playing:
                 to_resume = True
-            jack.pause()
+                jack.stop()
+                jack.current_index = 0
             audio_prompt(f"{curwd}/prompts/eng/1_speaker.wav")
             if to_resume:
-                jack.resume()
+                jack.play(repeat_one=False, repeat_all=True)
+            jack.mute(target = "right")
+        elif cur_spkr_mode == 2:
+            to_resume = False
+            if jack.playing:
+                to_resume = True
+                jack.stop()
+                jack.current_index = 0
+            audio_prompt(f"{curwd}/prompts/eng/1_speaker.wav")
+            if to_resume:
+                jack.play(repeat_one=False, repeat_all=True)
             jack.mute(target = "left")
         else:
             to_resume = False
             if jack.playing:
+                jack.stop()
                 to_resume = True
-            audio_prompt(f"{curwd}/prompts/eng/1_speaker.wav")
+                jack.current_index = 0
+            audio_prompt(f"{curwd}/prompts/eng/2_speaker.wav")
             jack.set_volume(jack.volume)
+            time.sleep(1)
             if to_resume:
-                jack.resume()
+                jack.play(repeat_one=False, repeat_all=True)
         while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
             pass
 
