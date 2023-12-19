@@ -1,9 +1,0 @@
-[Unit]
-Description=The main player service. Reproduces music via jack and bluetooth simultaneously.
-
-[Service]
-ExecStart=python /home/a.occelli/sm_demo/sm_demo.py
-Environment=SM_DIR=/home/a.occelli/sm_demo
-
-[Install]
-WantedBy=default.target
