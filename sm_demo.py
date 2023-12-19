@@ -263,6 +263,7 @@ if __name__ == "__main__":
         if cur_spkr_mode == 3:
             cur_spkr_mode = 0
         if cur_spkr_mode == 1:
+            jack.set_volume(jack.volume)
             print_datetime("SM Demo: upper speaker selected")
             to_resume = False
             if jack.playing:
@@ -270,10 +271,11 @@ if __name__ == "__main__":
                 jack.stop()
                 jack.current_index = 0
             audio_prompt(f"{curwd}/prompts/eng/l_speaker.wav")
+            jack.mute(target = "right")
             if to_resume:
                 jack.play(repeat_one=False, repeat_all=True)
-            jack.mute(target = "right")
         elif cur_spkr_mode == 2:
+            jack.set_volume(jack.volume)
             print_datetime("SM Demo: lower speaker selected")
             to_resume = False
             if jack.playing:
@@ -281,10 +283,11 @@ if __name__ == "__main__":
                 jack.stop()
                 jack.current_index = 0
             audio_prompt(f"{curwd}/prompts/eng/u_speaker.wav")
+            jack.mute(target = "left")
             if to_resume:
                 jack.play(repeat_one=False, repeat_all=True)
-            jack.mute(target = "left")
         else:
+            jack.set_volume(jack.volume)
             print_datetime("SM Demo: both speaker selected")
             to_resume = False
             if jack.playing:
@@ -292,7 +295,6 @@ if __name__ == "__main__":
                 to_resume = True
                 jack.current_index = 0
             audio_prompt(f"{curwd}/prompts/eng/2_speaker.wav")
-            jack.set_volume(jack.volume)
             time.sleep(1)
             if to_resume:
                 jack.play(repeat_one=False, repeat_all=True)

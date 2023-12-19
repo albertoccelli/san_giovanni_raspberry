@@ -61,7 +61,6 @@ def toggle_standby(channel):
         elapsed = time.time()-pressed_time
         #print(elapsed)
         if elapsed >= hold:
-            print(elapsed)
             standby()
             return
 
