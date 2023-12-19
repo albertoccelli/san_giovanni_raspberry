@@ -253,7 +253,7 @@ if __name__ == "__main__":
         while GPIO.input(button_3) == GPIO.HIGH or GPIO.input(button_1) == GPIO.HIGH:
             elapsed = round(time.time()-p_time, 2)
             time.sleep(0.1)
-            if elapsed >= 2:
+            if elapsed >= 1:
                 toggle_speaker()
                 return
         return
