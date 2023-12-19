@@ -5,6 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
+1.9.0 - DEAR PRUDENCE - Fourth stable release: select speakers
 1.8.1 - COME TOGETHER - Changed ready prompt
 1.8.0 - COME TOGETHER - Third stable release: added usb update
 1.7.0 - BLACKBIRD - second stable release: added bluetooth unpairing function/enhanced performances
@@ -17,7 +18,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.8.0 - Come Together"
+__version__ = "1.9.0 - Dear Prudence"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
