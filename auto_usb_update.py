@@ -174,7 +174,7 @@ def update(source, target):
         os.system(f"cp -r {home}/.update/* {curwd}/ && rm -r {home}/.update/*")
         #print("2/4 Copying audio files in media folder")
         #os.system(f"cp -r {source}/sm_copy/media {target}/")
-
+        os.system(f"{curwd}/update.sh")
         print("Done!")
         print("Update successful")
         audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")
