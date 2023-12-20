@@ -83,7 +83,7 @@ def reboot():
         pass
     running = get_running()
     print(running)
-    if elapsed > 5:
+    if elapsed > 3:
         if not running:
             print_datetime("Reset bluetooth")
             os.system("sudo systemctl start bluetooth")
