@@ -5,7 +5,7 @@
 Player class for Raspberry Pi3. Can set up audio sink and play/pause/stop the reproducing of WAV files
 
 Changelogs:
-1.9.1 - TEST
+1.9.0 - DEAR PRUDENCE - Bugfix
 1.9.0 - DEAR PRUDENCE - Fourth stable release: select speakers
 1.8.1 - COME TOGETHER - Changed ready prompt
 1.8.0 - COME TOGETHER - Third stable release: added usb update
