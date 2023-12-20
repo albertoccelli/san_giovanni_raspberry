@@ -29,7 +29,7 @@ import os
 
 import pyudev
 
-from utils import get_sinks, curwd, convert_media
+from utils import get_sinks, curwd, home, convert_media
 from config import lang
 
 controlfile = ".update_smdemo.txt"

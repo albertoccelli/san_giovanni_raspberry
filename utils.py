@@ -32,7 +32,7 @@ import os
 from datetime import datetime
 
 curwd = os.environ["SM_DIR"]
-
+home = os.environ["HOME"]
 
 def reload_system():
     service_dir = f"{curwd}/services"
