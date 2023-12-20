@@ -5,7 +5,7 @@
 Automatically checks for new usb drives to perform the update of the SM Demo Software
 
 Changelog:
-- 1.3.1:bugfix
+- 1.3.1: bugfix
 - 1.3.0: update from zip
 - 1.2.0: support for multilanguage
 - 1.1.0: added functionality to automatically convert mp3 to wav when importing
@@ -18,7 +18,7 @@ __author__ = "Alberto Occelli"
 __copyright__ = "Copyright 2023,"
 __credits__ = ["Alberto Occelli"]
 __license__ = "MIT"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 __maintainer__ = "Alberto Occelli"
 __email__ = "albertoccelli@gmail.com"
 __status__ = "Dev"
@@ -158,27 +158,29 @@ def update(source, target):
     if True:
         audio_prompt(f"{curwd}/prompts/eng/wait_update.wav")
         # 1. copy tar file into home
-        print("1/4 Copying update archive")
+        print("1/4 Backupping current folder")
         backup = f"cp -r {curwd}/* {home}/.backup"
         os.system(backup)
+        print("2/4 copying update archive into home folder")
         copy_config = f"cp -r {source}/sg_update/*.tar.gz {home}"
         print(copy_config)
         os.system(copy_config)
         # 2. extract files
-        print("Unzipping archive")
-        unzip = f"tar -xzvf {curwd}/{update_file} --strip-components=1 -C {home}/.update"
+        print("3/4 Unzipping archive")
+        unzip = f"tar -xzvf {home}/{update_file} --strip-components=1 -C {home}/.update/"
         print(unzip)
         os.system(unzip)
-        os.system(f"sudo rm {curwd}/{update_file}")
+        os.system(f"sudo rm {home}/{update_file}")
         os.system(f"cp -r {home}/.update/* {curwd}/ && rm -r {home}/.update/*")
         #print("2/4 Copying audio files in media folder")
         #os.system(f"cp -r {source}/sm_copy/media {target}/")
+
         print("Done!")
         print("Update successful")
         audio_prompt(f"{curwd}/prompts/{lang}/update_complete.wav")
         start_player()
     else:
-        audio_prompt(f"{curwd}/prompts/{lang}/usb_error.wav")
+        audio_promptx(f"{curwd}/prompts/{lang}/usb_error.wav")
         print("Not allowed to copy from this usb")
     time.sleep(1)
     start_player()
